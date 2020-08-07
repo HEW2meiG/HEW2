@@ -1,4 +1,4 @@
-# HEW 出品データ作成
+# HEW
 
 
 ## GitHub 使い方
@@ -12,7 +12,7 @@
 
 （masterブランチにいるか確認する）
 
-`git pull bookdata master`
+`git pull origin master`
 
 (ローカルのmasterブランチをpullで更新)
 
@@ -23,10 +23,18 @@
 ### 3.ステージに追加し、コミット
 `git add .`
 
+`git status`
+
+（現在の状況を確認する）
+
 `git commit -m "コミットメッセージ"`
 
+`git status`
+
+（現在の状況を確認する）
+
 ### 4.ブランチをGitHubにプッシュ
-`git push bookdata <ブランチ名>`
+`git push origin <ブランチ名>`
 
 ### 開発が終了するまで2~4繰り返し（定期的にプッシュする）
 
@@ -56,6 +64,6 @@
 
 （masterブランチにいるか確認する）
 
-`git pull bookdata master`
+`git pull origin master`
 
 ### 1に戻る
