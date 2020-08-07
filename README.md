@@ -1,4 +1,4 @@
-# HEW 古書邂逅
+# HEW 出品データ作成
 
 
 ## GitHub 使い方
@@ -7,9 +7,18 @@
 ### 0.cd カレントフォルダに移動する
 
 ### 1.masterブランチからブランチを作成
+
+`git branch`
+
+（masterブランチにいるか確認する）
+
+`git pull bookdata master`
+
+(ローカルのmasterブランチをpullで更新)
+
 `git checkout -b <新ブランチ名>`
 
-### 2.開発
+### 2.自分のファイルに追加する
 
 ### 3.ステージに追加し、コミット
 `git add .`
@@ -17,7 +26,7 @@
 `git commit -m "コミットメッセージ"`
 
 ### 4.ブランチをGitHubにプッシュ
-`git push origin <ブランチ名>`
+`git push bookdata <ブランチ名>`
 
 ### 開発が終了するまで2~4繰り返し（定期的にプッシュする）
 
@@ -47,6 +56,6 @@
 
 （masterブランチにいるか確認する）
 
-`git pull origin master`
+`git pull bookdata master`
 
 ### 1に戻る
