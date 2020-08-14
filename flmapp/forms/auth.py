@@ -1,13 +1,15 @@
 from wtforms.form import Form
 from wtforms.fields import (
-    StringField, FileField, PasswordField, SubmitField, HiddenField
+    StringField, FileField, PasswordField, SubmitField, HiddenField,
+    IntegerField,BooleanField,DateField,
+    RadioField,SelectField,TextAreaField,
 )
 from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-from flaskr.models import User
+from flmapp.models.auth import User
 
 # ログイン用のForm
 class LoginForm(Form):
@@ -26,11 +28,24 @@ class LoginForm(Form):
 
 # 登録用のForm
 class RegisterForm(Form):
+    picture_path = FileField('アイコン画像を設定')
     email = StringField(
-        'メール: ', validators=[DataRequired(), Email('メールアドレスが誤っています')]
+        'メール',render_kw={"placeholder":"PC・携帯どちらでも可"},validators=[DataRequired(), Email('メールアドレスが誤っています')]
     )
-    username = StringField('名前: ', validators=[DataRequired()])
-    submit = SubmitField('登録')
+    username = StringField('ユーザーネーム', validators=[DataRequired()],render_kw={"placeholder":"例)ポチ"})
+    last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
+    first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
+    last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
+    first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ"})
+    birth = DateField('生年月日',format='%Y/%m/%d',render_kw={"placeholder":"例)1999/08/30"})
+    zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456"})
+    pref01 = StringField('都道府県',validators=[DataRequired()])
+    addr01 = StringField('市区町村',validators=[DataRequired()])
+    addr02 = StringField('番地',validators=[DataRequired()])
+    addr03 = StringField('建物名')
+
+    
+    submit = SubmitField('登録する')
 
     def validate_email(self, field):
         if User.select_user_by_email(field.data):

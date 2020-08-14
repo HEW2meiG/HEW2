@@ -7,17 +7,17 @@ from flask import (
 from flask_login import (
     login_user, login_required, logout_user, current_user
 )
-from flaskr.models import (
+from flmapp.models.auth import (
     User, PasswordResetToken
 )
-from flaskr import db
+from flmapp import db
 
-from flaskr.forms import (
+from flmapp.forms.auth import (
     LoginForm, RegisterForm, ResetPasswordForm,
     ForgotPasswordForm, UserForm, ChangePasswordForm
 )
 
-bp = Blueprint('app', __name__, url_prefix='')
+bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/')
 def home():
@@ -26,7 +26,7 @@ def home():
 @bp.route('/logout')
 def logout():
     logout_user() # ログアウト
-    return redirect(url_for('app.home'))
+    return redirect(url_for('auth.home'))
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -37,7 +37,7 @@ def login():
             login_user(user, remember=True)
             next = request.args.get('next')
             if not next:
-                next = url_for('app.home')
+                next = url_for('auth.home')
             return redirect(next)
         elif not user:
             flash('存在しないユーザです')
@@ -45,7 +45,7 @@ def login():
             flash('無効なユーザです。パスワードを再設定してください')
         elif not user.validate_password(form.password.data):
             flash('メールアドレスとパスワードの組み合わせが誤っています')
-    return render_template('login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -62,13 +62,13 @@ def register():
         with db.session.begin(subtransactions=True):
             token = PasswordResetToken.publish_token(user)
         db.session.commit()
-        # メールに飛ばすほうがいい
+        # メールに飛ばす
         print(
             f'パスワード設定用URL: http://127.0.0.1:5000/reset_password/{token}'
         )
         flash('パスワード設定用のURLをお送りしました。ご確認ください')
-        return redirect(url_for('app.login'))
-    return render_template('register.html', form=form)
+        return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', form=form)
 
 @bp.route('/reset_password/<uuid:token>', methods=['GET', 'POST'])
 def reset_password(token):
@@ -84,8 +84,8 @@ def reset_password(token):
             PasswordResetToken.delete_token(token)
         db.session.commit()
         flash('パスワードを更新しました。')
-        return redirect(url_for('app.login'))
-    return render_template('reset_password.html', form=form)
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', form=form)
 
 @bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -102,7 +102,7 @@ def forgot_password():
             flash('パスワード再登録用のURLを発行しました。')
         else:
             flash('存在しないユーザです')
-    return render_template('forgot_password.html', form=form)
+    return render_template('auth/forgot_password.html', form=form)
 
 @bp.route('/user', methods=['GET', 'POST'])
 @login_required
@@ -118,7 +118,7 @@ def user():
             if file:
                 file_name = user_id + '_' + \
                     str(int(datetime.now().timestamp())) + '.jpg'
-                picture_path = 'flaskr/static/user_image/' + file_name
+                picture_path = 'flmapp/static/user_image/' + file_name
                 open(picture_path, 'wb').write(file)
                 user.picture_path = 'user_image/' + file_name
         db.session.commit()
@@ -136,5 +136,5 @@ def change_password():
             user.save_new_password(password)
         db.session.commit()
         flash('パスワードの更新に成功しました')
-        return redirect(url_for('app.user'))
-    return render_template('change_password.html', form=form)
+        return redirect(url_for('auth.user'))
+    return render_template('auth/change_password.html', form=form)
