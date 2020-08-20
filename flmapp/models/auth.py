@@ -1,4 +1,3 @@
-# models.py
 from flmapp import db, login_manager
 from flask_bcrypt import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -22,14 +21,15 @@ class User(UserMixin, db.Model):
         default=generate_password_hash('flmapp')
     )
     picture_path = db.Column(db.Text)
-    # 有効か無効かのフラグ
+    prof_comment = db.Column(db.Text)
     is_active = db.Column(db.Boolean, unique=False, default=False)
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, username, email):
+    def __init__(self, username, email, picture_path):
         self.username = username
         self.email = email
+        self.picture_path = picture_path
 
     @classmethod
     def select_user_by_email(cls, email):

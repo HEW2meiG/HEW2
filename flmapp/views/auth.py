@@ -51,9 +51,17 @@ def login():
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
+        file = request.files[form.picture_path.name].read()
+            if file:
+                file_name = user_id + '_' + \
+                    str(int(datetime.now().timestamp())) + '.jpg'
+                picture_path = 'flmapp/static/user_image/' + file_name
+                open(picture_path, 'wb').write(file)
+                picture_path = 'user_image/' + file_name
         user = User(
             username = form.username.data,
-            email = form.email.data
+            email = form.email.data,
+            picture_path
         )
         with db.session.begin(subtransactions=True):
             user.create_new_user()
