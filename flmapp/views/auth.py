@@ -8,7 +8,7 @@ from flask_login import (
     login_user, login_required, logout_user, current_user
 )
 from flmapp.models.auth import (
-    User, PasswordResetToken
+    User, UserInfo, Address, PasswordResetToken
 )
 from flmapp import db
 
@@ -51,20 +51,32 @@ def login():
 def register():
     form = RegisterForm(request.form)
     if request.method == 'POST' and form.validate():
-        file = request.files[form.picture_path.name].read()
-            if file:
-                file_name = user_id + '_' + \
-                    str(int(datetime.now().timestamp())) + '.jpg'
-                picture_path = 'flmapp/static/user_image/' + file_name
-                open(picture_path, 'wb').write(file)
-                picture_path = 'user_image/' + file_name
         user = User(
             username = form.username.data,
-            email = form.email.data,
-            picture_path
+            email = form.email.data
         )
         with db.session.begin(subtransactions=True):
             user.create_new_user()
+        db.session.commit()
+        userinfo = UserInfo(
+            User_id = user.User_id,
+            last_name = form.last_name.data,
+            first_name = form.first_name.data,
+            last_name_kana = form.last_name_kana.data,
+            first_name_kana = form.first_name_kana.data,
+            birth = form.birth.data
+        )
+        address = Address(
+            User_id = user.User_id,
+            zip_code = form.zip01.data,
+            prefecture = form.pref01.data,
+            address1 = form.addr01.data,
+            address2 = form.addr02.data,
+            address3 = form.addr03.data
+        )
+        with db.session.begin(subtransactions=True):
+            userinfo.create_new_userinfo()
+            address.create_new_useraddress()
         db.session.commit()
         token = ''
         with db.session.begin(subtransactions=True):
@@ -72,7 +84,7 @@ def register():
         db.session.commit()
         # メールに飛ばす
         print(
-            f'パスワード設定用URL: http://127.0.0.1:5000/reset_password/{token}'
+            f'パスワード設定用URL: http://127.0.0.1:5000/auth/reset_password/{token}'
         )
         flash('パスワード設定用のURLをお送りしました。ご確認ください')
         return redirect(url_for('auth.login'))

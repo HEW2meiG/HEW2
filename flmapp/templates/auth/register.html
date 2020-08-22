@@ -11,7 +11,7 @@
 <p>アカウントをお持ちの方はこちら</p>
 <a href="{{url_for('auth.login')}}">ログイン</a>
 <div class="row">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         {{ form.csrf_token }}
         {{ render_field(form.picture_path) }}
         {{ render_field(form.username) }}

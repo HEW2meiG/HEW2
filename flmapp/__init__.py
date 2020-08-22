@@ -19,6 +19,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = True
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
