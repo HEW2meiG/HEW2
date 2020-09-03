@@ -34,6 +34,7 @@ def login():
     if request.method == 'POST' and form.validate():
         user = User.select_user_by_email(form.email.data)
         if user and user.is_active and user.validate_password(form.password.data):
+            # ユーザーをログインさせる remember:セッションの期限が切れた後にユーザーを記憶する
             login_user(user, remember=True)
             next = request.args.get('next')
             if not next:
@@ -58,6 +59,13 @@ def register():
         with db.session.begin(subtransactions=True):
             user.create_new_user()
         db.session.commit()
+        file = request.files[form.picture_path.name].read()
+        if file:
+            file_name = user.User_id + '_' + \
+                str(int(datetime.now().timestamp())) + '.jpg'
+            picture_path = 'flmapp/static/user_image/' + file_name
+            open(picture_path, 'wb').write(file)
+            user.picture_path = 'user_image/' + file_name
         userinfo = UserInfo(
             User_id = user.User_id,
             last_name = form.last_name.data,

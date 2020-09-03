@@ -30,6 +30,9 @@ class User(UserMixin, db.Model):
         self.username = username
         self.email = email
 
+    def get_id(self):
+        return (self.User_id)
+
     @classmethod
     def select_user_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
