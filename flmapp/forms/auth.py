@@ -93,7 +93,7 @@ class UserForm(Form):
             return False
         user = User.select_user_by_email(self.email.data)
         if user:
-            if user.id != int(current_user.get_id()):
+            if user.User_id != int(current_user.get_id()):
                 flash('そのメールアドレスはすでに登録されています')
                 return False
         return True
