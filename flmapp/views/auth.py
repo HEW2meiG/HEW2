@@ -166,3 +166,12 @@ def change_password():
         flash('パスワードの更新に成功しました')
         return redirect(url_for('auth.user'))
     return render_template('auth/change_password.html', form=form)
+
+# ページが見つからない場合
+@bp.app_errorhandler(404)
+def page_not_found(e):
+    return redirect(url_for('auth.home'))
+
+@bp.app_errorhandler(500)
+def server_error(e):
+    return render_template('500.html'), 500
