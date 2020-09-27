@@ -11,7 +11,6 @@ from flask import flash
 
 from flmapp.models.auth import User
 
-# ログイン用のForm
 class LoginForm(Form):
     email = StringField(
         'メール: ', validators=[DataRequired(), Email()]
@@ -26,7 +25,6 @@ class LoginForm(Form):
     )
     submit = SubmitField('ログイン')
 
-# 登録用のForm
 class RegisterForm(Form):
     picture_path = FileField('アイコン画像を設定')
     email = StringField(
@@ -57,7 +55,6 @@ class RegisterForm(Form):
         if User.select_user_by_email(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
 
-# パスワード設定用のフォーム
 class ResetPasswordForm(Form):
     password = PasswordField(
         'パスワード',
@@ -78,7 +75,6 @@ class ForgotPasswordForm(Form):
     def validate_email(self, field):
         if not User.select_user_by_email(field.data):
             raise ValidationError('そのメールアドレスは存在しません')
-
 
 class UserForm(Form):
     email = StringField(
