@@ -26,8 +26,7 @@ class User(UserMixin, db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, username, email):
-        self.username = username
+    def __init__(self, email):
         self.email = email
 
     def get_id(self):

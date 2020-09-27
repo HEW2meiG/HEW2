@@ -8,14 +8,15 @@
 {% endblock %}
 {% block content %}
 <h2>新規会員登録</h2>
-<p>アカウントをお持ちの方はこちら</p>
-<a href="{{url_for('auth.login')}}">ログイン</a>
 <div class="row">
     <form method="POST" enctype="multipart/form-data">
         {{ form.csrf_token }}
+        <h3>パスワード登録</h3>
+        {{ render_field(form.password) }}
+        {{ render_field(form.confirm_password) }}
+        <h3>プロフィール情報登録</h3>
         {{ render_field(form.picture_path) }}
         {{ render_field(form.username) }}
-        {{ render_field(form.email) }}
         <h3>本人情報登録</h3>
         <p>お名前(全角)</p>
         {{ render_field(form.last_name) }}

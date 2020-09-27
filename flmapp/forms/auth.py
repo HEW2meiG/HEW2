@@ -25,11 +25,25 @@ class LoginForm(Form):
     )
     submit = SubmitField('ログイン')
 
-class RegisterForm(Form):
-    picture_path = FileField('アイコン画像を設定')
+class CreateUserForm(Form):
     email = StringField(
         'メール',render_kw={"placeholder":"PC・携帯どちらでも可"},validators=[DataRequired(), Email('メールアドレスが誤っています')]
     )
+    submit = SubmitField('登録する')
+
+    def validate_email(self, field):
+        if User.select_user_by_email(field.data):
+            raise ValidationError('メールアドレスはすでに登録されています')
+
+class RegisterForm(Form):
+    password = PasswordField(
+        'パスワード',
+        validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]
+    )
+    confirm_password = PasswordField(
+        'パスワード確認: ', validators=[DataRequired()]
+    )
+    picture_path = FileField('アイコン画像を設定')
     username = StringField('ユーザーネーム', validators=[DataRequired()],render_kw={"placeholder":"例)ポチ"})
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
@@ -48,12 +62,11 @@ class RegisterForm(Form):
     addr01 = StringField('市区町村',validators=[DataRequired()])
     addr02 = StringField('番地',validators=[DataRequired()])
     addr03 = StringField('建物名')
-    
     submit = SubmitField('登録する')
 
-    def validate_email(self, field):
-        if User.select_user_by_email(field.data):
-            raise ValidationError('メールアドレスはすでに登録されています')
+    def validate_password(self, field):
+        if len(field.data) < 8:
+            raise ValidationError('パスワードは8文字以上です')
 
 class ResetPasswordForm(Form):
     password = PasswordField(

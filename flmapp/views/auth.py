@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash
@@ -7,13 +6,13 @@ from flask import (
 from flask_login import (
     login_user, login_required, logout_user, current_user
 )
+from flmapp import db # SQLAlchemy
+
 from flmapp.models.auth import (
     User, UserInfo, Address, PasswordResetToken
 )
-from flmapp import db
-
 from flmapp.forms.auth import (
-    LoginForm, RegisterForm, ResetPasswordForm,
+    LoginForm, RegisterForm, CreateUserForm, ResetPasswordForm,
     ForgotPasswordForm, UserForm, ChangePasswordForm
 )
 
@@ -48,24 +47,37 @@ def login():
             flash('メールアドレスとパスワードの組み合わせが誤っています')
     return render_template('auth/login.html', form=form)
 
-@bp.route('/register', methods=['GET', 'POST'])
+@bp.route('/mailregister', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm(request.form)
+    form = CreateUserForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User(
-            username = form.username.data,
             email = form.email.data
         )
         with db.session.begin(subtransactions=True):
             user.create_new_user()
         db.session.commit()
-        file = request.files[form.picture_path.name].read()
-        if file:
-            file_name = str(user.User_id) + '_' + \
-                str(int(datetime.now().timestamp())) + '.jpg'
-            picture_path = 'flmapp/static/user_image/' + file_name
-            open(picture_path, 'wb').write(file)
-            user.picture_path = 'user_image/' + file_name
+        token = ''
+        with db.session.begin(subtransactions=True):
+            token = PasswordResetToken.publish_token(user)
+        db.session.commit()
+        # メールに飛ばす
+        print(
+            f'パスワード設定用URL: http://127.0.0.1:5000/auth/userregister/{token}'
+        )
+        flash('本登録用のURLをお送りしました。ご確認ください')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/create_user.html', form=form)
+
+@bp.route('/userregister/<uuid:token>', methods=['GET', 'POST'])
+def userregister(token):
+    form = RegisterForm(request.form)
+    reset_user_id = PasswordResetToken.get_user_id_by_token(token)
+    if not reset_user_id:
+        abort(500)
+    if request.method=='POST' and form.validate():
+        password = form.password.data
+        user = User.select_user_by_id(reset_user_id)
         userinfo = UserInfo(
             User_id = user.User_id,
             last_name = form.last_name.data,
@@ -83,18 +95,20 @@ def register():
             address3 = form.addr03.data
         )
         with db.session.begin(subtransactions=True):
+            PasswordResetToken.delete_token(token)
+            user.save_new_password(password)
+            user.username = form.username.data
             userinfo.create_new_userinfo()
             address.create_new_useraddress()
+            file = request.files[form.picture_path.name].read()
+            if file:
+                file_name = str(user.User_id) + '_' + \
+                    str(int(datetime.now().timestamp())) + '.jpg'
+                picture_path = 'flmapp/static/user_image/' + file_name
+                open(picture_path, 'wb').write(file)
+                user.picture_path = 'user_image/' + file_name
         db.session.commit()
-        token = ''
-        with db.session.begin(subtransactions=True):
-            token = PasswordResetToken.publish_token(user)
-        db.session.commit()
-        # メールに飛ばす
-        print(
-            f'パスワード設定用URL: http://127.0.0.1:5000/auth/reset_password/{token}'
-        )
-        flash('パスワード設定用のURLをお送りしました。ご確認ください')
+        flash('新規会員登録が完了しました。')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
