@@ -1,0 +1,17 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+ユーザ仮登録 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>新規会員登録</h2>
+<p>アカウントをお持ちの方はこちら</p>
+<a href="{{url_for('auth.login')}}">ログイン</a>
+<div class="row">
+    <form method="POST">
+        {{ form.csrf_token }}
+        {{ render_field(form.email) }}
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}
