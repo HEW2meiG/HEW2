@@ -12,8 +12,7 @@ from flmapp.models.auth import (
     User, UserInfo, Address, PasswordResetToken
 )
 from flmapp.forms.auth import (
-    LoginForm, RegisterForm, CreateUserForm, ResetPasswordForm,
-    ForgotPasswordForm, UserForm, ChangePasswordForm
+    LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm
 )
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -112,23 +111,6 @@ def userregister(token):
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
-@bp.route('/reset_password/<uuid:token>', methods=['GET', 'POST'])
-def reset_password(token):
-    form = ResetPasswordForm(request.form)
-    reset_user_id = PasswordResetToken.get_user_id_by_token(token)
-    if not reset_user_id:
-        abort(500)
-    if request.method=='POST' and form.validate():
-        password = form.password.data
-        user = User.select_user_by_id(reset_user_id)
-        with db.session.begin(subtransactions=True):
-            user.save_new_password(password)
-            PasswordResetToken.delete_token(token)
-        db.session.commit()
-        flash('パスワードを更新しました。')
-        return redirect(url_for('auth.login'))
-    return render_template('auth/reset_password.html', form=form)
-
 @bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     form = ForgotPasswordForm(request.form)
@@ -145,41 +127,6 @@ def forgot_password():
         else:
             flash('存在しないユーザです')
     return render_template('auth/forgot_password.html', form=form)
-
-@bp.route('/user', methods=['GET', 'POST'])
-@login_required
-def user():
-    form = UserForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user_id = current_user.get_id()
-        user = User.select_user_by_id(user_id)
-        with db.session.begin(subtransactions=True):
-            user.username = form.username.data
-            user.email = form.email.data
-            file = request.files[form.picture_path.name].read()
-            if file:
-                file_name = str(user.User_id) + '_' + \
-                    str(int(datetime.now().timestamp())) + '.jpg'
-                picture_path = 'flmapp/static/user_image/' + file_name
-                open(picture_path, 'wb').write(file)
-                user.picture_path = 'user_image/' + file_name
-        db.session.commit()
-        flash('ユーザ情報の更新に成功しました')
-    return render_template('auth/user.html', form=form)
-
-@bp.route('/change_password', methods=['GET', 'POST'])
-@login_required
-def change_password():
-    form = ChangePasswordForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User.select_user_by_id(current_user.get_id())
-        password = form.password.data
-        with db.session.begin(subtransactions=True):
-            user.save_new_password(password)
-        db.session.commit()
-        flash('パスワードの更新に成功しました')
-        return redirect(url_for('auth.user'))
-    return render_template('auth/change_password.html', form=form)
 
 # ページが見つからない場合
 @bp.app_errorhandler(404)

@@ -1,4 +1,7 @@
 ## flask-login
+
+認証で保護したいビューは、デコレーターで@login_requiredと書く。
+
 参考ページ
 
 https://flask-login.readthedocs.io/en/latest/

@@ -24,7 +24,11 @@ def create_app():
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    from flmapp.views.auth import bp
-    app.register_blueprint(bp)
+    # 分割したblueprintを登録する
+    from flmapp.views import auth
+    from flmapp.views import mypage
+
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(mypage.bp)
 
     return app

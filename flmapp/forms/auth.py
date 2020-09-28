@@ -68,19 +68,6 @@ class RegisterForm(Form):
         if len(field.data) < 8:
             raise ValidationError('パスワードは8文字以上です')
 
-class ResetPasswordForm(Form):
-    password = PasswordField(
-        'パスワード',
-        validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]
-    )
-    confirm_password = PasswordField(
-        'パスワード確認: ', validators=[DataRequired()]
-    )
-    submit = SubmitField('パスワードを更新する')
-    def validate_password(self, field):
-        if len(field.data) < 8:
-            raise ValidationError('パスワードは8文字以上です')
-
 class ForgotPasswordForm(Form):
     email = StringField('メール: ', validators=[DataRequired(), Email()])
     submit = SubmitField('パスワードを再設定する')
@@ -89,33 +76,5 @@ class ForgotPasswordForm(Form):
         if not User.select_user_by_email(field.data):
             raise ValidationError('そのメールアドレスは存在しません')
 
-class UserForm(Form):
-    email = StringField(
-        'メール: ', validators=[DataRequired(), Email('メールアドレスが誤っています')]
-    )
-    username = StringField('名前: ', validators=[DataRequired()])
-    picture_path = FileField('ファイルアップロード')
-    submit = SubmitField('登録情報更新')
 
-    def validate(self):
-        if not super(Form, self).validate():
-            return False
-        user = User.select_user_by_email(self.email.data)
-        if user:
-            if user.User_id != int(current_user.get_id()):
-                flash('そのメールアドレスはすでに登録されています')
-                return False
-        return True
 
-class ChangePasswordForm(Form):
-    password = PasswordField(
-        'パスワード',
-        validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]
-    )
-    confirm_password = PasswordField(
-        'パスワード確認: ', validators=[DataRequired()]
-    )
-    submit = SubmitField('パスワードの更新')
-    def validate_password(self, field):
-        if len(field.data) < 8:
-            raise ValidationError('パスワードは8文字以上です')
