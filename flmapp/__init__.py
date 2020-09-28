@@ -27,8 +27,10 @@ def create_app():
     # 分割したblueprintを登録する
     from flmapp.views import auth
     from flmapp.views import mypage
+    from flmapp.views import route
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(mypage.bp)
+    app.register_blueprint(route.bp)
 
     return app

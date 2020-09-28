@@ -17,14 +17,10 @@ from flmapp.forms.auth import (
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@bp.route('/')
-def home():
-    return render_template('home.html')
-
 @bp.route('/logout')
 def logout():
     logout_user() # ログアウト
-    return redirect(url_for('auth.home'))
+    return redirect(url_for('route.home'))
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -36,7 +32,7 @@ def login():
             login_user(user, remember=True)
             next = request.args.get('next')
             if not next:
-                next = url_for('auth.home')
+                next = url_for('route.home')
             return redirect(next)
         elif not user:
             flash('存在しないユーザです')
@@ -127,12 +123,3 @@ def forgot_password():
         else:
             flash('存在しないユーザです')
     return render_template('auth/forgot_password.html', form=form)
-
-# ページが見つからない場合
-@bp.app_errorhandler(404)
-def page_not_found(e):
-    return redirect(url_for('auth.home'))
-
-@bp.app_errorhandler(500)
-def server_error(e):
-    return render_template('500.html'), 500
