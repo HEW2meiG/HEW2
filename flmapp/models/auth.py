@@ -5,10 +5,12 @@ from flask_login import UserMixin
 from datetime import datetime, timedelta
 from uuid import uuid4
 
+#認証ユーザーの呼び出し方(idをuser_id)を定義
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
 
+#UserMixinを継承したUserクラス
 class User(UserMixin, db.Model):
 
     __tablename__ = 'User'
