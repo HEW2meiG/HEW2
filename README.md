@@ -1,7 +1,11 @@
 ## GitHub 使い方
 
+### 約束事
+* masterブランチで作業をしない。作業は必ず自分のブランチをきってから行う。
+* マージ(Merge)はリーダーが行う。
+* `git push origin master`をしない。
 
-### 0.cd カレントフォルダに移動する
+### 0.cd カレントフォルダ(HEW2)に移動する
 
 ### 1.masterブランチからブランチを作成
 
@@ -13,7 +17,7 @@
 
 (ローカルのmasterブランチをpullで更新)
 
-`git checkout -b <新ブランチ名>`
+`git checkout -b 新ブランチ名(自分の名字)`
 
 `git branch`
 
@@ -37,30 +41,26 @@
 （現在の状況を確認する）
 
 ### 4.ブランチをGitHubにプッシュ
-`git push origin <ブランチ名>`
+`git push origin ブランチ名(自分の名字)`
 
 ### 開発が終了するまで2~4繰り返し（定期的にプッシュする）
 
 ### 5.開発が完了したらプルリクエストを出す
 **Compare & pull request**をクリック
 
-リーダー:File changedタブから変更内容をチェック
+**Merge pull requestボタンは押さない！！！**
 
-#### OK
+#### 以下は必ずリーダーのみ行う
+<details>
+Merge pull requestボタンを押しmainブランチにマージ
 
-**Merge pull request**ボタンを押しmasterブランチにマージ
-
-**Delete branch**ボタンを押し不要になったリモートブランチを削除
-
-6へ
-
-#### NO
-2に戻る
+Delete branchボタンを押し不要になったリモートブランチを削除
+</details>
 
 ### 6.ローカルブランチを削除する
 `git checkout master`
 
-`git branch -D <ブランチ名>`
+`git branch -D ブランチ名(自分の名前)`
 
 ### 7.ローカルのmasterブランチをpullで更新
 `git branch`
