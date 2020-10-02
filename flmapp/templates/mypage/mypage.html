@@ -15,23 +15,23 @@
         <p>メールアドレス: {{ current_user.email }}</p>
     </div>
     <div class="col-lg-4 offset-lg-2">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="{{url_for('mypage.user')}}">
+        <nav>
+            <a href="{{url_for('mypage.user')}}">
                 プロフィール情報
             </a>
-            <a class="navbar-brand" href="">
+            <a href="">
                 本人情報
             </a>
-            <a class="navbar-brand" href="">
+            <a href="">
                 発送元・お届け先住所
             </a>
-            <a class="navbar-brand" href="">
+            <a href="">
                 クレジットカード情報
             </a>
-            <a class="navbar-brand" href="{{url_for('mypage.change_password')}}">
+            <a href="{{url_for('mypage.change_password')}}">
                 メール・パスワード
             </a>
-            <a class="navbar-brand" href="">
+            <a ref="">
                 ログアウト
             </a>
         </nav>
