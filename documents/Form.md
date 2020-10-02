@@ -18,6 +18,37 @@
 |PasswordField|パスワードを扱う|
 |SubmitField|送信ボタンを扱う|
 
+## FormのField詳細
+### テキストボックスの長さの変更
+`{{ form.field(siza=〇〇) }}`
+
+`{{ render_field(form.field, size=12) }}`
+
+### デフォルト値
+
+画面に入力するデフォルトの値を設定する
+
+`name = StringField('名前：',default='Flask太郎')`
+
+チェックボックスでデフォルトはチェックする
+
+`{{ form.field(checked=True) }}`
+
+`{{ render_field(form.field,checked=True) }}`
+
+### プレースホルダー
+ユーザーが入力しやすくなるように入力フォーム上に仮の値を薄く表示させること
+オプションとして、render_kw={"placeholder":"〇〇"}を追加する
+`birthday = DataField('誕生日:',format='%Y/%m/%d',render_kw={"placeholder":"年/月/日"})`
+
+### クラスの追加
+`{{ form.field(class="〇〇") }}`
+
+`{{ render_field(form.field, class="〇〇") }}`
+
+### widgetの変更
+
+
 ## バリデーション
 ### バリデーションチェック
 
