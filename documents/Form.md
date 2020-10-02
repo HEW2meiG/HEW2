@@ -39,15 +39,13 @@
 ### プレースホルダー
 ユーザーが入力しやすくなるように入力フォーム上に仮の値を薄く表示させること
 オプションとして、render_kw={"placeholder":"〇〇"}を追加する
+
 `birthday = DataField('誕生日:',format='%Y/%m/%d',render_kw={"placeholder":"年/月/日"})`
 
 ### クラスの追加
 `{{ form.field(class="〇〇") }}`
 
 `{{ render_field(form.field, class="〇〇") }}`
-
-### widgetの変更
-
 
 ## バリデーション
 ### バリデーションチェック
