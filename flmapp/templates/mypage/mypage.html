@@ -1,0 +1,40 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+    マイページ画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 offset-lg-2">
+        {% if current_user.picture_path %}
+        <img src="{{url_for('static', filename=current_user.picture_path)}}">
+        {% endif %}
+    </div>
+    <div class="col-lg-4 offset-lg-2">
+        <p>ユーザ名: {{ current_user.username }}</p>
+        <p>メールアドレス: {{ current_user.email }}</p>
+    </div>
+    <div class="col-lg-4 offset-lg-2">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="{{url_for('mypage.user')}}">
+                プロフィール情報
+            </a>
+            <a class="navbar-brand" href="">
+                本人情報
+            </a>
+            <a class="navbar-brand" href="">
+                発送元・お届け先住所
+            </a>
+            <a class="navbar-brand" href="">
+                クレジットカード情報
+            </a>
+            <a class="navbar-brand" href="{{url_for('mypage.change_password')}}">
+                メール・パスワード
+            </a>
+            <a class="navbar-brand" href="">
+                ログアウト
+            </a>
+        </nav>
+    </div>
+</div>
+{% endblock %}

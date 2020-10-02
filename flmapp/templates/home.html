@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}
+ホーム - {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    {% if current_user.is_authenticated %}
+    <div class="col-lg-4 offset-lg-2">
+        {% if current_user.picture_path %}
+            <img src="{{ url_for('static', filename=current_user.picture_path) }}">
+        {% endif %}
+    </div>
+    <div class="col-lg-4 offset-lg-2">
+        <p>ユーザ名: {{ current_user.username }}</p>
+        <p>メールアドレス: {{ current_user.email }}</p>
+    </div>
+    {% else %}
+        <p>ログイン or 登録をしてください</p>
+    {% endif %}
+</div>
+{% endblock %}
