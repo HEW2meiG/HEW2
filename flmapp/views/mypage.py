@@ -17,8 +17,13 @@ from flmapp.forms.mypage import (
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
 
-@bp.route('/user', methods=['GET', 'POST'])
+@bp.route('/')
 @login_required # ログインしないと表示されないパス
+def mypagetop():
+    return render_template('mypage/mypage.html')
+
+@bp.route('/user', methods=['GET', 'POST'])
+@login_required
 def user():
     form = UserForm(request.form)
     if request.method == 'POST' and form.validate():
