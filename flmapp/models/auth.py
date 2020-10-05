@@ -11,6 +11,7 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 #UserMixinを継承したUserクラス
+# ユーザー情報テーブル
 class User(UserMixin, db.Model):
 
     __tablename__ = 'User'
@@ -38,20 +39,28 @@ class User(UserMixin, db.Model):
     def select_user_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
+    # ユーザーのパスワードと引数のパスワードが正しいか
     def validate_password(self, password):
+        # check_password_hash():ハッシュ値が指定した文字列のものと一致しているか判定
+        # 一致→True 不一致→False
         return check_password_hash(self.password, password)
 
     def create_new_user(self):
         db.session.add(self)
 
+    # ユーザーIDによってユーザーを得る
     @classmethod
     def select_user_by_id(cls, User_id):
         return cls.query.get(User_id)
     
+    # パスワードをデータベースに反映
     def save_new_password(self, new_password):
+        # generate_password_hash()：ハッシュ値が生成される
         self.password = generate_password_hash(new_password)
+        # 有効フラグをTrue
         self.is_active = True
 
+# ユーザー本人情報テーブル
 class UserInfo(db.Model):
 
     __tablename__ = 'UserInfo'
@@ -77,6 +86,7 @@ class UserInfo(db.Model):
     def create_new_userinfo(self):
         db.session.add(self)
 
+# 住所情報テーブル
 class Address(db.Model):
 
     __tablename__ = 'Address'
@@ -102,6 +112,7 @@ class Address(db.Model):
     def create_new_useraddress(self):
         db.session.add(self)
  
+# パスワードリセットトークン情報テーブル
 class PasswordResetToken(db.Model):
 
     __tablename__ = 'PasswordResetToken'
@@ -114,6 +125,7 @@ class PasswordResetToken(db.Model):
         server_default=str(uuid4)
     )
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
+    # 期限
     expire_at = db.Column(db.DateTime, default=datetime.now)
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
@@ -130,11 +142,13 @@ class PasswordResetToken(db.Model):
         new_token = cls(
             token,
             user.User_id,
-            datetime.now() + timedelta(days=1)
+            # トークンの有効期限を1日に設定
+            datetime.now() + timedelta(days=1) 
         )
         db.session.add(new_token)
         return token
     
+    # トークンに紐づいたユーザーIDを得る
     @classmethod
     def get_user_id_by_token(cls, token):
         now = datetime.now()
@@ -144,6 +158,7 @@ class PasswordResetToken(db.Model):
         else:
             return None
 
+    # トークン削除 
     @classmethod
     def delete_token(cls, token):
         cls.query.filter_by(token=str(token)).delete()

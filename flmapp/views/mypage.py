@@ -54,5 +54,5 @@ def change_password():
             user.save_new_password(password)
         db.session.commit()
         flash('パスワードの更新に成功しました')
-        return redirect(url_for('auth.user'))
+        return redirect(url_for('auth.login'))
     return render_template('mypage/change_password.html', form=form)

@@ -12,36 +12,46 @@ from flmapp.models.auth import (
     User, UserInfo, Address, PasswordResetToken
 )
 from flmapp.forms.auth import (
-    LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm
+    LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
 )
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+# ログアウト
 @bp.route('/logout')
 def logout():
     logout_user() # ログアウト
     return redirect(url_for('route.home'))
 
+# ログイン
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = User.select_user_by_email(form.email.data)
+        # ユーザーが存在するかつ、ユーザーのis_activeがTrue(有効)かつ、ユーザーが入力したパスワードがユーザーのパスワードと一致する
         if user and user.is_active and user.validate_password(form.password.data):
             # ユーザーをログインさせる remember:セッションの期限が切れた後にユーザーを記憶する
             login_user(user, remember=True)
+            # request.args.get（）；GETリクエストで引数を受け取る
             next = request.args.get('next')
             if not next:
+                print("テスト")
+                print(next)
                 next = url_for('route.home')
             return redirect(next)
+        # ユーザーが存在しない
         elif not user:
             flash('存在しないユーザです')
+        # ユーザーが有効でない
         elif not user.is_active:
             flash('無効なユーザです。パスワードを再設定してください')
+        # パスワードが違う
         elif not user.validate_password(form.password.data):
             flash('メールアドレスとパスワードの組み合わせが誤っています')
     return render_template('auth/login.html', form=form)
 
+# ユーザー仮登録
 @bp.route('/mailregister', methods=['GET', 'POST'])
 def register():
     form = CreateUserForm(request.form)
@@ -49,14 +59,16 @@ def register():
         user = User(
             email = form.email.data
         )
+        # データベースにユーザー情報登録
         with db.session.begin(subtransactions=True):
             user.create_new_user()
         db.session.commit()
         token = ''
+        # データベースにパスワードリセットトークンを登録
         with db.session.begin(subtransactions=True):
             token = PasswordResetToken.publish_token(user)
         db.session.commit()
-        # メールに飛ばす
+        #! メールに飛ばす処理
         print(
             f'パスワード設定用URL: http://127.0.0.1:5000/auth/userregister/{token}'
         )
@@ -64,6 +76,7 @@ def register():
         return redirect(url_for('auth.login'))
     return render_template('auth/create_user.html', form=form)
 
+# ユーザー本登録
 @bp.route('/userregister/<uuid:token>', methods=['GET', 'POST'])
 def userregister(token):
     form = RegisterForm(request.form)
@@ -107,19 +120,40 @@ def userregister(token):
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
+# パスワードを忘れた人はこちら
 @bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     form = ForgotPasswordForm(request.form)
     if request.method == 'POST' and form.validate():
         email = form.email.data
         user = User.select_user_by_email(email)
+        # ユーザーが存在する場合パスワードのトークンを発行する
         if user:
             with db.session.begin(subtransactions=True):
                 token = PasswordResetToken.publish_token(user)
             db.session.commit()
-            reset_url = f'http://127.0.0.1:5000/reset_password/{token}'
+            reset_url = f'http://127.0.0.1:5000/auth/reset_password/{token}'
+            #! メールに飛ばす処理
             print(reset_url)
             flash('パスワード再登録用のURLを発行しました。')
         else:
             flash('存在しないユーザです')
     return render_template('auth/forgot_password.html', form=form)
+
+# パスワード再設定
+@bp.route('/reset_password/<uuid:token>', methods=['GET', 'POST'])
+def reset_password(token):
+    form = ResetPasswordForm(request.form)
+    reset_user_id = PasswordResetToken.get_user_id_by_token(token)
+    if not reset_user_id:
+        abort(500)
+    if request.method=='POST' and form.validate():
+        password = form.password.data
+        user = User.select_user_by_id(reset_user_id)
+        with db.session.begin(subtransactions=True):
+            user.save_new_password(password)
+            PasswordResetToken.delete_token(token)
+        db.session.commit()
+        flash('パスワードを再設定しました。')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/reset_password.html', form=form)
