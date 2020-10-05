@@ -31,7 +31,7 @@ def login():
         user = User.select_user_by_email(form.email.data)
         # ユーザーが存在するかつ、ユーザーのis_activeがTrue(有効)かつ、ユーザーが入力したパスワードがユーザーのパスワードと一致する
         if user and user.is_active and user.validate_password(form.password.data):
-            # ユーザーをログインさせる remember:セッションの期限が切れた後にユーザーを記憶する
+            # ユーザーをログインさせる remember:セッションの期限が切れた後にユーザーを記憶する(ログインが維持される)
             login_user(user, remember=True)
             # request.args.get（）；GETリクエストで引数を受け取る
             next = request.args.get('next')
