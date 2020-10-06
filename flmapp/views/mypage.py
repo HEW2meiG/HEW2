@@ -23,7 +23,7 @@ def mypagetop():
     return render_template('mypage/mypage.html')
 
 @bp.route('/user', methods=['GET', 'POST'])
-@login_required　# ログインしていないと表示できないようにする
+@login_required # ログインしていないと表示できないようにする
 def user():
     form = UserForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -44,7 +44,7 @@ def user():
     return render_template('mypage/user.html', form=form)
 
 @bp.route('/change_password', methods=['GET', 'POST'])
-@login_required　# ログインしていないと表示できないようにする
+@login_required # ログインしていないと表示できないようにする
 def change_password():
     form = ChangePasswordForm(request.form)
     if request.method == 'POST' and form.validate():
