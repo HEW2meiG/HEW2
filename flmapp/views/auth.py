@@ -36,8 +36,6 @@ def login():
             # request.args.get（）；GETリクエストで引数を受け取る
             next = request.args.get('next')
             if not next:
-                print("テスト")
-                print(next)
                 next = url_for('route.home')
             return redirect(next)
         # ユーザーが存在しない
@@ -80,11 +78,14 @@ def register():
 @bp.route('/userregister/<uuid:token>', methods=['GET', 'POST'])
 def userregister(token):
     form = RegisterForm(request.form)
+    # トークンによってユーザーIDを取得する
     reset_user_id = PasswordResetToken.get_user_id_by_token(token)
     if not reset_user_id:
+        # ユーザーIDが取得できない場合
         abort(500)
     if request.method=='POST' and form.validate():
         password = form.password.data
+        # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得
         user = User.select_user_by_id(reset_user_id)
         userinfo = UserInfo(
             User_id = user.User_id,
@@ -102,12 +103,21 @@ def userregister(token):
             address2 = form.addr02.data,
             address3 = form.addr03.data
         )
+        # データベース登録処理
         with db.session.begin(subtransactions=True):
+            # トークンレコード削除
             PasswordResetToken.delete_token(token)
+            # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
             user.save_new_password(password)
+            # Userテーブルusername更新
             user.username = form.username.data
+            # UserInfoテーブルにレコードの挿入
             userinfo.create_new_userinfo()
+            # Adressテーブルにレコードの挿入
             address.create_new_useraddress()
+            # Userテーブルpicture_path更新
+            # ファイルアップロード処理
+            #! ファイルアップロード方法を変える----------------------
             file = request.files[form.picture_path.name].read()
             if file:
                 file_name = str(user.User_id) + '_' + \
@@ -115,6 +125,7 @@ def userregister(token):
                 picture_path = 'flmapp/static/user_image/' + file_name
                 open(picture_path, 'wb').write(file)
                 user.picture_path = 'user_image/' + file_name
+            #! -------------------------------------------------
         db.session.commit()
         flash('新規会員登録が完了しました。')
         return redirect(url_for('auth.login'))
@@ -126,15 +137,19 @@ def forgot_password():
     form = ForgotPasswordForm(request.form)
     if request.method == 'POST' and form.validate():
         email = form.email.data
+        # emailによってユーザーを絞り込みUserテーブルのデータを取得
         user = User.select_user_by_email(email)
         # ユーザーが存在する場合パスワードのトークンを発行する
         if user:
+            #パスワードリセットトークン情報テーブルにレコードの挿入
             with db.session.begin(subtransactions=True):
                 token = PasswordResetToken.publish_token(user)
             db.session.commit()
+            # URLの生成
             reset_url = f'http://127.0.0.1:5000/auth/reset_password/{token}'
-            #! メールに飛ばす処理
+            #! メールに飛ばす処理------
             print(reset_url)
+            #! ---------------------
             flash('パスワード再登録用のURLを発行しました。')
         else:
             flash('存在しないユーザです')
@@ -144,14 +159,19 @@ def forgot_password():
 @bp.route('/reset_password/<uuid:token>', methods=['GET', 'POST'])
 def reset_password(token):
     form = ResetPasswordForm(request.form)
+    # トークンに紐づいたユーザーIDを得る
     reset_user_id = PasswordResetToken.get_user_id_by_token(token)
     if not reset_user_id:
         abort(500)
     if request.method=='POST' and form.validate():
         password = form.password.data
+        # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得
         user = User.select_user_by_id(reset_user_id)
+        # データベース処理
         with db.session.begin(subtransactions=True):
+            # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
             user.save_new_password(password)
+            # トークンレコード削除
             PasswordResetToken.delete_token(token)
         db.session.commit()
         flash('パスワードを再設定しました。')

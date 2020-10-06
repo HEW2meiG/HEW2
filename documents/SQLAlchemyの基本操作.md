@@ -18,7 +18,7 @@ db.session.add_all([]) #複数のレコードの挿入
 
 ### データの取り出し
 ```
-Table.query.get(1) #主キーで絞り込んで取り出し
+Table.query.get(1) #主キーが1のものを絞り込んで取り出し
 Table.query.all() #データを全てリストにして取り出し
 Table.query.first() #データの最初の要素だけを取り出し
 ```

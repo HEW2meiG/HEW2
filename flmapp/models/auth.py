@@ -53,7 +53,7 @@ class User(UserMixin, db.Model):
     def select_user_by_id(cls, User_id):
         return cls.query.get(User_id)
     
-    # パスワードをデータベースに反映
+    # パスワード更新処理
     def save_new_password(self, new_password):
         # generate_password_hash()：ハッシュ値が生成される
         self.password = generate_password_hash(new_password)
@@ -135,6 +135,7 @@ class PasswordResetToken(db.Model):
         self.User_id = User_id
         self.expire_at = expire_at
 
+    #パスワードリセットトークン情報テーブルにレコードの挿入
     @classmethod
     def publish_token(cls, user):
         # パスワード設定用のURLを生成

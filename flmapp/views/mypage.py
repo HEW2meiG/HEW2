@@ -27,11 +27,17 @@ def mypagetop():
 def user():
     form = UserForm(request.form)
     if request.method == 'POST' and form.validate():
+        # current_user:セッションに保存してあるuser_idから、userを取得
+        # ログイン中のユーザーのid
         user_id = current_user.get_id()
+        # ユーザーIDによってユーザーを取得
         user = User.select_user_by_id(user_id)
+        # データベース処理
         with db.session.begin(subtransactions=True):
             user.username = form.username.data
             user.email = form.email.data
+            # ファイルアップロード処理
+            #! ファイルアップロード方法を変える----------------------
             file = request.files[form.picture_path.name].read()
             if file:
                 file_name = str(user.User_id) + '_' + \
@@ -39,6 +45,7 @@ def user():
                 picture_path = 'flmapp/static/user_image/' + file_name
                 open(picture_path, 'wb').write(file)
                 user.picture_path = 'user_image/' + file_name
+            #! -------------------------------------------------
         db.session.commit()
         flash('ユーザ情報の更新に成功しました')
     return render_template('mypage/user.html', form=form)
@@ -48,9 +55,12 @@ def user():
 def change_password():
     form = ChangePasswordForm(request.form)
     if request.method == 'POST' and form.validate():
+        # ログイン中のユーザーIDによってユーザーを取得
         user = User.select_user_by_id(current_user.get_id())
         password = form.password.data
+        # データベース処理
         with db.session.begin(subtransactions=True):
+            # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
             user.save_new_password(password)
         db.session.commit()
         flash('パスワードの更新に成功しました')
