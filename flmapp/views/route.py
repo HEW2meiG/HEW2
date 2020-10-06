@@ -5,6 +5,7 @@ from flask import (
 
 bp = Blueprint('route', __name__, url_prefix='')
 
+# ホーム
 @bp.route('/')
 def home():
     return render_template('home.html')

@@ -15,6 +15,7 @@
             <a class="navbar-brand" href="{{url_for('route.home')}}">
                 ホーム
             </a>
+            <!-- ログインしているとき -->
             {% if current_user.is_authenticated %}
             <a class="navbar-brand" href="{{url_for('auth.logout')}}">
                 ログアウト
@@ -22,6 +23,7 @@
             <a class="navbar-brand" href="{{url_for('mypage.mypagetop')}}">
                 マイページ
             </a>
+            <!-- ログインしていないとき -->
             {% else %}
             <a class="navbar-brand" href="{{url_for('auth.login')}}">
                 ログイン
