@@ -11,13 +11,23 @@ from flask import flash
 
 from flmapp.models.auth import User
 
-class UserForm(Form):
-    email = StringField(
-        'メール: ', validators=[DataRequired(), Email('メールアドレスが誤っています')]
+# プロフィール設定ページフォーム
+class ProfileForm(Form):
+    username = StringField('名前:')
+    picture_path = FileField('アイコン画像を変更')
+    #! <textarea>current_user.prof_comment</textarea>入れたい
+    prof_comment = TextAreaField('自己紹介:')
+    submit = SubmitField('変更する')
+
+# パスワード・メール変更ページフォーム
+class ChangePasswordForm(Form):
+    email = StringField('メール: ', validators=[Email('メールアドレスが誤っています')])
+    password = PasswordField(
+        'パスワード',
+        validators=[EqualTo('confirm_password', message='パスワードが一致しません')]
     )
-    username = StringField('名前: ', validators=[DataRequired()])
-    picture_path = FileField('ファイルアップロード')
-    submit = SubmitField('登録情報更新')
+    confirm_password = PasswordField('パスワード確認:')
+    submit = SubmitField('パスワードの更新')
 
     def validate(self):
         if not super(Form, self).validate():
@@ -29,15 +39,6 @@ class UserForm(Form):
                 return False
         return True
 
-class ChangePasswordForm(Form):
-    password = PasswordField(
-        'パスワード',
-        validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]
-    )
-    confirm_password = PasswordField(
-        'パスワード確認: ', validators=[DataRequired()]
-    )
-    submit = SubmitField('パスワードの更新')
     def validate_password(self, field):
         if len(field.data) < 8:
             raise ValidationError('パスワードは8文字以上です')

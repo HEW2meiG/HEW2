@@ -12,7 +12,7 @@ from flmapp.models.auth import (
     User, UserInfo, Address, PasswordResetToken
 )
 from flmapp.forms.mypage import (
-   UserForm, ChangePasswordForm
+   ProfileForm, ChangePasswordForm
 )
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
@@ -22,10 +22,11 @@ bp = Blueprint('mypage', __name__, url_prefix='/mypage')
 def mypagetop():
     return render_template('mypage/mypage.html')
 
-@bp.route('/user', methods=['GET', 'POST'])
+# プロフィール設定ページ
+@bp.route('/profile', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def user():
-    form = UserForm(request.form)
+    form = ProfileForm(request.form)
     if request.method == 'POST' and form.validate():
         # current_user:セッションに保存してあるuser_idから、userを取得
         # ログイン中のユーザーのid
@@ -35,7 +36,7 @@ def user():
         # データベース処理
         with db.session.begin(subtransactions=True):
             user.username = form.username.data
-            user.email = form.email.data
+            user.prof_comment = form.prof_comment.data
             # ファイルアップロード処理
             #! ファイルアップロード方法を変える----------------------
             file = request.files[form.picture_path.name].read()
@@ -48,8 +49,9 @@ def user():
             #! -------------------------------------------------
         db.session.commit()
         flash('ユーザ情報の更新に成功しました')
-    return render_template('mypage/user.html', form=form)
+    return render_template('mypage/profile.html', form=form)
 
+# パスワード・メール変更ページ
 @bp.route('/change_password', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def change_password():
@@ -60,6 +62,8 @@ def change_password():
         password = form.password.data
         # データベース処理
         with db.session.begin(subtransactions=True):
+            # email更新
+            user.email = form.email.data
             # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
             user.save_new_password(password)
         db.session.commit()
