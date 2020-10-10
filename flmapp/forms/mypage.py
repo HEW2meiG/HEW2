@@ -27,7 +27,7 @@ class ChangePasswordForm(Form):
         validators=[EqualTo('confirm_password', message='パスワードが一致しません')]
     )
     confirm_password = PasswordField('パスワード確認:')
-    submit = SubmitField('パスワードの更新')
+    submit = SubmitField('更新する')
 
     def validate(self):
         if not super(Form, self).validate():

@@ -64,9 +64,10 @@ def change_password():
         with db.session.begin(subtransactions=True):
             # email更新
             user.email = form.email.data
-            # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
-            user.save_new_password(password)
+            if password:
+                # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
+                user.save_new_password(password)
         db.session.commit()
-        flash('パスワードの更新に成功しました')
+        flash('更新に成功しました')
         return redirect(url_for('auth.login'))
     return render_template('mypage/change_password.html', form=form)
