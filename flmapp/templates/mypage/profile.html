@@ -27,4 +27,10 @@
     </div>
 
 </div>
+ <!-- textareaフィールドのvalue属性にあたる部分
+ <textarea>プロフィールコメント</textarea> -->
+<script>
+    var textarea = document.getElementById('prof_comment');
+    textarea.innerHTML = "{{ current_user.prof_comment }}";
+</script>
 {% endblock %}

@@ -15,7 +15,6 @@ from flmapp.models.auth import User
 class ProfileForm(Form):
     username = StringField('名前:')
     picture_path = FileField('アイコン画像を変更')
-    #! <textarea>current_user.prof_comment</textarea>入れたい
     prof_comment = TextAreaField('自己紹介:')
     submit = SubmitField('変更する')
 
