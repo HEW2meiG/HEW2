@@ -15,6 +15,9 @@ from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
 )
 
+from flmapp import mail # メール送信時インポート
+from flask_mail import Mail, Message # メール送信時インポート
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 # ログアウト
@@ -66,10 +69,23 @@ def register():
         with db.session.begin(subtransactions=True):
             token = PasswordResetToken.publish_token(user)
         db.session.commit()
-        #! メールに飛ばす処理
+        # メール送信処理ここから----------------------------------------------------------
+        msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
+        msg.html = '<hr>【古書邂逅】 古書邂逅会員仮登録完了のお知らせ<hr>\
+                    この度は、古書邂逅会員にご登録いただきまして誠にありがとうございます。<br>\
+                    下記ページアドレス(URL)をクリックすることで、本登録が完了となります。<br>\
+                    <br><br>\
+                    【ご登録されたメールアドレス】<br>\
+                    {email}<br>\
+                    【こちらをクリックして本登録を完了してください】<br>\
+                    {url}'.format(email=user.email,url=url_for('auth.userregister', token=token, _external=True))
+        mail.send(msg)
+        # メール送信処理ここまで----------------------------------------------------------
+        # デバッグ用---------------------------------------------------------------
         print(
             f'パスワード設定用URL: http://127.0.0.1:5000/auth/userregister/{token}'
         )
+        # デバッグ用---------------------------------------------------------------
         flash('本登録用のURLをお送りしました。ご確認ください')
         return redirect(url_for('auth.login'))
     return render_template('auth/create_user.html', form=form)

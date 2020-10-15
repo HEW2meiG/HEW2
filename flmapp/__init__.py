@@ -3,6 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_mail import Mail, Message
 
 # LoginManagerの登録
 login_manager = LoginManager()
@@ -12,9 +13,9 @@ login_manager.login_message = 'ログインしてください'
 
 basedir = os.path.abspath(os.path.dirname(__name__))
 
-# sqlalchemyを通してflaskからdbアクセスをするための入り口
 db = SQLAlchemy()
 migrate = Migrate()
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -29,10 +30,26 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     # ここまで /// データベースの設定
+
+    # ここから /// メール送信の設定
+    app.config['DEBUG'] = True # デバッグのサポート
+    app.config['TESTING'] = False
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    app.config['MAIL_USERNAME'] = 'koshokaikou@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'hew2shimomuraG'
+    app.config['MAIL_DEFAULT_SENDER'] = 'koshokaikou@gmail.com'
+    app.config['MAIL_MAX_EMAILS'] = 5 #送信するメールの最大数
+    app.config['MAIL_SUPPRESS_SEND'] = False
+    app.config['MAIL_ASCII_ATTACHHMENTS'] = False
+    # ここまで /// メール送信の設定
     
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    mail.init_app(app)
 
     # 分割したblueprintを登録する
     from flmapp.views import auth
