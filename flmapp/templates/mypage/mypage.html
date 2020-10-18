@@ -7,16 +7,17 @@
 <div class="row">
     <div class="col-lg-4 offset-lg-2">
         {% if current_user.picture_path %}
-        <img src="{{url_for('static', filename=current_user.picture_path)}}">
+        <img src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
         {% endif %}
     </div>
     <div class="col-lg-4 offset-lg-2">
         <p>ユーザ名: {{ current_user.username }}</p>
         <p>メールアドレス: {{ current_user.email }}</p>
+        <p>自己紹介: {{ current_user.prof_comment }}</p>
     </div>
     <div class="col-lg-4 offset-lg-2">
         <nav>
-            <a href="{{url_for('mypage.user')}}">
+            <a href="{{url_for('mypage.profile')}}">
                 プロフィール情報
             </a>
             <a href="">

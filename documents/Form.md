@@ -3,7 +3,7 @@
 |||
 |:------|:------|
 |StringField|文字列の入力(`<input tyape='text'>`)|
-|TextArea|テキストエリア(`<textarea>`)|
+|TextAreaField|テキストエリア(`<textarea>`)|
 |DateField|日付を扱う|
 |DateTimeField|タイムスタンプを扱う|
 |BooleanField|真偽値を扱う(checkbox)|

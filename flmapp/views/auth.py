@@ -1,7 +1,9 @@
+import os
 from datetime import datetime
 from flask import (
     Blueprint, abort, request, render_template,
-    redirect, url_for, flash
+    redirect, url_for, flash, 
+    current_app as app #Blueprint環境下で、設定値(config)を取得
 )
 from flask_login import (
     login_user, login_required, logout_user, current_user
@@ -15,7 +17,17 @@ from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
 )
 
+from flmapp import mail # メール送信インポート
+from flask_mail import Mail, Message # メール送信インポート
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+# 画像アップロード処理用関数 ここから--------------------------------------
+def allowed_image(filename):
+    # .があるかどうかのチェックと、拡張子の確認
+    # OKなら１、だめなら0
+    return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
+#ここまで------------------------------------------------------------------
 
 # ログアウト
 @bp.route('/logout')
@@ -66,10 +78,23 @@ def register():
         with db.session.begin(subtransactions=True):
             token = PasswordResetToken.publish_token(user)
         db.session.commit()
-        #! メールに飛ばす処理
+        # メール送信処理ここから----------------------------------------------------------
+        msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
+        msg.html = '<hr>【古書邂逅】 古書邂逅会員仮登録完了のお知らせ<hr>\
+                    この度は、古書邂逅会員にご登録いただきまして誠にありがとうございます。<br>\
+                    下記ページアドレス(URL)をクリックすることで、本登録が完了となります。<br>\
+                    <br><br>\
+                    【ご登録されたメールアドレス】<br>\
+                    {email}<br>\
+                    【こちらをクリックして本登録を完了してください】<br>\
+                    {url}'.format(email=user.email,url=url_for('auth.userregister', token=token, _external=True))
+        mail.send(msg)
+        # メール送信処理ここまで----------------------------------------------------------
+        # デバッグ用---------------------------------------------------------------
         print(
-            f'パスワード設定用URL: http://127.0.0.1:5000/auth/userregister/{token}'
+            f'本登録URL: http://127.0.0.1:5000/auth/userregister/{token}'
         )
+        # デバッグ用---------------------------------------------------------------
         flash('本登録用のURLをお送りしました。ご確認ください')
         return redirect(url_for('auth.login'))
     return render_template('auth/create_user.html', form=form)
@@ -103,6 +128,23 @@ def userregister(token):
             address2 = form.addr02.data,
             address3 = form.addr03.data
         )
+        # 画像アップロード処理 ここから--------------------------
+        # 画像ファイルがあった場合
+        if request.files:
+            image = request.files[form.picture_path.name]
+            # 画像アップロード処理用関数
+            if allowed_image(image.filename):
+                # ファイル名から拡張子を取り出す
+                ext = image.filename.rsplit('.', 1)[1]
+                # imagenameはユーザーID+現在の時間+.拡張子
+                imagename = str(user.User_id) + '_' + \
+                            str(int(datetime.now().timestamp())) + '.' + ext
+                # ファイルの保存
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
+            else:
+                flash('画像のアップロードに失敗しました。')
+                return redirect(url_for('auth.userregister'))
+        # 画像アップロード処理 ここまで--------------------------
         # データベース登録処理
         with db.session.begin(subtransactions=True):
             # トークンレコード削除
@@ -115,17 +157,8 @@ def userregister(token):
             userinfo.create_new_userinfo()
             # Adressテーブルにレコードの挿入
             address.create_new_useraddress()
-            # Userテーブルpicture_path更新
-            # ファイルアップロード処理
-            #! ファイルアップロード方法を変える----------------------
-            file = request.files[form.picture_path.name].read()
-            if file:
-                file_name = str(user.User_id) + '_' + \
-                    str(int(datetime.now().timestamp())) + '.jpg'
-                picture_path = 'flmapp/static/user_image/' + file_name
-                open(picture_path, 'wb').write(file)
-                user.picture_path = 'user_image/' + file_name
-            #! -------------------------------------------------
+            if imagename: # imagenameが設定されていれば(画像があれば)更新する
+                user.picture_path = imagename
         db.session.commit()
         flash('新規会員登録が完了しました。')
         return redirect(url_for('auth.login'))
@@ -145,14 +178,26 @@ def forgot_password():
             with db.session.begin(subtransactions=True):
                 token = PasswordResetToken.publish_token(user)
             db.session.commit()
-            # URLの生成
-            reset_url = f'http://127.0.0.1:5000/auth/reset_password/{token}'
-            #! メールに飛ばす処理------
-            print(reset_url)
-            #! ---------------------
+            # メール送信処理ここから----------------------------------------------------------
+            msg = Message('古書邂逅 パスワード再設定メール', recipients=[user.email])
+            msg.html = '<hr>【古書邂逅】 パスワード再設定のご案内<hr>\
+                        いつも古書邂逅をご利用頂き、誠にありがとうございます。<br>\
+                        パスワード変更のリクエストを受け付けました。<br>\
+                        下記ページアドレス(URL)をクリックしてパスワードの再設定を行ってください。<br>\
+                        再設定を行うまではパスワードは変更されません。<br>\
+                        <br><br>\
+                        【こちらをクリックしてパスワードの再設定を行ってください】<br>\
+                        {url}'.format(url=url_for('auth.reset_password', token=token, _external=True))
+            mail.send(msg)
+            # メール送信処理ここまで----------------------------------------------------------
+            # デバッグ用---------------------------------------------------------------
+            print(
+                f'パスワード再設定用URL: http://127.0.0.1:5000/auth/reset_password/{token}'
+            )
+            # デバッグ用---------------------------------------------------------------
             flash('パスワード再登録用のURLを発行しました。')
         else:
-            flash('存在しないユーザです')
+            flash('存在しないユーザです。')
     return render_template('auth/forgot_password.html', form=form)
 
 # パスワード再設定
