@@ -23,6 +23,15 @@ def create_app():
     # sessionを使う際にSECRET_KEYを設定
     app.config['SECRET_KEY'] =  b'R\x1c`\x8d\xed_\xe5\xd6\x8d\xef\xc6\x19g- J'
 
+    # ここから /// 画像アップロードの設定
+    # 画像のアップロード先のディレクトリ
+    app.config["IMAGE_UPLOADS"] = 'flmapp/static/user_image'
+    # アップロードされる拡張子の制限
+    app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
+    # 画像サイズの制限
+    app.config["MAX_IMAGE_FILESIZE"] = 0.5 * 1024 * 1024
+    # ここまで /// 画像アップロードの設定
+
     # ここから /// データベースの設定
     # DBはSQLiteを使う
     app.config['SQLALCHEMY_DATABASE_URI'] = \
@@ -38,9 +47,9 @@ def create_app():
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
-    app.config['MAIL_USERNAME'] = 'koshokaikou@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'hew2shimomuraG'
-    app.config['MAIL_DEFAULT_SENDER'] = 'koshokaikou@gmail.com'
+    app.config['MAIL_USERNAME'] = 'koshokaikou.official@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'tegjmwoizirebndj'
+    app.config['MAIL_DEFAULT_SENDER'] = 'koshokaikou.official@gmail.com'
     app.config['MAIL_MAX_EMAILS'] = 5 #送信するメールの最大数
     app.config['MAIL_SUPPRESS_SEND'] = False
     app.config['MAIL_ASCII_ATTACHHMENTS'] = False

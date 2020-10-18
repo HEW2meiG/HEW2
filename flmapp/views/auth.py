@@ -1,7 +1,9 @@
+import os
 from datetime import datetime
 from flask import (
     Blueprint, abort, request, render_template,
-    redirect, url_for, flash
+    redirect, url_for, flash, 
+    current_app as app #Blueprint環境下で、設定値(config)を取得
 )
 from flask_login import (
     login_user, login_required, logout_user, current_user
@@ -15,10 +17,17 @@ from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
 )
 
-from flmapp import mail # メール送信時インポート
-from flask_mail import Mail, Message # メール送信時インポート
+from flmapp import mail # メール送信インポート
+from flask_mail import Mail, Message # メール送信インポート
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
+# 画像アップロード処理用関数 ここから--------------------------------------
+def allowed_image(filename):
+    # .があるかどうかのチェックと、拡張子の確認
+    # OKなら１、だめなら0
+    return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
+#ここまで------------------------------------------------------------------
 
 # ログアウト
 @bp.route('/logout')
@@ -119,6 +128,23 @@ def userregister(token):
             address2 = form.addr02.data,
             address3 = form.addr03.data
         )
+        # 画像アップロード処理 ここから--------------------------
+        # 画像ファイルがあった場合
+        if request.files:
+            image = request.files[form.picture_path.name]
+            # 画像アップロード処理用関数
+            if allowed_image(image.filename):
+                # ファイル名から拡張子を取り出す
+                ext = image.filename.rsplit('.', 1)[1]
+                # imagenameはユーザーID+現在の時間+.拡張子
+                imagename = str(user.User_id) + '_' + \
+                            str(int(datetime.now().timestamp())) + '.' + ext
+                # ファイルの保存
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
+            else:
+                flash('画像のアップロードに失敗しました。')
+                return redirect(url_for('auth.userregister'))
+        # 画像アップロード処理 ここまで--------------------------
         # データベース登録処理
         with db.session.begin(subtransactions=True):
             # トークンレコード削除
@@ -131,17 +157,8 @@ def userregister(token):
             userinfo.create_new_userinfo()
             # Adressテーブルにレコードの挿入
             address.create_new_useraddress()
-            # Userテーブルpicture_path更新
-            # ファイルアップロード処理
-            #! ファイルアップロード方法を変える----------------------
-            file = request.files[form.picture_path.name].read()
-            if file:
-                file_name = str(user.User_id) + '_' + \
-                    str(int(datetime.now().timestamp())) + '.jpg'
-                picture_path = 'flmapp/static/user_image/' + file_name
-                open(picture_path, 'wb').write(file)
-                user.picture_path = 'user_image/' + file_name
-            #! -------------------------------------------------
+            if imagename: # imagenameが設定されていれば(画像があれば)更新する
+                user.picture_path = imagename
         db.session.commit()
         flash('新規会員登録が完了しました。')
         return redirect(url_for('auth.login'))
@@ -180,7 +197,7 @@ def forgot_password():
             # デバッグ用---------------------------------------------------------------
             flash('パスワード再登録用のURLを発行しました。')
         else:
-            flash('存在しないユーザです')
+            flash('存在しないユーザです。')
     return render_template('auth/forgot_password.html', form=form)
 
 # パスワード再設定
