@@ -67,9 +67,9 @@ def profile():
     return render_template('mypage/profile.html', form=form)
 
 # パスワード・メール変更ページ
-@bp.route('/change_password', methods=['GET', 'POST'])
+@bp.route('/mail_password', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def change_password():
+def mail_password():
     form = ChangePasswordForm(request.form)
     if request.method == 'POST' and form.validate():
         # ログイン中のユーザーIDによってユーザーを取得
@@ -78,11 +78,11 @@ def change_password():
         # データベース処理
         with db.session.begin(subtransactions=True):
             # email更新
+            #! メールにURL送信、URLをクリックして更新
             user.email = form.email.data
             if password:
                 # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
                 user.save_new_password(password)
         db.session.commit()
         flash('更新に成功しました')
-        return redirect(url_for('auth.login'))
-    return render_template('mypage/change_password.html', form=form)
+    return render_template('mypage/mail_password.html', form=form)

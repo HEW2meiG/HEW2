@@ -31,12 +31,6 @@ app.config['MAIL_ASCII_ATTACHHMENTS'] = False
 
 mail.init_app(app)
 ```
-### 備考
-メールアドレス:koshokaikou.official@gmail.com
-
-パスワード:hew2shimomuraG
-
-アプリパスワード:tegjmwoizirebndj
 
 注意)
 
