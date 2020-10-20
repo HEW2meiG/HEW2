@@ -13,8 +13,11 @@ from flmapp import db # SQLAlchemy
 from flmapp.models.auth import (
     User, UserInfo, Address, PasswordResetToken
 )
+from flmapp.models.mypage import (
+    ShippingAddress, Credit
+)
 from flmapp.forms.mypage import (
-   ProfileForm, ChangePasswordForm
+   ProfileForm, ChangePasswordForm, IdentificationForm
 )
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
@@ -31,7 +34,7 @@ def allowed_image(filename):
 def mypagetop():
     return render_template('mypage/mypage.html')
 
-# プロフィール設定ページ
+# プロフィール設定
 @bp.route('/profile', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def profile():
@@ -66,10 +69,10 @@ def profile():
         flash('プロフィール情報を更新しました。')
     return render_template('mypage/profile.html', form=form)
 
-# パスワード・メール変更ページ
-@bp.route('/change_password', methods=['GET', 'POST'])
+# パスワード・メール変更
+@bp.route('/mail_password', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def change_password():
+def mail_password():
     form = ChangePasswordForm(request.form)
     if request.method == 'POST' and form.validate():
         # ログイン中のユーザーIDによってユーザーを取得
@@ -78,11 +81,26 @@ def change_password():
         # データベース処理
         with db.session.begin(subtransactions=True):
             # email更新
+            #! メールにURL送信、URLをクリックして更新
             user.email = form.email.data
             if password:
                 # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
                 user.save_new_password(password)
         db.session.commit()
         flash('更新に成功しました')
-        return redirect(url_for('auth.login'))
-    return render_template('mypage/change_password.html', form=form)
+    return render_template('mypage/mail_password.html', form=form)
+
+# 本人情報編集
+@bp.route('/identification', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def identification():
+    form = IdentificationForm(request.form)
+    if request.method == 'POST' and form.validate():
+        # ログイン中のユーザーIDによってユーザーを取得
+        user = User.select_user_by_id(current_user.get_id())
+        # データベース処理
+        #with db.session.begin(subtransactions=True):
+
+        #db.session.commit()
+        #flash('更新に成功しました')
+    return render_template('mypage/identification.html', form=form)

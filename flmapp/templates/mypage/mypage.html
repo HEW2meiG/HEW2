@@ -1,7 +1,7 @@
 {% from "_formhelpers.html" import render_field %}
 {% extends "base.html" %}
 {% block title %}
-    マイページ画面 - {{ super() }}
+    マイページトップ画面 - {{ super() }}
 {% endblock %}
 {% block content %}
 <div class="row">
@@ -20,7 +20,7 @@
             <a href="{{url_for('mypage.profile')}}">
                 プロフィール情報
             </a>
-            <a href="">
+            <a href="{{url_for('mypage.identification')}}">
                 本人情報
             </a>
             <a href="">
@@ -29,7 +29,7 @@
             <a href="">
                 クレジットカード情報
             </a>
-            <a href="{{url_for('mypage.change_password')}}">
+            <a href="{{url_for('mypage.mail_password')}}">
                 メール・パスワード
             </a>
             <a ref="">
