@@ -13,6 +13,9 @@ from flmapp import db # SQLAlchemy
 from flmapp.models.auth import (
     User, UserInfo, Address, PasswordResetToken
 )
+from flmapp.models.mypage import (
+    ShippingAddress, Credit
+)
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm
 )
