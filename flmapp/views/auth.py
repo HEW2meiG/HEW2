@@ -143,7 +143,7 @@ def userregister(token):
                 image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
             else:
                 flash('画像のアップロードに失敗しました。')
-                return redirect(url_for('auth.userregister'))
+                return redirect(url_for('auth.userregister', token=token))
         # 画像アップロード処理 ここまで--------------------------
         # データベース登録処理
         with db.session.begin(subtransactions=True):
