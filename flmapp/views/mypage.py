@@ -94,13 +94,24 @@ def mail_password():
 @bp.route('/identification', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def identification():
-    form = IdentificationForm(request.form)
+    # ログイン中のユーザーIDによってユーザーを取得
+    userinfo = UserInfo.select_user_by_id()
+    #ユーザーIDによって住所テーブルのUser_idが一致しているレコードを取得
+    useradress = Address.select_user_by_id()
+    form = IdentificationForm(request.form, pref01 = useradress.prefecture)
     if request.method == 'POST' and form.validate():
-        # ログイン中のユーザーIDによってユーザーを取得
-        user = User.select_user_by_id(current_user.get_id())
         # データベース処理
-        #with db.session.begin(subtransactions=True):
-
-        #db.session.commit()
-        #flash('更新に成功しました')
-    return render_template('mypage/identification.html', form=form)
+        with db.session.begin(subtransactions=True):
+            userinfo.last_name = form.last_name.data 
+            userinfo.first_name = form.first_name.data 
+            userinfo.last_name_kana = form.last_name_kana.data 
+            userinfo.first_name_kana = form.first_name_kana.data 
+            userinfo.birth = form.birth.data 
+            useradress.zip_code = form.zip01.data 
+            useradress.prefecture = form.pref01.data
+            useradress.address1 = form.addr01.data 
+            useradress.address2 = form.addr02.data
+            useradress.address3 = form.addr03.data 
+        db.session.commit()
+        flash('更新に成功しました')
+    return render_template('mypage/identification.html', form=form, userinfo=userinfo, useradress=useradress)

@@ -1,6 +1,6 @@
 from flmapp import db, login_manager
 from flask_bcrypt import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 
 from datetime import datetime, timedelta
 from uuid import uuid4
@@ -86,6 +86,12 @@ class UserInfo(db.Model):
     def create_new_userinfo(self):
         db.session.add(self)
 
+    # ユーザーIDによってユーザーを得る
+    @classmethod
+    def select_user_by_id(cls):
+        return cls.query.filter_by(User_id = current_user.get_id()).first()
+
+
 # 住所情報テーブル
 class Address(db.Model):
 
@@ -111,6 +117,12 @@ class Address(db.Model):
 
     def create_new_useraddress(self):
         db.session.add(self)
+
+    #ユーザーIDによって住所情報テーブルのレコードを取得する。
+    @classmethod
+    def select_user_by_id(cls):
+        #住所情報テーブルの最初のレコードをクラスで返す
+        return cls.query.filter_by(User_id = current_user.get_id()).first()
  
 # パスワードリセットトークン情報テーブル
 class PasswordResetToken(db.Model):
