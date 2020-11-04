@@ -20,6 +20,22 @@ class ShippingAddress(db.Model):
     address3 = db.Column(db.String(255))
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
+   
+    def __init__(self, User_id, last_name, first_name, last_name_kana, first_name_kana, zip_code, prefecture, address1, address2, address3):
+        self.User_id = User_id
+        self.last_name = last_name
+        self.first_name = first_name
+        self.last_name_kana = last_name_kana
+        self.first_name_kana = first_name_kana
+        self.zip_code = zip_code
+        self.prefecture = prefecture
+        self.address1 = address1
+        self.address2 = address2
+        self.address3 = address3
+
+    def create_new_usershippingaddress(self):
+        db.session.add(self)
+ 
 
 # クレジット情報テーブル
 class Credit(db.Model):

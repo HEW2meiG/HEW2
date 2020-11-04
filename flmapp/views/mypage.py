@@ -17,7 +17,7 @@ from flmapp.models.mypage import (
     ShippingAddress, Credit
 )
 from flmapp.forms.mypage import (
-   ProfileForm, ChangePasswordForm, IdentificationForm
+   ProfileForm, ChangePasswordForm, IdentificationForm,ShippingAddressForm
 )
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
@@ -115,3 +115,29 @@ def identification():
         db.session.commit()
         flash('更新に成功しました')
     return render_template('mypage/identification.html', form=form, userinfo=userinfo, useradress=useradress)
+
+# 発送元・お届け先住所編集
+@bp.route('/shippingaddress', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def address():
+    form = ShippingAddressForm(request.form)
+    if request.method == 'POST' and form.validate():
+        userid = current_user.get_id()
+        shippingaddress = ShippingAddress(
+            User_id = userid,
+            last_name = form.last_name.data,
+            first_name = form.first_name.data,
+            last_name_kana = form.last_name_kana.data,
+            first_name_kana = form.first_name_kana.data,
+            zip_code = form.zip01.data,
+            prefecture = form.pref01.data,
+            address1 = form.addr01.data,
+            address2 = form.addr02.data,
+            address3 = form.addr03.data
+        )
+        # データベース登録処理
+        with db.session.begin(subtransactions=True):
+            shippingaddress.create_new_usershippingaddress()
+        db.session.commit()
+        flash('登録に成功しました')
+    return render_template('mypage/shippingaddress.html', form=form)
