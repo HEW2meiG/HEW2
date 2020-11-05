@@ -1,0 +1,34 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+出品画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>出品</h2>
+<div class="row">
+    <div class="col-lg-8 offset-lg-4">
+        {% for message in get_flashed_messages() %}
+        {{ message }}
+        {% endfor %}
+    </div>
+    <form method="POST" action="{{url_for('sell.sell_preview')}}">
+        {{ form.csrf_token }}
+        {{render_field(form.sell_title, value=form.sell_title.data) }}
+        <h4>この本を構成する3つのキーワード</h4>
+        {{ render_field(form.key1, value=form.key1.data) }}
+        {{ render_field(form.key2, value=form.key2.data) }}
+        {{ render_field(form.key3, value=form.key3.data) }}
+        {{ render_field(form.sell_comment, value=form.sell_comment.data) }}
+        <h4>商品の詳細</h4>
+        {{ render_field(form.genre, value=form.genre.data) }}
+        {{ render_field(form.item_state, value=form.item_state.data) }}
+        {{ render_field(form.postage, value=form.postage.data) }}
+        {{ render_field(form.send_way, value=form.send_way.data) }}
+        {{ render_field(form.consignor, value=form.consignor.data) }}
+        {{ render_field(form.schedule, value=form.schedule.data) }}
+        {{ render_field(form.remarks, value=form.remarks.data) }}
+        {{ render_field(form.price, value=form.price.data) }}
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}

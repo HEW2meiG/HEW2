@@ -1,5 +1,6 @@
 from flmapp import db, login_manager
 from flask_bcrypt import generate_password_hash, check_password_hash
+from sqlalchemy import func, CheckConstraint
 from flask_login import UserMixin, current_user
 
 from datetime import datetime, timedelta
@@ -15,6 +16,7 @@ def load_user(user_id):
 class User(UserMixin, db.Model):
 
     __tablename__ = 'User'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
     User_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True)
@@ -25,9 +27,10 @@ class User(UserMixin, db.Model):
     )
     picture_path = db.Column(db.Text)
     prof_comment = db.Column(db.Text)
-    is_active = db.Column(db.Boolean, unique=False, default=False)
+    is_active = db.Column(db.Boolean, default=False)
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
+    sell_items = db.relationship('Sell', backref='user', lazy='joined', uselist=False)
 
     def __init__(self, email):
         self.email = email
@@ -64,6 +67,7 @@ class User(UserMixin, db.Model):
 class UserInfo(db.Model):
 
     __tablename__ = 'UserInfo'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
     UserInfo_id = db.Column(db.Integer, primary_key=True)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
@@ -96,6 +100,7 @@ class UserInfo(db.Model):
 class Address(db.Model):
 
     __tablename__ = 'Address'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
     Address_id = db.Column(db.Integer, primary_key=True)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
@@ -128,6 +133,7 @@ class Address(db.Model):
 class PasswordResetToken(db.Model):
 
     __tablename__ = 'PasswordResetToken'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
     PasswordResetToken_id = db.Column(db.Integer, primary_key=True)
     token = db.Column(
