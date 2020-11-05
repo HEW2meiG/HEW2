@@ -3,12 +3,20 @@ from flask import (
     redirect, url_for, flash
 )
 
+from flmapp.models.auth import (
+    User
+)
+from flmapp.models.sell import (
+    Sell
+)
+
 bp = Blueprint('route', __name__, url_prefix='')
 
 # ホーム
 @bp.route('/')
 def home():
-    return render_template('home.html')
+    items = Sell.query.all()
+    return render_template('home.html', items=items)
 
 # ページが見つからない場合
 @bp.app_errorhandler(404)

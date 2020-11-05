@@ -9,5 +9,24 @@
     {% else %}
         <p>ログイン or 登録をしてください</p>
     {% endif %}
+    <a href="{{url_for('sell.sell')}}">出品する</a>
+    <table>
+        {% for item in items %}
+        <tr>
+            <td>
+                {% if item.user.picture_path %}
+                <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+                {% endif %}
+                {{ item.user.username }}
+            </td>
+                <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">詳細</a></td>
+                <td>{{ item.key1 }}</td>
+                <td>{{ item.key2 }}</td>
+                <td>{{ item.key3 }}</td>
+                <td>{{ item.sell_comment }}</td>
+                <td>{{ item.deal_status.name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

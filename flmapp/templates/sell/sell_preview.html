@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}
+出品確認画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>出品確認</h2>
+<div class="row">
+
+    {{ form.sell_title.data }}
+    {{ form.key1.data }}
+    {{ form.key2.data }}
+    {{ form.key3.data }}
+    {{ form.sell_comment.data }}
+    {{ form.price.data }}
+    {{ form.genre.data }}
+    {{ form.item_state.data }}
+    {{ form.postage.data }}
+    {{ form.send_way.data }}
+    {{ form.consignor.data }}
+    {{ form.schedule.data }}
+    {{ form.remarks.data }}
+
+    <form method="POST" action="{{url_for('sell.sell_register')}}">
+        {{ form.csrf_token }}
+        {{ hiddenform.sell_title(value=form.sell_title.data) }}
+        {{ hiddenform.key1(value=form.key1.data) }}
+        {{ hiddenform.key2(value=form.key2.data) }}
+        {{ hiddenform.key3(value=form.key3.data) }}
+        {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
+        {{ hiddenform.price(value=form.price.data) }}
+        {{ hiddenform.genre(value=form.genre.data) }}
+        {{ hiddenform.item_state(value=form.item_state.data) }}
+        {{ hiddenform.postage(value=form.postage.data) }}
+        {{ hiddenform.send_way(value=form.send_way.data) }}
+        {{ hiddenform.consignor(value=form.consignor.data) }}
+        {{ hiddenform.schedule(value=form.schedule.data) }}
+        {{ hiddenform.remarks(value=form.remarks.data) }}
+        {{ hiddenform.submit(value='出品する') }}
+    </form>
+
+    <form method="POST" action="{{url_for('sell.sell')}}">
+        {{ form.csrf_token }}
+        {{ hiddenform.sell_title(value=form.sell_title.data) }}
+        {{ hiddenform.key1(value=form.key1.data) }}
+        {{ hiddenform.key2(value=form.key2.data) }}
+        {{ hiddenform.key3(value=form.key3.data) }}
+        {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
+        {{ hiddenform.price(value=form.price.data) }}
+        {{ hiddenform.genre(value=form.genre.data) }}
+        {{ hiddenform.item_state(value=form.item_state.data) }}
+        {{ hiddenform.postage(value=form.postage.data) }}
+        {{ hiddenform.send_way(value=form.send_way.data) }}
+        {{ hiddenform.consignor(value=form.consignor.data) }}
+        {{ hiddenform.schedule(value=form.schedule.data) }}
+        {{ hiddenform.remarks(value=form.remarks.data) }}
+        {{ hiddenform.submit(value='出品画面に戻る') }}
+    </form>
+
+</div>
+{% endblock %}
