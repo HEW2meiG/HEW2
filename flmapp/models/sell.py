@@ -17,8 +17,9 @@ Send_way = Enum("Send_way", [("未定", 1), ("ゆうメール", 2), ("レター�
 Schedule = Enum("Schedule", [("1日から2日で発送", 1), ("2日から3日で発送", 2), ("4日から7日で発送", 3)])
 Deal_status = Enum("Deal_status", [("出品中", 1), ("取引中", 2), ("取引済み", 3)])
 
-# 出品情報テーブル
+
 class Sell(db.Model):
+    """出品情報テーブル"""
 
     __tablename__ = 'Sell'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)

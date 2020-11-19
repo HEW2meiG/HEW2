@@ -1,10 +1,11 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from flask_login import current_user
 
 from datetime import datetime, timedelta
 
-# 配送先住所テーブル
 class ShippingAddress(db.Model):
+    """配送先住所情報テーブル"""
 
     __tablename__ = 'ShippingAddress'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -35,12 +36,16 @@ class ShippingAddress(db.Model):
         self.address2 = address2
         self.address3 = address3
 
-    def create_new_usershippingaddress(self):
+    def create_new_shippingaddress(self):
         db.session.add(self)
+
+    @classmethod
+    def select_shippingaddress_by_user_id(cls):
+        return cls.query.filter_by(User_id = current_user.get_id()).first()
  
 
-# クレジット情報テーブル
 class Credit(db.Model):
+    """クレジット情報テーブル"""
 
     __tablename__ = 'Credit'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -53,3 +58,7 @@ class Credit(db.Model):
     security_code = db.Column(db.String(255))
     create_at = db.Column(db.DateTime, default=datetime.now)
     update_at = db.Column(db.DateTime, default=datetime.now)
+
+    @classmethod
+    def select_credit_by_user_id(cls):
+        return cls.query.filter_by(User_id = current_user.get_id()).all()

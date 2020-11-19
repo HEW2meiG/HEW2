@@ -188,7 +188,7 @@ def forgot_password():
                         <br><br>\
                         【こちらをクリックしてパスワードの再設定を行ってください】<br>\
                         {url}'.format(url=url_for('auth.reset_password', token=token, _external=True))
-            # mail.send(msg)
+            mail.send(msg)
             # メール送信処理ここまで----------------------------------------------------------
             # デバッグ用---------------------------------------------------------------
             print(

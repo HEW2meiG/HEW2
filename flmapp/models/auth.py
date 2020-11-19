@@ -12,8 +12,8 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 #UserMixinを継承したUserクラス
-# ユーザー情報テーブル
 class User(UserMixin, db.Model):
+    """ユーザー情報テーブル"""
 
     __tablename__ = 'User'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -42,8 +42,11 @@ class User(UserMixin, db.Model):
     def select_user_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
 
-    # ユーザーのパスワードと引数のパスワードが正しいか
     def validate_password(self, password):
+        """
+        ユーザーのパスワードと引数のパスワードが正しいか判定する。
+        一致していたらTrueを返す。
+        """
         # check_password_hash():ハッシュ値が指定した文字列のものと一致しているか判定
         # 一致→True 不一致→False
         return check_password_hash(self.password, password)
@@ -51,20 +54,21 @@ class User(UserMixin, db.Model):
     def create_new_user(self):
         db.session.add(self)
 
-    # ユーザーIDによってユーザーを得る
     @classmethod
     def select_user_by_id(cls, User_id):
+        """ユーザーIDによってユーザーを得る"""
         return cls.query.get(User_id)
-    
-    # パスワード更新処理
+
     def save_new_password(self, new_password):
+        """パスワード更新処理"""
         # generate_password_hash()：ハッシュ値が生成される
         self.password = generate_password_hash(new_password)
         # 有効フラグをTrue
         self.is_active = True
 
-# ユーザー本人情報テーブル
+
 class UserInfo(db.Model):
+    """ユーザー本人情報テーブル"""
 
     __tablename__ = 'UserInfo'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -90,14 +94,14 @@ class UserInfo(db.Model):
     def create_new_userinfo(self):
         db.session.add(self)
 
-    # ユーザーIDによってユーザーを得る
     @classmethod
-    def select_user_by_id(cls):
+    def select_userinfo_by_user_id(cls):
         return cls.query.filter_by(User_id = current_user.get_id()).first()
 
 
 # 住所情報テーブル
 class Address(db.Model):
+    """住所情報テーブル"""
 
     __tablename__ = 'Address'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -123,14 +127,14 @@ class Address(db.Model):
     def create_new_useraddress(self):
         db.session.add(self)
 
-    #ユーザーIDによって住所情報テーブルのレコードを取得する。
     @classmethod
-    def select_user_by_id(cls):
-        #住所情報テーブルの最初のレコードをクラスで返す
+    def select_address_by_user_id(cls):
+        """ユーザーIDによって住所情報テーブルのレコードを取得する"""
         return cls.query.filter_by(User_id = current_user.get_id()).first()
  
-# パスワードリセットトークン情報テーブル
+
 class PasswordResetToken(db.Model):
+    """パスワードリセットトークン情報テーブル"""
 
     __tablename__ = 'PasswordResetToken'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -153,9 +157,9 @@ class PasswordResetToken(db.Model):
         self.User_id = User_id
         self.expire_at = expire_at
 
-    #パスワードリセットトークン情報テーブルにレコードの挿入
     @classmethod
     def publish_token(cls, user):
+        """パスワードリセットトークン情報テーブルにレコードの挿入をする"""
         # パスワード設定用のURLを生成
         token = str(uuid4())
         new_token = cls(
@@ -167,9 +171,9 @@ class PasswordResetToken(db.Model):
         db.session.add(new_token)
         return token
     
-    # トークンに紐づいたユーザーIDを得る
     @classmethod
     def get_user_id_by_token(cls, token):
+        """トークンに紐づいたユーザーIDを得る"""
         now = datetime.now()
         record = cls.query.filter_by(token=str(token)).filter(cls.expire_at > now).first()
         if record:
@@ -177,7 +181,7 @@ class PasswordResetToken(db.Model):
         else:
             return None
 
-    # トークン削除 
     @classmethod
     def delete_token(cls, token):
+        """トークンの削除"""
         cls.query.filter_by(token=str(token)).delete()

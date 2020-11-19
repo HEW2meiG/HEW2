@@ -19,12 +19,13 @@
                 {% endif %}
                 {{ item.user.username }}
             </td>
-                <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">詳細</a></td>
-                <td>{{ item.key1 }}</td>
-                <td>{{ item.key2 }}</td>
-                <td>{{ item.key3 }}</td>
-                <td>{{ item.sell_comment }}</td>
-                <td>{{ item.deal_status.name }}</td>
+            <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+                {{ item.deal_status.name }}
+                {{ item.key1 }}
+                {{ item.key2 }}
+                {{ item.key3 }}
+                {{ item.sell_comment }}
+            </a></td>
         </tr>
         {% endfor %}
     </table>

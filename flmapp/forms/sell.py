@@ -9,8 +9,6 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-from flmapp.models.sell import Sell
-
 #出品情報フォーム
 class SellForm(FlaskForm):
     sell_title = StringField('本のタイトル', validators=[DataRequired()])
