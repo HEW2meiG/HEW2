@@ -9,13 +9,10 @@ from flask_login import (
 )
 from flmapp import db # SQLAlchemy
 
-from flmapp.models.auth import (
-    User
+from flmapp.models.user import (
+    User, ShippingAddress, Credit
 )
-from flmapp.models.mypage import (
-    ShippingAddress, Credit
-)
-from flmapp.models.sell import (
+from flmapp.models.trade import (
     Sell
 )
 from flmapp.forms.buy import (

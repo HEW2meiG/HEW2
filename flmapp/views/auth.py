@@ -10,8 +10,11 @@ from flask_login import (
 )
 from flmapp import db # SQLAlchemy
 
-from flmapp.models.auth import (
-    User, UserInfo, Address, PasswordResetToken
+from flmapp.models.user import (
+    User, UserInfo, Address
+)
+from flmapp.models.token import (
+    PasswordResetToken
 )
 from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm

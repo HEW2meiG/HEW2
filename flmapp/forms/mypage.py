@@ -9,7 +9,7 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-from flmapp.models.auth import User
+from flmapp.models.user import User
 
 # プロフィール設定ページフォーム
 class ProfileForm(FlaskForm):

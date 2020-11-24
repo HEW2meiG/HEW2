@@ -7,6 +7,9 @@ class EnumType(TypeDecorator):
 
     impl = Integer
 
+    def __repr__(self):
+        return self.impl.__repr__()
+
     def __init__(self, *args, **kwargs):
         self.enum_class = kwargs.pop('enum_class')
         TypeDecorator.__init__(self, *args, **kwargs)
