@@ -10,11 +10,11 @@ from flask_login import (
 )
 from flmapp import db # SQLAlchemy
 
-from flmapp.models.auth import (
-    User, UserInfo, Address, PasswordResetToken
+from flmapp.models.user import (
+    User, UserInfo, Address, ShippingAddress, Credit
 )
-from flmapp.models.mypage import (
-    ShippingAddress, Credit
+from flmapp.models.token import (
+    PasswordResetToken
 )
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm,ShippingAddressForm
@@ -95,9 +95,9 @@ def mail_password():
 @login_required # ログインしていないと表示できないようにする
 def identification():
     # ログイン中のユーザーIDによってユーザーを取得
-    userinfo = UserInfo.select_user_by_id()
+    userinfo = UserInfo.select_userinfo_by_user_id()
     #ユーザーIDによって住所テーブルのUser_idが一致しているレコードを取得
-    useradress = Address.select_user_by_id()
+    useradress = Address.select_address_by_user_id()
     form = IdentificationForm(request.form, pref01 = useradress.prefecture)
     if request.method == 'POST' and form.validate():
         # データベース処理
@@ -137,7 +137,7 @@ def address():
         )
         # データベース登録処理
         with db.session.begin(subtransactions=True):
-            shippingaddress.create_new_usershippingaddress()
+            shippingaddress.create_new_shippingaddress()
         db.session.commit()
         flash('登録に成功しました')
     return render_template('mypage/shippingaddress.html', form=form)

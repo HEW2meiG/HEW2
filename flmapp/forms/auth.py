@@ -1,4 +1,4 @@
-from wtforms.form import Form
+from flask_wtf import FlaskForm
 from wtforms.fields import (
     StringField, FileField, PasswordField, SubmitField, HiddenField,
     IntegerField,BooleanField,DateField,
@@ -9,9 +9,9 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-from flmapp.models.auth import User
+from flmapp.models.user import User
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     email = StringField(
         'メール: ', validators=[DataRequired(), Email()]
     )
@@ -25,7 +25,7 @@ class LoginForm(Form):
     )
     submit = SubmitField('ログイン')
 
-class CreateUserForm(Form):
+class CreateUserForm(FlaskForm):
     email = StringField(
         'メール',render_kw={"placeholder":"PC・携帯どちらでも可"},validators=[DataRequired(), Email('メールアドレスが誤っています')]
     )
@@ -35,7 +35,7 @@ class CreateUserForm(Form):
         if User.select_user_by_email(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
 
-class RegisterForm(Form):
+class RegisterForm(FlaskForm):
     password = PasswordField(
         'パスワード',
         validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]
@@ -68,7 +68,7 @@ class RegisterForm(Form):
         if len(field.data) < 8:
             raise ValidationError('パスワードは8文字以上です')
 
-class ForgotPasswordForm(Form):
+class ForgotPasswordForm(FlaskForm):
     email = StringField('メール: ', validators=[DataRequired(), Email()])
     submit = SubmitField('パスワードを再設定する')
 
@@ -76,7 +76,7 @@ class ForgotPasswordForm(Form):
         if not User.select_user_by_email(field.data):
             raise ValidationError('そのメールアドレスは存在しません')
 
-class ResetPasswordForm(Form):
+class ResetPasswordForm(FlaskForm):
     password = PasswordField(
         'パスワード',
         validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]

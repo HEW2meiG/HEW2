@@ -10,8 +10,11 @@ from flask_login import (
 )
 from flmapp import db # SQLAlchemy
 
-from flmapp.models.auth import (
-    User, UserInfo, Address, PasswordResetToken
+from flmapp.models.user import (
+    User, UserInfo, Address
+)
+from flmapp.models.token import (
+    PasswordResetToken
 )
 from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
@@ -188,7 +191,7 @@ def forgot_password():
                         <br><br>\
                         【こちらをクリックしてパスワードの再設定を行ってください】<br>\
                         {url}'.format(url=url_for('auth.reset_password', token=token, _external=True))
-            # mail.send(msg)
+            mail.send(msg)
             # メール送信処理ここまで----------------------------------------------------------
             # デバッグ用---------------------------------------------------------------
             print(

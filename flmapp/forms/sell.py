@@ -1,4 +1,4 @@
-from wtforms.form import Form
+from flask_wtf import FlaskForm
 from wtforms.fields import (
     StringField, FileField, PasswordField, SubmitField, HiddenField,
     IntegerField,BooleanField,DateField,
@@ -9,10 +9,8 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-from flmapp.models.sell import Sell
-
 #出品情報フォーム
-class SellForm(Form):
+class SellForm(FlaskForm):
     sell_title = StringField('本のタイトル', validators=[DataRequired()])
     key1 = StringField('本のキーワード1', validators=[DataRequired()])
     key2 = StringField('本のキーワード2', validators=[DataRequired()])
@@ -55,7 +53,7 @@ class SellForm(Form):
     submit = SubmitField('出品確認画面へ')
 
 #出品情報Hiddenフォーム
-class HiddenSellForm(Form):
+class HiddenSellForm(FlaskForm):
     sell_title = HiddenField()
     key1 = HiddenField()
     key2 = HiddenField()

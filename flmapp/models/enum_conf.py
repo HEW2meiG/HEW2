@@ -2,11 +2,13 @@ from __future__ import print_function, division, absolute_import
 from sqlalchemy import Integer
 from sqlalchemy.types import TypeDecorator
 
-# Integer をラップして Enum を保存する
 class EnumType(TypeDecorator):
-    """Store IntEnum as Integer"""
+    """IntegerをラップしてEnumを保存する"""
 
     impl = Integer
+
+    def __repr__(self):
+        return self.impl.__repr__()
 
     def __init__(self, *args, **kwargs):
         self.enum_class = kwargs.pop('enum_class')

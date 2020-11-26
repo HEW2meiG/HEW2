@@ -1,4 +1,4 @@
-from wtforms.form import Form
+from flask_wtf import FlaskForm
 from wtforms.fields import (
     StringField, FileField, PasswordField, SubmitField, HiddenField,
     IntegerField,BooleanField,DateField,
@@ -9,17 +9,17 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-from flmapp.models.auth import User
+from flmapp.models.user import User
 
 # プロフィール設定ページフォーム
-class ProfileForm(Form):
+class ProfileForm(FlaskForm):
     username = StringField('名前:')
     picture_path = FileField('アイコン画像を変更')
     prof_comment = TextAreaField('自己紹介:')
     submit = SubmitField('変更する')
 
 # パスワード・メール変更ページフォーム
-class ChangePasswordForm(Form):
+class ChangePasswordForm(FlaskForm):
     email = StringField('メール: ', validators=[Email('メールアドレスが誤っています')])
     password = PasswordField(
         'パスワード',
@@ -42,7 +42,7 @@ class ChangePasswordForm(Form):
         if len(field.data) < 8:
             raise ValidationError('パスワードは8文字以上です')
 
-class IdentificationForm(Form):
+class IdentificationForm(FlaskForm):
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
     last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
@@ -62,7 +62,7 @@ class IdentificationForm(Form):
     addr03 = StringField('建物名')
     submit = SubmitField('登録する')
 
-class ShippingAddressForm(Form):
+class ShippingAddressForm(FlaskForm):
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
     last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})

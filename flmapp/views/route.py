@@ -3,10 +3,10 @@ from flask import (
     redirect, url_for, flash
 )
 
-from flmapp.models.auth import (
+from flmapp.models.user import (
     User
 )
-from flmapp.models.sell import (
+from flmapp.models.trade import (
     Sell
 )
 

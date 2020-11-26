@@ -17,8 +17,8 @@ Send_way = Enum("Send_way", [("未定", 1), ("ゆうメール", 2), ("レター�
 Schedule = Enum("Schedule", [("1日から2日で発送", 1), ("2日から3日で発送", 2), ("4日から7日で発送", 3)])
 Deal_status = Enum("Deal_status", [("出品中", 1), ("取引中", 2), ("取引済み", 3)])
 
-# 出品情報テーブル
 class Sell(db.Model):
+    """出品情報テーブル"""
 
     __tablename__ = 'Sell'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
@@ -31,18 +31,23 @@ class Sell(db.Model):
     key3 = db.Column(db.String(255)) 
     sell_comment = db.Column(db.Text)  
     price = db.Column(db.Integer)
+    picture_path = db.Column(db.Text)
     genre = db.Column(EnumType(enum_class=Genre))
     item_state = db.Column(EnumType(enum_class=Item_state))
     postage = db.Column(EnumType(enum_class=Postage))  
     send_way = db.Column(EnumType(enum_class=Send_way))  
     consignor = db.Column(db.String(64))  
-    schedule = db.Column(EnumType(enum_class=Schedule))  
+    schedule = db.Column(EnumType(enum_class=Schedule))
     remarks = db.Column(db.Text)
-    is_active = db.Column(db.Boolean,default=True)  
     deal_status = db.Column(EnumType(enum_class=Deal_status),default=Deal_status(1))
     sell_flg = db.Column(db.Boolean,default=True)
+    is_active = db.Column(db.Boolean,default=True)
+    has_sent = db.Column(db.Boolean,default=False)
+    has_got = db.Column(db.Boolean,default=False)
     create_at = db.Column(db.DateTime,default=datetime.now)
     update_at = db.Column(db.DateTime,default=datetime.now)
+    # Sellテーブルからデータを取得時にUserテーブルも取得
+    sell_items = db.relationship('User', backref='sell', lazy='joined')
 
     def __init__(self, User_id, sell_title, key1, key2, key3, sell_comment, price, genre, item_state, \
                  postage, send_way, consignor, schedule, remarks):
