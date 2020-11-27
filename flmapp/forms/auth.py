@@ -10,6 +10,8 @@ from flask_login import current_user
 from flask import flash
 
 from flmapp.models.user import User
+from flmapp.models.token import UserTempToken
+from flmapp.models.token import MailResetToken
 
 class LoginForm(FlaskForm):
     email = StringField(
@@ -33,6 +35,10 @@ class CreateUserForm(FlaskForm):
 
     def validate_email(self, field):
         if User.select_user_by_email(field.data):
+            raise ValidationError('メールアドレスはすでに登録されています')
+        if UserTempToken.get_user_id_by_email(field.data):
+            raise ValidationError('メールアドレスはすでに登録されています')
+        if MailResetToken.get_user_by_email(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
 
 class RegisterForm(FlaskForm):
