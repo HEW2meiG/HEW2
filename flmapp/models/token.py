@@ -53,6 +53,16 @@ class UserTempToken(db.Model):
             return None
 
     @classmethod
+    def get_user_id_by_email(cls, email):
+        """emailより仮登録したレコードを抽出"""
+        now = datetime.now()
+        record = cls.query.filter_by(email=email).filter(cls.expire_at > now).first()
+        if record:
+            return record
+        else:
+            return None
+
+    @classmethod
     def delete_token(cls, token):
         """トークンの削除"""
         cls.query.filter_by(token=str(token)).delete()
@@ -102,6 +112,16 @@ class MailResetToken(db.Model):
         """トークンに紐づいたメールリセットトークン情報を返す"""
         now = datetime.now()
         record = cls.query.filter_by(token=str(token)).filter(cls.expire_at > now).first()
+        if record:
+            return record
+        else:
+            return None
+
+    @classmethod
+    def get_user_by_email(cls, email):
+        """期限内のユーザーIDをemailで取り出す"""
+        now = datetime.now()
+        record = cls.query.filter_by(email=email).filter(cls.expire_at > now).first()
         if record:
             return record
         else:
