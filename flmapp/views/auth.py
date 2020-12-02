@@ -8,6 +8,7 @@ from flask import (
 from flask_login import (
     login_user, login_required, logout_user, current_user
 )
+import flask_session_captcha
 from flmapp import db # SQLAlchemy
 
 from flmapp.models.user import (
@@ -85,18 +86,20 @@ def register():
         msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
         msg.html = '<hr>【古書邂逅】 古書邂逅会員仮登録完了のお知らせ<hr>\
                     この度は、古書邂逅会員にご登録いただきまして誠にありがとうございます。<br>\
-                    下記ページアドレス(URL)をクリックすることで、本登録が完了となります。<br>\
+                    下記ページアドレス(URL)から会員登録をしてください。<br>\
                     <br><br>\
                     【ご登録されたメールアドレス】<br>\
                     {email}<br>\
-                    【こちらをクリックして本登録を完了してください】<br>\
+                    【こちらから本登録を行ってください】<br>\
                     {url}'.format(email=user.email,url=url_for('auth.userregister', token=token, _external=True))
         mail.send(msg)
         # メール送信処理ここまで----------------------------------------------------------
         # デバッグ用---------------------------------------------------------------
+        print('*'*120)
         print(
             f'本登録URL: http://127.0.0.1:5000/auth/userregister/{token}'
         )
+        print('*'*120)
         # デバッグ用---------------------------------------------------------------
         flash('本登録用のURLをお送りしました。ご確認ください')
         return redirect(url_for('auth.login'))
@@ -112,6 +115,10 @@ def userregister(token):
         # ユーザーIDが取得できない場合
         abort(500)
     if request.method=='POST' and form.validate():
+        # キャプチャ判定処理
+        if flask_session_captcha.session.get('captcha_answer') != form.captcha.data:
+            flash('画像に表示されている文字と違います。')
+            return render_template('auth/register.html', form=form)
         password = form.password.data
         # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得
         user = User.select_user_by_id(reset_user_id)
@@ -164,7 +171,8 @@ def userregister(token):
                 user.picture_path = imagename
         db.session.commit()
         flash('新規会員登録が完了しました。')
-        return redirect(url_for('auth.login'))
+        login_user(user, remember=True)
+        return redirect(url_for('route.home'))
     return render_template('auth/register.html', form=form)
 
 # パスワードを忘れた人はこちら

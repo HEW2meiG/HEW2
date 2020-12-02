@@ -62,6 +62,7 @@ class RegisterForm(FlaskForm):
     addr01 = StringField('市区町村',validators=[DataRequired()])
     addr02 = StringField('番地',validators=[DataRequired()])
     addr03 = StringField('建物名')
+    captcha = StringField('画像に表示されている文字を入力してください。')
     submit = SubmitField('登録する')
 
     def validate_password(self, field):
