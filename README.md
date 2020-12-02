@@ -39,6 +39,14 @@ git add するファイル(自分の担当ファイルのみか)を確認する�
 
 （現在の状況を確認する）
 
+**data.sqliteが合った場合は以下のコマンドを打つ！**
+
+`git restore data.sqlite`
+
+`git status`
+
+（現在の状況をもう一度確認し、余計なファイルがないか再確認）
+
 `git commit -m "コミットメッセージ"`
 
 `git status`

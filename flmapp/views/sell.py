@@ -36,7 +36,8 @@ def sell_preview():
     form = SellForm(request.form)
     hiddenform = HiddenSellForm()
     if request.method=='POST' and form.validate():
-        return render_template('sell/sell_preview.html', form=form, hiddenform = hiddenform)
+        return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform)
+    return redirect(url_for('route.home'))
 
 @bp.route('/sell_complete', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
@@ -66,3 +67,4 @@ def sell_register():
             sell.create_new_sell()
         db.session.commit()
         return render_template('sell/sell_complete.html')
+    return redirect(url_for('route.home'))

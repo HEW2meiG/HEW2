@@ -18,18 +18,18 @@ class User(UserMixin, db.Model):
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
     User_id = db.Column(db.Integer, primary_key=True)
-    user_cord = db.Column(db.String(64), unique=True, index=True)
-    username = db.Column(db.String(64), index=True)
-    email = db.Column(db.String(64), unique=True, index=True)
-    password_hash = db.Column(db.String(128))
-    picture_path = db.Column(db.Text)
+    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    username = db.Column(db.String(64), index=True, nullable=False)
+    email = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    picture_path = db.Column(db.Text, default='default.png', nullable=False)
     prof_comment = db.Column(db.Text)
     defalt_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id'))
-    defalt_pay_way = db.Column(db.Integer, default=1)
+    defalt_pay_way = db.Column(db.Integer, default=1, nullable=False)
     defalt_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id'))
-    is_active = db.Column(db.Boolean, default=True)
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __init__(self, email):
         self.email = email
@@ -38,16 +38,16 @@ class User(UserMixin, db.Model):
         """load_userが受け取る引数"""
         return (self.User_id)
 
-    # Custom property getter
-    @property
-    def password(self):
-        raise AttributeError('パスワードは読み取り可能な属性ではありません。')
+    # # Custom property getter
+    # @property
+    # def password(self):
+    #     raise AttributeError('パスワードは読み取り可能な属性ではありません。')
 
-    # Custom property setter
-    @password.setter
-    def password(self, password):
-        # generate_password_hash()：ハッシュ値が生成される
-        self.password_hash = generate_password_hash(password)
+    # # Custom property setter
+    # @password.setter
+    # def password(self, password):
+    #     # generate_password_hash()：ハッシュ値が生成される
+    #     self.password_hash = generate_password_hash(password)
 
     def validate_password(self, password):
         """
@@ -78,7 +78,7 @@ class User(UserMixin, db.Model):
         変更してください。
         """
         # generate_password_hash()：ハッシュ値が生成される
-        self.password = generate_password_hash(new_password)
+        self.password_hash = generate_password_hash(new_password)
         # 有効フラグをTrue
         self.is_active = True
 
@@ -91,13 +91,13 @@ class UserInfo(db.Model):
 
     UserInfo_id = db.Column(db.Integer, primary_key=True)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    last_name = db.Column(db.String(255))
-    first_name = db.Column(db.String(255))
-    last_name_kana = db.Column(db.String(255))
-    first_name_kana = db.Column(db.String(255))
-    birth = db.Column(db.Date)
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    last_name = db.Column(db.String(255), nullable=False)
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name_kana = db.Column(db.String(255), nullable=False)
+    first_name_kana = db.Column(db.String(255), nullable=False)
+    birth = db.Column(db.Date, nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __init__(self, User_id, last_name, first_name, last_name_kana, first_name_kana, birth):
         self.User_id = User_id
@@ -122,15 +122,15 @@ class Address(db.Model):
     __tablename__ = 'Address'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
-    Address_id = db.Column(db.Integer, primary_key=True)
+    Address_id = db.Column(db.Integer, primary_key=True, nullable=False)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    zip_code = db.Column(db.Integer)
-    prefecture = db.Column(db.String(64))
-    address1 = db.Column(db.String(255))
-    address2 = db.Column(db.String(255))
+    zip_code = db.Column(db.Integer, nullable=False)
+    prefecture = db.Column(db.String(64), nullable=False)
+    address1 = db.Column(db.String(255), nullable=False)
+    address2 = db.Column(db.String(255), nullable=False)
     address3 = db.Column(db.String(255))
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __init__(self, User_id, zip_code, prefecture, address1, address2, address3):
         self.User_id = User_id
@@ -157,17 +157,17 @@ class ShippingAddress(db.Model):
 
     ShippingAddress_id = db.Column(db.Integer, primary_key=True)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    last_name = db.Column(db.String(255))
-    first_name = db.Column(db.String(255))
-    last_name_kana = db.Column(db.String(255))
-    first_name_kana = db.Column(db.String(255))
-    zip_code = db.Column(db.Integer)
-    prefecture = db.Column(db.String(64))
-    address1 = db.Column(db.String(255))
-    address2 = db.Column(db.String(255))
+    last_name = db.Column(db.String(255), nullable=False)
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name_kana = db.Column(db.String(255), nullable=False)
+    first_name_kana = db.Column(db.String(255), nullable=False)
+    zip_code = db.Column(db.Integer, nullable=False)
+    prefecture = db.Column(db.String(64), nullable=False)
+    address1 = db.Column(db.String(255), nullable=False)
+    address2 = db.Column(db.String(255), nullable=False)
     address3 = db.Column(db.String(255))
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
    
     def __init__(self, User_id, last_name, first_name, last_name_kana, first_name_kana, zip_code, prefecture, address1, address2, address3):
         self.User_id = User_id
@@ -198,12 +198,12 @@ class Credit(db.Model):
     
     Credit_id = db.Column(db.Integer, primary_key=True)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    credit_name = db.Column(db.String(255)) 
-    credit_num = db.Column(db.Integer)
-    expire = db.Column(db.Date)
-    security_code_hash = db.Column(db.String(255))
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    credit_name = db.Column(db.String(255), nullable=False) 
+    credit_num = db.Column(db.Integer, nullable=False)
+    expire = db.Column(db.Date, nullable=False)
+    security_code_hash = db.Column(db.String(255), nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     # Custom property getter
     @property

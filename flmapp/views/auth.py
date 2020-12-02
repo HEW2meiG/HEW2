@@ -132,9 +132,9 @@ def userregister(token):
             address3 = form.addr03.data
         )
         # 画像アップロード処理 ここから--------------------------
-        # 画像ファイルがあった場合
-        if request.files:
-            image = request.files[form.picture_path.name]
+        imagename = ''
+        image = request.files[form.picture_path.name]
+        if image:
             # 画像アップロード処理用関数
             if allowed_image(image.filename):
                 # ファイル名から拡張子を取り出す
