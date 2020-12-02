@@ -9,6 +9,12 @@ from flmapp.models.user import (
 from flmapp.models.trade import (
     Sell
 )
+from flmapp.models.reaction import (
+    Likes, UserConnect
+)
+from flmapp.models.message import(
+    PostMessage, DealMessage
+)
 
 bp = Blueprint('route', __name__, url_prefix='')
 

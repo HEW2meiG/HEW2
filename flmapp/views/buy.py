@@ -13,7 +13,7 @@ from flmapp.models.user import (
     User, ShippingAddress, Credit
 )
 from flmapp.models.trade import (
-    Sell
+    Sell, Buy
 )
 from flmapp.forms.buy import (
    BuyForm

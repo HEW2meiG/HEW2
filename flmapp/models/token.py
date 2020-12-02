@@ -65,7 +65,7 @@ class MailResetToken(db.Model):
     __tablename__ = 'MailResetToken'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
-    PasswordResetToken_id = db.Column(db.Integer, primary_key=True)
+    MailResetToken_id = db.Column(db.Integer, primary_key=True)
     token = db.Column(
         db.String(64),
         unique=True,
