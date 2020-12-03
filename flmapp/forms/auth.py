@@ -15,14 +15,7 @@ class LoginForm(FlaskForm):
     email = StringField(
         'メール: ', validators=[DataRequired(), Email()]
     )
-    password = PasswordField(
-        'パスワード: ',
-        validators=[DataRequired(),
-        EqualTo('confirm_password', message='パスワードが一致しません')]
-    )
-    confirm_password = PasswordField(
-        'パスワード再入力: ', validators=[DataRequired()]
-    )
+    password = PasswordField('パスワード: ', validators=[DataRequired()])
     submit = SubmitField('ログイン')
 
 class CreateUserForm(FlaskForm):
