@@ -17,14 +17,7 @@ class LoginForm(FlaskForm):
     email = StringField(
         'メール: ', validators=[DataRequired(), Email()]
     )
-    password = PasswordField(
-        'パスワード: ',
-        validators=[DataRequired(),
-        EqualTo('confirm_password', message='パスワードが一致しません')]
-    )
-    confirm_password = PasswordField(
-        'パスワード再入力: ', validators=[DataRequired()]
-    )
+    password = PasswordField('パスワード: ', validators=[DataRequired()])
     submit = SubmitField('ログイン')
 
 class CreateUserForm(FlaskForm):
@@ -68,6 +61,7 @@ class RegisterForm(FlaskForm):
     addr01 = StringField('市区町村',validators=[DataRequired()])
     addr02 = StringField('番地',validators=[DataRequired()])
     addr03 = StringField('建物名')
+    captcha = StringField('画像に表示されている文字を入力してください。')
     submit = SubmitField('登録する')
 
     def validate_password(self, field):

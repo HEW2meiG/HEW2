@@ -17,12 +17,13 @@ class UserTempToken(db.Model):
         db.String(64),
         unique=True,
         index=True,
-        default=str(uuid4)
+        default=str(uuid4),
+        nullable=False
     )
-    email = db.Column(db.String(64), unique=True)
-    expire_at = db.Column(db.DateTime, default=datetime.now)
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    email = db.Column(db.String(64), unique=True, nullable=False)
+    expire_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __init__(self, token, email, expire_at):
         self.token = token
@@ -74,18 +75,19 @@ class MailResetToken(db.Model):
     __tablename__ = 'MailResetToken'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
-    PasswordResetToken_id = db.Column(db.Integer, primary_key=True)
+    MailResetToken_id = db.Column(db.Integer, primary_key=True)
     token = db.Column(
         db.String(64),
         unique=True,
         index=True,
-        default=str(uuid4)
+        default=str(uuid4),
+        nullable=False
     )
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    email = db.Column(db.String(64), unique=True)
-    expire_at = db.Column(db.DateTime, default=datetime.now)
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    email = db.Column(db.String(64), unique=True, nullable=False)
+    expire_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __init__(self, token, User_id, email, expire_at):
         self.token = token
@@ -144,12 +146,13 @@ class PasswordResetToken(db.Model):
         db.String(64),
         unique=True,
         index=True,
-        default=str(uuid4)
+        default=str(uuid4),
+        nullable=False
     )
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    expire_at = db.Column(db.DateTime, default=datetime.now)
-    create_at = db.Column(db.DateTime, default=datetime.now)
-    update_at = db.Column(db.DateTime, default=datetime.now)
+    expire_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
     def __init__(self, token, User_id, expire_at):
         self.token = token

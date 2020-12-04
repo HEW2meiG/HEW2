@@ -3,6 +3,9 @@
 ホーム - {{ super() }}
 {% endblock %}
 {% block content %}
+{% for message in get_flashed_messages() %}
+{{ message }}
+{% endfor %}
 <div>
     {% if current_user.is_authenticated %}
         <p>ようこそ{{ current_user.username }}さん</p>

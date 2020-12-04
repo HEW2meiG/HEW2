@@ -1,0 +1,15 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+支払い方法選択画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>支払い方法</h2>
+<form method="POST">
+    {{form.csrf_token}}
+    {{render_field(form.pay_way)}}
+    <a href="{{url_for('buy.buy', item_id=item_id)}}">クレジットカードを追加</a>
+    {{form.submit()}}
+</form>
+<a href="{{url_for('buy.buy', item_id=item_id)}}">戻る</a>
+{% endblock %}

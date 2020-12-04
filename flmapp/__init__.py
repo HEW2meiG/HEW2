@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail, Message
+from flask_sessionstore import Session
+from flask_session_captcha import FlaskSessionCaptcha
 
 # LoginManagerの登録
 login_manager = LoginManager()
@@ -54,15 +56,25 @@ def create_app():
     app.config['MAIL_SUPPRESS_SEND'] = False
     app.config['MAIL_ASCII_ATTACHHMENTS'] = False
     # ここまで /// メール送信の設定
+
+    # ここから /// キャプチャの設定
+    app.config['CAPTCHA_ENABLE'] = True
+    app.config['CAPTCHA_LENGTH'] = 5
+    app.config['CAPTCHA_WIDTH'] = 160
+    app.config['CAPTCHA_HEIGHT'] = 100
+    app.config['SESSION_TYPE'] = 'sqlalchemy'
+    # ここまで /// キャプチャの設定
     
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
     mail.init_app(app)
+    Session(app)
+    captcha = FlaskSessionCaptcha(app)
 
     # 分割したblueprintを登録する
     from flmapp.views import (
-        auth, mypage, route, sell, item, buy
+        auth, mypage, route, sell, item, buy, transaction
     )
 
     app.register_blueprint(auth.bp)
@@ -71,5 +83,6 @@ def create_app():
     app.register_blueprint(sell.bp)
     app.register_blueprint(item.bp)
     app.register_blueprint(buy.bp)
+    app.register_blueprint(transaction.bp)
 
     return app
