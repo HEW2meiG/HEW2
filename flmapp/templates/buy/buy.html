@@ -4,26 +4,47 @@
 購入確認画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<div>
-    {% if item.user.picture_path %}
-    <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-    {% endif %}
-    {{ item.user.username }}
-    {{ item.key1 }}
-    {{ item.key2 }}
-    {{ item.key3 }}
-    {{ item.price }}
-    {{ item.sell_comment }}
-    {{ item.genre.name }}
-    {{ item.item_state.name }}
-    {{ item.postage.name }}
-    {{ item.send_way.name }}
-    {{ item.deal_status.name }}
-
-    <form method="POST" enctype="multipart/form-data">
-        {{form.csrf_token}}
-        {{render_field(form.pay_way)}}
-        {{form.submit()}}
-    </form>
-</div>
+<h2>購入内容の確認</h2>
+<img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">
+{{ item.username }}
+{{ item.key1 }}
+{{ item.key2 }}
+{{ item.key3 }}
+{{ item.price }}
+{{ item.sell_comment }}
+{{ item.postage.name }}
+<p>支払い金額:<span>{{ item.price }}</span></p>
+<h3>支払い方法</h3>
+<a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">変更する</a>
+{% if buy.pay_way==1 %}
+<p>代金引換</p>
+{% elif buy.pay_way==2 %}
+<p>クレジットカード</p>
+<!-- ここに下4桁の番号いれる -->
+<p>{ credit.expire }</p>
+{% elif user.defalt_pay_way==1 %}
+<p>代金引換</p>
+{% elif user.defalt_pay_way==2 %}
+<p>クレジットカード</p>
+<!-- ここに下4桁の番号いれる -->
+<p>{ defalt_Credit_id }</p>
+{% else %}
+<p>代金引換</p>
+{% endif %}
+<h3>配送先</h3>
+<a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">変更する</a>
+{% if ShippingAddress_id %}
+<!-- 住所表示 -->
+{% elif user.defalt_ShippingAddress_id %}
+<!-- 住所表示 -->
+{% else %}
+<a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">新しく配送先を追加する</a>
+{% endif %}
+<form method="POST">
+    {{form.csrf_token}}
+    {{render_field(hiddenform.pay_way(value=form.sell_title.data))}}
+    {{render_field(hiddenform.Credit_id(value=form.sell_title.data))}}
+    {{render_field(hiddenform.ShippingAddress_id(value=form.sell_title.data))}}
+    {{form.submit()}}
+</form>
 {% endblock %}

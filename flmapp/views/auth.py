@@ -118,7 +118,7 @@ def userregister(token):
         # キャプチャ判定処理
         if flask_session_captcha.session.get('captcha_answer') != form.captcha.data:
             flash('画像に表示されている文字と違います。')
-            return render_template('auth/register.html', form=form)
+            return redirect(url_for('auth.userregister', token=token))
         password = form.password.data
         # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得
         user = User.select_user_by_id(reset_user_id)
@@ -159,9 +159,8 @@ def userregister(token):
         with db.session.begin(subtransactions=True):
             # トークンレコード削除
             PasswordResetToken.delete_token(token)
-            # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
+            # パスワード更新処理
             user.save_new_password(password)
-            # Userテーブルusername更新
             user.username = form.username.data
             # UserInfoテーブルにレコードの挿入
             userinfo.create_new_userinfo()

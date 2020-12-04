@@ -69,6 +69,11 @@ class Sell(db.Model):
     def create_new_sell(self):
         db.session.add(self)
 
+    @classmethod
+    def select_sell_by_sell_id(cls, Sell_id):
+        """Sell_id(item_id)によってSell(商品)レコードを得る"""
+        return cls.query.get(Sell_id)
+
 
 class Buy(db.Model):
     """購入情報テーブル"""

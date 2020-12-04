@@ -18,15 +18,15 @@ class User(UserMixin, db.Model):
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
     User_id = db.Column(db.Integer, primary_key=True)
-    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    username = db.Column(db.String(64), index=True, nullable=False)
+    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False, default='あとで消します')
+    username = db.Column(db.String(64), index=True, nullable=False, default='あとで消します')
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False, default='あとで消します')
     picture_path = db.Column(db.Text, default='default.jpeg', nullable=False)
     prof_comment = db.Column(db.Text)
-    defalt_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id'))
-    defalt_pay_way = db.Column(db.Integer, default=1, nullable=False)
-    defalt_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id'))
+    default_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id'))
+    default_pay_way = db.Column(db.Integer, default=1, nullable=False)
+    default_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id'))
     is_active = db.Column(db.Boolean, default=True, nullable=True)
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
@@ -70,6 +70,13 @@ class User(UserMixin, db.Model):
     def select_user_by_id(cls, User_id):
         """ユーザーIDによってユーザーを得る"""
         return cls.query.get(User_id)
+
+    @classmethod
+    def get_defalt(cls, User_id):
+        """ユーザーIDによってデフォルトの支払い方法と配送先を得る"""
+        return cls.query.get(User_id).with_entities(
+            cls.default_ShippingAddress_id, cls.default_pay_way, cls.default_Credit_id
+        )
 
     # setterに記載 変更する
     def save_new_password(self, new_password):
@@ -184,10 +191,9 @@ class ShippingAddress(db.Model):
     def create_new_shippingaddress(self):
         db.session.add(self)
 
-    #! 配送先住所は複数登録可なのでfirstをallに変更
     @classmethod
-    def select_shippingaddress_by_user_id(cls):
-        return cls.query.filter_by(User_id = current_user.get_id()).first()
+    def select_shippingaddresses_by_user_id(cls):
+        return cls.query.filter_by(User_id = current_user.get_id()).all()
  
 
 class Credit(db.Model):
@@ -217,5 +223,5 @@ class Credit(db.Model):
         self.security_code_hash = generate_password_hash(securitycode)
 
     @classmethod
-    def select_credit_by_user_id(cls):
+    def select_credits_by_user_id(cls):
         return cls.query.filter_by(User_id = current_user.get_id()).all()

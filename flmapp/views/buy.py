@@ -16,7 +16,7 @@ from flmapp.models.trade import (
     Sell, Buy
 )
 from flmapp.forms.buy import (
-   BuyForm
+   HiddenBuyForm, PayWayForm
 )
 
 bp = Blueprint('buy', __name__, url_prefix='/buy')
@@ -24,13 +24,21 @@ bp = Blueprint('buy', __name__, url_prefix='/buy')
 #! デコレーター追加する(取引画面User制限)
 
 @bp.route('/<int:item_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
 def buy(item_id):
-    form = BuyForm(request.form)
-    #! 配送先住所複数登録可能にする
-    shippingaddresses = ShippingAddress.select_shippingaddress_by_user_id()
-    credits = Credit.select_credit_by_user_id()
+    hiddenform = HiddenBuyForm(request.form)
+    item = Sell.select_sell_by_sell_id()
+    return render_template('buy/buy.html', item=item, hiddenform=hiddenform)
+
+@bp.route('/<int:item_id>/pay_way', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def pay_way(item_id):
+    form = PayWayForm(request.form)
+    credits = Credit.select_credits_by_user_id()
     if credits:
-        form.pay_way.choices += [(credit.id, credit.credit_name) for credit in credits]
-    
-    item = Sell.query.get(item_id)
-    return render_template('buy/buy.html', item=item, form=form)
+        form.pay_way.choices += [(credit.Credit_id, credit.credit_name) for credit in credits]
+    if request.method=='POST' and form.validate():
+        return render_template('buy/buy.html', form=form, hiddenform=hiddenform)
+    return render_template('buy/pay_way.html', item_id=item_id, form=form)
+
+    # shippingaddresses = ShippingAddress.select_shippingaddresses_by_user_id()
