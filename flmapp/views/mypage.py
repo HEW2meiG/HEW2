@@ -116,10 +116,17 @@ def identification():
         flash('更新に成功しました')
     return render_template('mypage/identification.html', form=form, userinfo=userinfo, useradress=useradress)
 
-# 発送元・お届け先住所編集
+# 発送元・お届け先住所一覧
 @bp.route('/shippingaddress', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def address():
+def shippingaddress():
+    form = ShippingAddressForm(request.form)
+    return render_template('mypage/shippingaddress.html', form=form)
+
+# 発送元・お届け先住所登録
+@bp.route('/shippingaddress_register', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def shippingaddress_register():
     form = ShippingAddressForm(request.form)
     if request.method == 'POST' and form.validate():
         userid = current_user.get_id()
@@ -140,4 +147,4 @@ def address():
             shippingaddress.create_new_shippingaddress()
         db.session.commit()
         flash('登録に成功しました')
-    return render_template('mypage/shippingaddress.html', form=form)
+    return render_template('mypage/shippingaddress_register.html', form=form)
