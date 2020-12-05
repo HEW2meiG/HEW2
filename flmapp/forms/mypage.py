@@ -29,7 +29,7 @@ class ChangePasswordForm(FlaskForm):
     submit = SubmitField('更新する')
 
     def validate(self):
-        if not super(Form, self).validate():
+        if not super(FlaskForm, self).validate():
             return False
         user = User.select_user_by_email(self.email.data)
         if user:

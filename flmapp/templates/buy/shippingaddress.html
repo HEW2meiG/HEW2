@@ -1,0 +1,34 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+配送先住所選択画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>配送先住所選択</h2>
+<form method="POST">
+    {{form.csrf_token}}
+    <table>
+    {% for field in form.ShippingAddress_id %}
+    {% set shippingaddress = search_shippingaddress(field.data) %}
+        <tr>
+            <td>{{ field }}</td>
+            <td>{{ field.label }}</td>
+            <td>{{ shippingaddress.last_name }}</td>
+            <td>{{ shippingaddress.first_name }}</td>
+            <td>{{ shippingaddress.zip_code }}</td>
+            <td>{{ shippingaddress.prefecture }}</td>
+            <td>{{ shippingaddress.address1 }}</td>
+            <td>{{ shippingaddress.address2 }}</td>
+            <td>{{ shippingaddress.address3 }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <a href="{{ url_for('buy.shippingaddress_register', item_id=item_id) }}">配送先住所を追加</a>
+    {{form.is_default.label}}{{form.is_default()}}
+    {{form.submit()}}
+</form>
+<a href="{{ url_for('buy.buy', item_id=item_id )}}">戻る</a>
+{% endblock %}

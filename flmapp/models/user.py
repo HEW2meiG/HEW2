@@ -71,13 +71,6 @@ class User(UserMixin, db.Model):
         """ユーザーIDによってユーザーを得る"""
         return cls.query.get(User_id)
 
-    @classmethod
-    def get_defalt(cls, User_id):
-        """ユーザーIDによってデフォルトの支払い方法と配送先を得る"""
-        return cls.query.get(User_id).with_entities(
-            cls.default_ShippingAddress_id, cls.default_pay_way, cls.default_Credit_id
-        )
-
     # setterに記載 変更する
     def save_new_password(self, new_password):
         """
@@ -192,9 +185,13 @@ class ShippingAddress(db.Model):
         db.session.add(self)
 
     @classmethod
+    def search_shippingaddress(cls, ShippingAddress_id):
+        return cls.query.get(ShippingAddress_id)
+
+    @classmethod
     def select_shippingaddresses_by_user_id(cls):
         return cls.query.filter_by(User_id = current_user.get_id()).all()
- 
+
 
 class Credit(db.Model):
     """クレジット情報テーブル"""
