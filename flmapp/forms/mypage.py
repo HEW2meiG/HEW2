@@ -42,6 +42,7 @@ class ChangePasswordForm(Form):
         if len(field.data) < 8:
             raise ValidationError('パスワードは8文字以上です')
 
+# 本人情報ページフォーム
 class IdentificationForm(Form):
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
@@ -61,3 +62,23 @@ class IdentificationForm(Form):
     addr02 = StringField('番地',validators=[DataRequired()])
     addr03 = StringField('建物名')
     submit = SubmitField('登録する')
+
+#クレジットカード情報変更ページフォーム
+class CreateCreditcardForm(Form):
+    credit_name = StringField('クレジットカード名義',validators=[DataRequired()])
+    credit_num = IntegerField('クレジットカード番号 ',validators=[DataRequired()], render_kw={"placeholder":"半角数字のみ"})
+    expiration_date01 = SelectField('',choices=[('01','01'),('02','02'),('03','03'),('04','04'),('05','05'),('06','06'),('07','07'),('08','08'),('09','09'),\
+        ('10','10'),('11','11'),('12','12')],validators=[DataRequired()])
+    expiration_date02 = SelectField('',choices=[('2021','21'),('2022','22'),('2023','23'),('2024','24'),('2025','25'),('2026','26'),('2027','27'),('2028','28'),('2029','29'),\
+        ('2030','30'),('2031','31')],validators=[DataRequired()])
+    security_code = IntegerField('セキュリティコード: ', validators=[DataRequired()], render_kw={"placeholder":"カード背面4桁もしくは3桁の番号"})
+    submit = SubmitField('追加する')
+
+    def validate_credit_num(self, field):
+        if len(str(field.data)) != 16:
+            raise ValidationError('クレジットカード番号が違います。')
+
+    def validate_security_code(self, field):
+        if len(str(field.data)) != 3 and len(str(field.data)) != 4:
+            raise ValidationError('セキュリティコードが違います。')
+

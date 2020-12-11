@@ -17,7 +17,7 @@ from flmapp.models.mypage import (
     ShippingAddress, Credit
 )
 from flmapp.forms.mypage import (
-   ProfileForm, ChangePasswordForm, IdentificationForm
+   ProfileForm, ChangePasswordForm, IdentificationForm, CreateCreditcardForm
 )
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
@@ -104,3 +104,41 @@ def identification():
         #db.session.commit()
         #flash('更新に成功しました')
     return render_template('mypage/identification.html', form=form)
+
+@bp.route('/creditcard', methods=['GET', 'POST'])
+@login_required
+def creditcard():
+    form = CreateCreditcardForm(request.form)
+    return render_template('mypage/creditcard.html', form=form)
+
+# クレジットカード変更
+@bp.route('/creditcard_create', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def creditcard_create():
+    form = CreateCreditcardForm(request.form)
+    if request.method == 'POST' and form.validate():
+        # ログイン中のユーザーIDによってユーザーを取得
+        user = User.select_user_by_id(current_user.get_id())
+        # 有効期限フォーマット　整える
+        expire = str(form.expiration_date01) + '/' + str(form.expiration_date02)
+        credit = Credit(
+            # ユーザーID
+            User_id = int(user.User_id),
+            # クレジット名義人
+            credit_name = str(form.credit_name),
+            # クレジットカード番号
+            credit_num = int(form.credit_num.data),
+            # クレジット有効期限
+            expire = expire
+            )
+        # データベース処理
+        with db.session.begin(subtransactions=True):
+            credit.create_new_credit()
+            # セキュリティコード
+            credit.save_security_code(str(form.security_code))
+        db.session.commit()
+        print(Credit)
+        flash('作成に成功しました')
+        # next = url_for('mypage.creditcard')
+        return redirect(url_for('mypage.creditcard'))
+    return render_template('mypage/creditcard_create.html', form=form)

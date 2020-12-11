@@ -1,0 +1,29 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+クレジットカード情報編集画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h1>クレジットカード情報編集画面</h1>
+<div class="row">
+    <div class="col-lg-4 offset-lg-2">
+        {% if current_user.picture_path %}
+        <img src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+        {% endif %}
+    </div>
+    <div class="col-lg-4 offset-lg-2">
+        <p>
+            <a href="{{url_for('mypage.creditcard_create')}}">
+            {{ credit_num }}
+            </a>
+        </p>
+    </div>
+    <div class="col-lg-4 offset-lg-2">
+        <nav>
+            <a href="{{url_for('mypage.creditcard_create')}}">
+                クレジットカード新規作成
+            </a>
+        </nav>
+    </div>
+</div>
+{% endblock %}
