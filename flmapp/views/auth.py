@@ -15,7 +15,7 @@ from flmapp.models.user import (
     User, UserInfo, Address
 )
 from flmapp.models.token import (
-    PasswordResetToken
+    UserTempToken, PasswordResetToken
 )
 from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
@@ -70,17 +70,10 @@ def login():
 def register():
     form = CreateUserForm(request.form)
     if request.method == 'POST' and form.validate():
-        user = User(
-            email = form.email.data
-        )
-        # データベースにユーザー情報登録
+        email = form.email.data
+        # ユーザー仮登録トークン情報テーブルにメールアドレスを登録
         with db.session.begin(subtransactions=True):
-            user.create_new_user()
-        db.session.commit()
-        token = ''
-        # データベースにパスワードリセットトークンを登録
-        with db.session.begin(subtransactions=True):
-            token = PasswordResetToken.publish_token(user)
+            token = UserTempToken.publish_token(email)
         db.session.commit()
         # メール送信処理ここから----------------------------------------------------------
         msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
