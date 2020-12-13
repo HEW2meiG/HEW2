@@ -47,7 +47,7 @@ class Sell(db.Model):
     create_at = db.Column(db.DateTime,default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime,default=datetime.now, nullable=False)
     # Sellテーブルからデータを取得時にUserテーブルも取得
-    sell_items = db.relationship('User', backref='sell', lazy='joined')
+    user = db.relationship('User', backref='sell', lazy='joined', uselist=False)
 
     def __init__(self, User_id, sell_title, key1, key2, key3, sell_comment, price, genre, item_state, \
                  postage, send_way, consignor, schedule, remarks):
@@ -90,15 +90,14 @@ class Buy(db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    def __init__(self, Buy_id, User_id, Sell_id, pay_way, Credit_id, ShippingAddress_id):
-        self.Buy_id = Buy_id
+    def __init__(self, User_id, Sell_id, pay_way, Credit_id, ShippingAddress_id):
         self.User_id = User_id
         self.Sell_id = Sell_id
         self.pay_way = pay_way
         self.Credit_id = Credit_id
         self.ShippingAddress_id = ShippingAddress_id
 
-    def create_new_Buy(self):
+    def create_new_buy(self):
         db.session.add(self)
 
 

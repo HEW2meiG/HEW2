@@ -3,6 +3,9 @@
 {{ item.key1 }}/{{ item.key2 }}/{{ item.key3 }}の本 - {{ super() }}
 {% endblock %}
 {% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
 <div>
     {% if item.picture_path %}
     <img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">

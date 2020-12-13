@@ -8,8 +8,9 @@
 <form method="POST">
     {{form.csrf_token}}
     {{render_field(form.pay_way)}}
-    <a href="{{url_for('buy.buy', item_id=item_id)}}">クレジットカードを追加</a>
+    <!-- ↓あとで変えます -->
+    <a href="{{ url_for('buy.buy', item_id=item_id) }}">クレジットカードを追加</a>
     {{form.submit()}}
 </form>
-<a href="{{url_for('buy.buy', item_id=item_id)}}">戻る</a>
+<a href="{{ url_for('buy.buy', item_id=item_id )}}">戻る</a>
 {% endblock %}

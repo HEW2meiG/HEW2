@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from datetime import date
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash,
@@ -17,7 +18,8 @@ from flmapp.models.token import (
     PasswordResetToken
 )
 from flmapp.forms.mypage import (
-   ProfileForm, ChangePasswordForm, IdentificationForm,ShippingAddressForm
+   ProfileForm, ChangePasswordForm, IdentificationForm, ShippingAddressForm,
+   PayWayForm, CreditRegisterForm
 )
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
@@ -28,6 +30,34 @@ def allowed_image(filename):
     # OKなら１、だめなら0
     return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
 #ここまで------------------------------------------------------------------
+
+
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def shippingaddresses_processor():
+    def search_shippingaddress(ShippingAddress_id):
+        """配送先住所レコードを返す"""
+        shippingaddress = ShippingAddress.search_shippingaddress(ShippingAddress_id)
+        return shippingaddress
+    return dict(search_shippingaddress=search_shippingaddress)
+
+
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def credit_processor():
+    def search_credit(Credit_id):
+        """クレジット情報レコードを返す"""
+        credit = Credit.search_credit(Credit_id)
+        return credit
+    return dict(search_credit=search_credit)
+
+
+# カスタムテンプレートフィルター
+@bp.app_template_filter('credit_num_format')
+def credit_num_format(value):
+    """クレジットカード番号下4ケタ表示フィルター"""
+    return '*'*12 + str(value)[-4:]
+
 
 @bp.route('/')
 @login_required # login_requiredを追加するとログインしていないとアクセスができないようになる
@@ -148,3 +178,65 @@ def shippingaddress_register():
         db.session.commit()
         flash('登録に成功しました')
     return render_template('mypage/shippingaddress_register.html', form=form)
+
+
+@bp.route('/pay_way', methods=['GET', 'POST'])
+@login_required
+def pay_way():
+    """支払い方法選択処理"""
+    if current_user.default_pay_way == 1:
+        default_pay_way = 0
+    elif current_user.default_pay_way == 2:
+        default_pay_way = current_user.default_Credit_id
+    form = PayWayForm(request.form, pay_way=default_pay_way)
+    credits = Credit.select_credits_by_user_id()
+    if credits:
+        form.pay_way.choices += [(credit.Credit_id, 'クレジットカード') for credit in credits]
+    if request.method=='POST' and form.validate():
+        # 代金引き換えのvalue:0に設定済み(1だとCredit_idと重複し判断できないため)
+        if form.pay_way.data == 0:
+            # デフォルト設定を代金引き換えに更新
+            with db.session.begin(subtransactions=True):
+                current_user.default_pay_way = 1
+            db.session.commit()
+        else:
+            # デフォルト設定をクレジットに更新
+            with db.session.begin(subtransactions=True):
+                current_user.default_pay_way = 2
+                current_user.default_Credit_id = form.pay_way.data
+            db.session.commit()
+        flash('登録しました')
+    return render_template('mypage/pay_way.html', form=form, credits=credits)
+
+
+@bp.route('/creditcard_create', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def credit_register():
+    """クレジットカード登録"""
+    form = CreditRegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user_id = current_user.get_id()
+        credit = Credit(
+            # ユーザーID
+            User_id = user_id,
+            # クレジット名義人
+            credit_name = form.credit_name.data,
+            # クレジットカード番号
+            credit_num = form.credit_num.data,
+            # クレジット有効期限 Date型のため、日付はすべて1に設定するとする。
+            expire = date(form.expiration_date02.data, form.expiration_date01.data, 1)
+        )
+        credit.security_code = str(form.security_code.data)
+        # データベース処理
+        with db.session.begin(subtransactions=True):
+            credit.create_new_credit()
+        db.session.commit()
+        # デフォルトに設定する場合
+        if form.is_default.data:
+            with db.session.begin(subtransactions=True):
+                current_user.default_pay_way = 2
+                current_user.default_Credit_id = credit.Credit_id
+            db.session.commit()
+        flash('登録しました')
+        return redirect(url_for('mypage.pay_way'))
+    return render_template('mypage/credit_register.html', form=form)
