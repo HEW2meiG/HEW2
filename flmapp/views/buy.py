@@ -118,8 +118,6 @@ def shippingaddress(item_id):
         default_ShippingAddress_id = current_user.default_ShippingAddress_id
     form = ShippingAddressForm(request.form, ShippingAddress_id=default_ShippingAddress_id)
     shippingaddresses = ShippingAddress.select_shippingaddresses_by_user_id()
-    print('*'*800)
-    print(len(shippingaddresses))
     if shippingaddresses:
         form.ShippingAddress_id.choices += [(int(shippingaddress.ShippingAddress_id),'この住所に送る') for shippingaddress in shippingaddresses]
     if request.method=='POST' and form.validate():
