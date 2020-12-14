@@ -74,9 +74,10 @@ class ShippingAddressForm(FlaskForm):
     
     def validate(self):
         if not super(FlaskForm, self).validate():
+            flash('配送先住所を選択してください。')
             return False
-        if self.ShippingAddress_id == "":
-            flash('配送先を選択してください。')
+        if self.ShippingAddress_id.data is None:
+            flash('配送先住所を選択してください。')
             return False
         return True
 

@@ -30,6 +30,7 @@ class HiddenBuyForm(FlaskForm):
             return False
         return True
 
+
 #支払い方法選択フォーム
 class PayWayForm(FlaskForm):
     pay_way = RadioField('支払い方法',choices=[(1,'代金引換')], coerce=int)
@@ -39,14 +40,15 @@ class PayWayForm(FlaskForm):
 #配送先住所選択フォーム
 class ShippingAddressForm(FlaskForm):
     ShippingAddress_id = RadioField('配送先住所', choices=[], coerce=int)
-    submit = SubmitField('選択した住所に配送する')
     is_default = BooleanField('デフォルトの配送先に設定する')
+    submit = SubmitField('選択した住所に配送する')
     
     def validate(self):
         if not super(FlaskForm, self).validate():
+            flash('配送先住所を選択してください。')
             return False
-        if self.ShippingAddress_id == "":
-            flash('配送先を選択してください。')
+        if self.ShippingAddress_id.data is None:
+            flash('配送先住所を選択してください。')
             return False
         return True
 
