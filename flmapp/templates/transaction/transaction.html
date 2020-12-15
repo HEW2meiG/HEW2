@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}
+取引画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>取引画面</h2>
+<h3>取引情報</h3>
+<table>
+    <tr>
+        <th>商品</th>
+        <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+            {{ item.key1 }}
+            {{ item.key2 }}
+            {{ item.key3 }}
+            {{ item.price }}
+            {{ item.sell_comment }}
+        </a></td>
+    </tr>
+    <tr>
+        <th>送料</th>
+        <td>{{ item.postage.name }}</td>
+    </tr>
+    <tr>
+        <th>購入日時</th>
+        <td>{{ buy.create_at.strftime("%Y/%m/%d %H:%M") }}</td>
+    </tr>
+    <tr>
+        <th>商品ID</th>
+        <td>{{ item.Sell_id }}</td>
+    </tr>
+    <tr>
+        <th>お届け先</th>
+        <td>
+            <p>
+                {{ shippingaddress.zip_code }}<br>
+                {{ shippingaddress.prefecture }}
+                {{ shippingaddress.address1 }}
+                {{ shippingaddress.address2 }}<br>
+                {{ shippingaddress.address3 }}
+            </p>
+            <p>
+                {{ shippingaddress.last_name }}
+                {{ shippingaddress.first_name }}
+                様
+            </p>
+        </td>
+    </tr>
+</table>
+<h3>出品者情報</h3>
+<img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+{{ item.user.username }}
+
+{% endblock %}

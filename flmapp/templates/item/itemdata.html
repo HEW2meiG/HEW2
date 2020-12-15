@@ -7,10 +7,8 @@
     {{ message }}
 {% endfor %}
 <div>
-    {% if item.picture_path %}
-    <img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">
-    {% endif %}
-    {{ item.username }}
+    <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+    {{ item.user.username }}
     {{ item.key1 }}
     {{ item.key2 }}
     {{ item.key3 }}

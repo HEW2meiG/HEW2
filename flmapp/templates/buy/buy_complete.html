@@ -29,6 +29,6 @@
 <p>{{ shippingaddress.address1 }}</p>
 <p>{{ shippingaddress.address2 }}</p>
 <p>{{ shippingaddress.address3 }}</p>
-<a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">取引画面をみる</a>
+<a href="{{url_for('transaction.transaction', item_id=item.Sell_id)}}">取引画面をみる</a>
 <a href="{{url_for('route.home')}}">ホームへ戻る</a>
 {% endblock %}
