@@ -135,7 +135,7 @@ def shippingaddress(item_id):
 @login_required
 @check_buy
 def shippingaddress_register(item_id):
-    """配送先住所追加処理"""
+    """配送先住所登録処理"""
     form = ShippingAddressRegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         user_id = current_user.get_id()
@@ -162,5 +162,5 @@ def shippingaddress_register(item_id):
             db.session.commit()
         session['ShippingAddress_id'] = shippingaddress.ShippingAddress_id
         flash('登録しました')
-        return redirect(url_for('buy.buy', item_id=item_id))
+        return redirect(url_for('buy.shippingaddress', item_id=item_id))
     return render_template('buy/shippingaddress_register.html', form=form)

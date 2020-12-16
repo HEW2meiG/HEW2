@@ -19,6 +19,7 @@ from flmapp.models.token import (
 )
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm, ShippingAddressForm,
+   ShippingAddressRegisterForm, ShippingAddressEditForm, HiddenShippingAddressDeleteForm,
    PayWayForm, CreditRegisterForm
 )
 
@@ -63,6 +64,7 @@ def credit_num_format(value):
 @login_required # login_requiredを追加するとログインしていないとアクセスができないようになる
 def mypagetop():
     return render_template('mypage/mypage.html')
+
 
 # プロフィール設定
 @bp.route('/profile', methods=['GET', 'POST'])
@@ -146,18 +148,29 @@ def identification():
         flash('更新に成功しました')
     return render_template('mypage/identification.html', form=form, userinfo=userinfo, useradress=useradress)
 
-# 発送元・お届け先住所一覧
+
 @bp.route('/shippingaddress', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress():
-    form = ShippingAddressForm(request.form)
-    return render_template('mypage/shippingaddress.html', form=form)
+    """配送先住所選択処理"""
+    form = ShippingAddressForm(request.form, ShippingAddress_id=current_user.default_ShippingAddress_id)
+    delete_form = HiddenShippingAddressDeleteForm(request.form)
+    shippingaddresses = ShippingAddress.select_shippingaddresses_by_user_id()
+    if shippingaddresses:
+        form.ShippingAddress_id.choices += [(int(shippingaddress.ShippingAddress_id),'この住所に送る') for shippingaddress in shippingaddresses]
+    if request.method=='POST' and form.validate():
+        with db.session.begin(subtransactions=True):
+            current_user.default_ShippingAddress_id = form.ShippingAddress_id.data
+        db.session.commit()
+        flash('配送先住所を設定しました。')
+    return render_template('mypage/shippingaddress.html', form=form, delete_form=delete_form, shippingaddresses=shippingaddresses)
 
-# 発送元・お届け先住所登録
+
 @bp.route('/shippingaddress_register', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress_register():
-    form = ShippingAddressForm(request.form)
+    """配送先住所登録処理"""
+    form = ShippingAddressRegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         userid = current_user.get_id()
         shippingaddress = ShippingAddress(
@@ -176,8 +189,36 @@ def shippingaddress_register():
         with db.session.begin(subtransactions=True):
             shippingaddress.create_new_shippingaddress()
         db.session.commit()
-        flash('登録に成功しました')
+        # 配送先をデフォルトに設定する場合
+        if form.is_default.data:
+            with db.session.begin(subtransactions=True):
+                current_user.default_ShippingAddress_id = shippingaddress.ShippingAddress_id
+            db.session.commit()
+        flash('登録しました')
+        return redirect(url_for('mypage.shippingaddress'))
     return render_template('mypage/shippingaddress_register.html', form=form)
+
+
+@bp.route('/shippingaddress_delete', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def shippingaddress_delete():
+    """配送先住所削除処理"""
+    form = HiddenShippingAddressDeleteForm(request.form)
+    if request.method == 'POST' and form.validate():
+        with db.session.begin(subtransactions=True):
+            ShippingAddress.delete_shippingaddress(form.ShippingAddress_id.data)
+        db.session.commit()
+        flash('削除しました')
+    return redirect(url_for('mypage.shippingaddress'))
+
+
+@bp.route('/shippingaddress_edit/<int:shippingaddress_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def shippingaddress_edit(shippingaddress_id):
+    """配送先住所編集処理"""
+    form = ShippingAddressEditForm(request.form)
+    # 編集処理を追加してください。
+    return render_template('mypage/shippingaddress_edit.html', form=form)
 
 
 @bp.route('/pay_way', methods=['GET', 'POST'])
@@ -205,7 +246,7 @@ def pay_way():
                 current_user.default_pay_way = 2
                 current_user.default_Credit_id = form.pay_way.data
             db.session.commit()
-        flash('登録しました')
+        flash('支払い方法を選択しました。')
     return render_template('mypage/pay_way.html', form=form, credits=credits)
 
 

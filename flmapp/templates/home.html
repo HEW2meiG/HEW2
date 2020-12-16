@@ -17,9 +17,7 @@
         {% for item in items %}
         <tr>
             <td>
-                {% if item.user.picture_path %}
-                    <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-                {% endif %}
+                <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
                 {{ item.user.username }}
             </td>
             <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">

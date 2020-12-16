@@ -71,7 +71,7 @@ class Sell(db.Model):
 
     @classmethod
     def select_sell_by_sell_id(cls, Sell_id):
-        """Sell_id(item_id)によってSell(商品)レコードを得る"""
+        """Sell_id(item_id)によってSell(出品情報)レコードを得る"""
         return cls.query.get(Sell_id)
 
 
@@ -99,6 +99,11 @@ class Buy(db.Model):
 
     def create_new_buy(self):
         db.session.add(self)
+
+    @classmethod
+    def select_buy_by_sell_id(cls, Sell_id):
+        """Sell_id(item_id)によってBuy(購入情報)レコードを得る"""
+        return cls.query.filter_by(Sell_id=Sell_id).first()
 
 
 # 購入情報テーブルのEnum型を定義

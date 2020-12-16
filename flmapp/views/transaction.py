@@ -10,11 +10,18 @@ from flask_login import (
 from flmapp import db # SQLAlchemy
 
 from flmapp.models.user import (
-    User
+    User, ShippingAddress
 )
 from flmapp.models.trade import (
-    Sell
+    Sell, Buy
 )
 
 bp = Blueprint('transaction', __name__, url_prefix='/transaction')
 
+
+@bp.route('/<int:item_id>', methods=['GET', 'POST'])
+def transaction(item_id):
+    item = Sell.select_sell_by_sell_id(item_id)
+    buy = Buy.select_buy_by_sell_id(item_id)
+    shippingaddress = ShippingAddress.search_shippingaddress(buy.ShippingAddress_id)
+    return render_template('transaction/transaction.html', item=item, buy=buy, shippingaddress=shippingaddress)

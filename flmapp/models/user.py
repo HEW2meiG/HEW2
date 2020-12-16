@@ -192,6 +192,11 @@ class ShippingAddress(db.Model):
     def select_shippingaddresses_by_user_id(cls):
         return cls.query.filter_by(User_id = current_user.get_id()).all()
 
+    @classmethod
+    def delete_shippingaddress(cls, shippingaddress_id):
+        """配送先住所レコードの削除"""
+        cls.query.filter_by(ShippingAddress_id=shippingaddress_id).delete()
+
 
 class Credit(db.Model):
     """クレジット情報テーブル"""

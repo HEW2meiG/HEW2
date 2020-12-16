@@ -19,17 +19,17 @@ class HiddenBuyForm(FlaskForm):
     def validate(self):
         if not super(FlaskForm, self).validate():
             return False
-        # 支払い方法がクレジットカードで、クレジット情報IDがNULLのとき
-        if int(self.pay_way.data) == 2 and self.Credit_id.data is None:
+        if int(self.pay_way.data) == 2 and self.Credit_id.data == "":
             flash('クレジットカードが選択されていません。')
             return False
-        if self.pay_way.data is None:
+        if self.pay_way.data == "":
             flash('支払い方法を選択してください。')
             return False
-        if self.ShippingAddress_id is None:
+        if self.ShippingAddress_id.data == "":
             flash('配送先住所を選択してください。')
-            return
+            return False
         return True
+
 
 #支払い方法選択フォーム
 class PayWayForm(FlaskForm):
@@ -40,14 +40,15 @@ class PayWayForm(FlaskForm):
 #配送先住所選択フォーム
 class ShippingAddressForm(FlaskForm):
     ShippingAddress_id = RadioField('配送先住所', choices=[], coerce=int)
-    submit = SubmitField('選択した住所に配送する')
     is_default = BooleanField('デフォルトの配送先に設定する')
+    submit = SubmitField('選択した住所に配送する')
     
     def validate(self):
         if not super(FlaskForm, self).validate():
+            flash('配送先住所を選択してください。')
             return False
-        if self.ShippingAddress_id is None:
-            flash('配送先を選択してください。')
+        if self.ShippingAddress_id.data is None:
+            flash('配送先住所を選択してください。')
             return False
         return True
 
