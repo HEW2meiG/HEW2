@@ -44,5 +44,16 @@ class DealMessage(db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    def create_new_DealMessage(self):
+    def __init__(self, Sell_id, to_user_id, from_user_id, message):
+        self.Sell_id = Sell_id
+        self.to_user_id = to_user_id
+        self.from_user_id = from_user_id
+        self.message = message
+
+    def create_new_dealmessage(self):
         db.session.add(self)
+
+    @classmethod
+    def get_messages_by_sell_id(cls, Sell_id):
+        """Sell_id(item_id)によって取引メッセージレコードを得る"""
+        return cls.query.filter_by(Sell_id = Sell_id).all()

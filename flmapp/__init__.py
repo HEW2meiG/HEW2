@@ -7,6 +7,8 @@ from flask_mail import Mail, Message
 from flask_sessionstore import Session
 from flask_session_captcha import FlaskSessionCaptcha
 
+from flmapp.utils.template_filters import replace_newline
+
 # LoginManagerの登録
 login_manager = LoginManager()
 # ログインページのviewを指定
@@ -71,6 +73,9 @@ def create_app():
     mail.init_app(app)
     Session(app)
     captcha = FlaskSessionCaptcha(app)
+
+    # カスタムテンプレートフィルターの登録
+    app.add_template_filter(replace_newline)
 
     # 分割したblueprintを登録する
     from flmapp.views import (
