@@ -42,7 +42,7 @@ def transaction(item_id):
     if request.method == 'POST' and messageform.validate():
         dealmessage = DealMessage(
             Sell_id = item_id,
-            to_user_id = item.User_id,
+            to_user_id = dest_user.User_id,
             from_user_id = current_user.User_id,
             message = messageform.message.data
         )
