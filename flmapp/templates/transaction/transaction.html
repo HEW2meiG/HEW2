@@ -33,7 +33,7 @@
     </tr>
     <tr>
         <th>商品ID</th>
-        <td>{{ item.Sell_id }}</td>
+        <td>{{ '%08d' % item.Sell_id }}</td>
     </tr>
     <tr>
         <th>お届け先</th>
@@ -61,6 +61,11 @@
     {% if message.from_user_id == current_user.User_id %}
         <!-- 自分側 -->
         <div class="msg-box">
+            <div id="self-message-tag-{{ message.DealMessage_id }}">
+            {% if message.is_checked %}
+                <p>既読</p>
+            {% endif %}
+            </div>
             <div class="speech-bubble-self">
                 <!-- 改行部分を区切ってforループする -->
                 {% for splitted_message in message.message|replace_newline %}
@@ -88,9 +93,37 @@
         </div>
     {% endif %}
 {% endfor %}
+<!-- ↓message-formの上にajaxで取得されるメッセージが入ります -->
+<div id="message-form"></div>
 <form method="POST">
     {{ messageform.csrf_token }}
     {{ render_field(messageform.message, cols="50", rows="5") }}
     {{ messageform.submit() }}
 </form>
+<script>
+    $(function(){
+        // 1秒間隔でget_new_messagesを実行
+        timer = setInterval("get_new_messages()", 1000);
+        // 初期表示で画面の一番下に行く
+        var scroll = (document.scrollingElement || document.body);
+        scroll.scrollTop = scroll.scrollHeight;
+    });
+    dest_user_id = "{{ dest_user.User_id }}";
+    sell_id = "{{ item.Sell_id }}";
+    function get_new_messages(){
+        $.getJSON("/transaction/message_ajax", {
+            dest_user_id: dest_user_id,
+            sell_id : sell_id
+        }, function(data){
+            $('#message-form').before(data['data']);
+            var checked_message_ids = data['checked_message_ids'];
+            console.log(checked_message_ids.length);
+            for(let idx = 0; idx < checked_message_ids.length; idx++){
+                console.log("for分");
+                $('#self-message-tag-' + checked_message_ids[idx]).append('<p>既読</p>');
+            }
+            console.log("わーー");
+        });
+    };
+</script>
 {% endblock %}

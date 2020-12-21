@@ -1,5 +1,6 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy import and_, or_, desc
 
 from datetime import datetime, timedelta
 
@@ -57,3 +58,46 @@ class DealMessage(db.Model):
     def get_messages_by_sell_id(cls, Sell_id):
         """Sell_id(item_id)によって取引メッセージレコードを得る"""
         return cls.query.filter_by(Sell_id = Sell_id).all()
+
+    @classmethod
+    def update_is_read_by_ids(cls, ids):
+        """DealMessage_idが一致するレコードのis_readをTrueに更新する"""
+        cls.query.filter(cls.DealMessage_id.in_(ids)).update(
+            {'is_read':1},
+            # レコードを更新する前にSELECTを実行して更新対象のレコードを取得する。
+            # デフォルト値(設定しないと)IN句には対応していないためエラーになる。
+            synchronize_session='fetch'
+        )
+
+    @classmethod
+    def update_is_checked_by_ids(cls, ids):
+        """DealMessage_idが一致するレコードのis_checkedをTrueに更新する"""
+        cls.query.filter(cls.DealMessage_id.in_(ids)).update(
+            {'is_checked':1},
+            synchronize_session='fetch'
+        )
+
+    @classmethod
+    def select_not_read_messages(cls, dest_user_id, self_user_id, sell_id):
+        """相手から自分に対するメッセージでまだ読まれていないメッセージを取得"""
+        return cls.query.filter(
+            and_(
+                cls.from_user_id == dest_user_id,
+                cls.to_user_id == self_user_id,
+                cls.Sell_id == sell_id,
+                cls.is_read == 0
+            )
+        ).order_by(cls.DealMessage_id).all()
+
+    @classmethod
+    def select_not_checked_messages(cls, self_user_id, dest_user_id, sell_id):
+        """自分から相手に対するメッセージで相手に読まれているが、自分がチェックしていないメッセージを取得"""
+        return cls.query.filter(
+            and_(
+                cls.from_user_id == self_user_id,
+                cls.to_user_id == dest_user_id,
+                cls.Sell_id == sell_id,
+                cls.is_read == 1,
+                cls.is_checked == 0
+            )
+        ).order_by(cls.DealMessage_id).all()
