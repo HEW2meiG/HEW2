@@ -2,6 +2,9 @@
 {% block title %}
 ホーム - {{ super() }}
 {% endblock %}
+{%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
+{% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
     {{ message }}
@@ -27,8 +30,47 @@
                 {{ item.key3 }}
                 {{ item.sell_comment }}
             </a></td>
+            <td>
+                {% include "like.html" %}
+            </td>
         </tr>
         {% endfor %}
     </table>
 </div>
+<script>
+    // ここから ajaxでcsrf_tokenを使用するとき
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    // ここまで ajaxでcsrf_tokenを使用するとき
+    // ここから いいね処理
+    $(document).ready(function(event){
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('route.like_ajax') }}",
+                data: {'sell_id': $(this).attr('name')},
+                dataType: 'json',
+                success: function(data){
+                    selector = document.getElementsByName(data['item_id']);
+                    if(data['liked']){
+                        $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
+                    }
+                    else {
+                        $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
+                    }
+                    selector2 = document.getElementsByName(data['item_id'] + "-count");
+                    $(selector2).text(data['count']);
+                }
+            });
+        });
+    });
+    // ここまで いいね処理
+</script>
 {% endblock %}

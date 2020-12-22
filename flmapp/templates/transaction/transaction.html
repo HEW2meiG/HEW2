@@ -121,7 +121,6 @@
         }, function(data){
             $('#message-form').before(data['data']);
             var checked_message_ids = data['checked_message_ids'];
-            console.log(checked_message_ids.length);
             for(let idx = 0; idx < checked_message_ids.length; idx++){
                 $('#self-message-tag-' + checked_message_ids[idx]).append('<p>既読</p>');
             }

@@ -29,6 +29,7 @@ bp = Blueprint('transaction', __name__, url_prefix='/transaction')
 @bp.route('/<int:item_id>', methods=['GET', 'POST'])
 @login_required
 def transaction(item_id):
+    """取引画面処理"""
     item = Sell.select_sell_by_sell_id(item_id)
     buy = Buy.select_buy_by_sell_id(item_id)
     shippingaddress = ShippingAddress.search_shippingaddress(buy.ShippingAddress_id)

@@ -24,7 +24,7 @@ class PostMessage(db.Model):
         self.from_user_id = from_user_id
         self.message = message
 
-    def create_new_PostMessage(self):
+    def create_new_postmessage(self):
         db.session.add(self)
 
 
