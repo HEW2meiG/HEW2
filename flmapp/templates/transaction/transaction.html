@@ -57,7 +57,10 @@
 <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
 {{ item.user.username }}
 <h3>取引メッセージ</h3>
-{% for message in messages %}
+<div id="losd_message_button" class="col-12">
+    <button class="col12 bth bth-light btn-outline-primary" onclick="load_old_messages();">メッセージを読み込む</button>
+</div>
+{% for message in messages|reverse %}
     {% if message.from_user_id == current_user.User_id %}
         <!-- 自分側 -->
         <div class="msg-box">
@@ -110,6 +113,7 @@
     });
     dest_user_id = "{{ dest_user.User_id }}";
     sell_id = "{{ item.Sell_id }}";
+    offset_value = 1;
     function get_new_messages(){
         $.getJSON("/transaction/message_ajax", {
             dest_user_id: dest_user_id,
@@ -119,11 +123,25 @@
             var checked_message_ids = data['checked_message_ids'];
             console.log(checked_message_ids.length);
             for(let idx = 0; idx < checked_message_ids.length; idx++){
-                console.log("for分");
                 $('#self-message-tag-' + checked_message_ids[idx]).append('<p>既読</p>');
             }
-            console.log("わーー");
         });
     };
+    function load_old_messages(){
+        $.getJSON("/transaction/load_old_messages", {
+            dest_user_id : dest_user_id,
+            sell_id : sell_id,
+            offset_value : offset_value
+        }, function(data){
+            if(data['data']){
+                hidden_id = "load_message_" + offset_value;
+                hidden_tag = '<div id=">' + hidden_id + '"></div>';
+                $(hidden_tag).insertAfter('#load_message_button');
+                $(data['data']).insertAfter('#load_message_button');
+                $('body, html').animate({scrollTop: $('#' + hidden_id).offset().top},0);
+                offset_value += 1;
+            }
+        });
+    }
 </script>
 {% endblock %}

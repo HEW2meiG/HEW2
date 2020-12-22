@@ -21,7 +21,7 @@ from flmapp.models.message import (
 from flmapp.forms.transaction import (
     DealMessageForm
 )
-from flmapp.utils.message_format import make_deal_message_format
+from flmapp.utils.message_format import make_deal_message_format, make_old_deal_message_format
 
 bp = Blueprint('transaction', __name__, url_prefix='/transaction')
 
@@ -95,3 +95,16 @@ def message_ajax():
             DealMessage.update_is_checked_by_ids(not_checked_message_ids)
         db.session.commit()
     return jsonify(data=make_deal_message_format(dest_user, not_read_messages), checked_message_ids=not_checked_message_ids)
+
+
+@bp.route('/load_old_messages', methods=['GET'])
+@login_required
+def load_old_messages():
+    dest_user_id = request.args.get('dest_user_id', -1, type=int)
+    sell_id = request.args.get('sell_id', -1, type=int)
+    offset_value = request.args.get('offset_value', -1, type=int)
+    if dest_user_id == -1 or offset_value == -1:
+        return
+    messages = DealMessage.get_messages_by_sell_id(sell_id, offset_value*50)
+    dest_user = User.select_user_by_id(dest_user_id)
+    return jsonify(data=make_old_deal_message_format(dest_user, messages))
