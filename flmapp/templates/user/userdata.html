@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}
+{{ user.username }}さん - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<div>
+    <img src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+    {{ user.username }}
+    {{ user.prof_comment }}
+    {% include "follow.html" %}
+    <p>
+        フォロワー：
+        <span id="{{ user.User_id }}-count" class="count">{{ followers_count(user.User_id) }}</span>
+    </p>
+</div>
+<script>
+    // ここから ajaxでcsrf_tokenを使用するとき
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    // ここまで ajaxでcsrf_tokenを使用するとき
+    // ここから フォロー処理
+    $(document).ready(function(event){
+        $(document).on('click', '#follow', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('ajax.follow_ajax') }}",
+                data: {'user_id': $(this).attr('name')},
+                dataType: 'json',
+                success: function(data){
+                    selector = document.getElementsByName(data['user_id']);
+                    if(data['followed']){
+                        $(selector).attr('class', 'follow-btn');
+                        $(selector).text('フォロー中');
+                    }
+                    else {
+                        $(selector).attr('class', 'unfollow-btn');
+                        $(selector).text('フォロー');
+                    }
+                    selector2 = document.getElementById(data['user_id'] + "-count");
+                    $(selector2).text(data['count']);
+                }
+            });
+        });
+    });
+    // ここまで フォロー処理
+</script>
+{% endblock %}

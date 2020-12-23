@@ -81,7 +81,8 @@ def create_app():
 
     # 分割したblueprintを登録する
     from flmapp.views import (
-        auth, mypage, route, sell, item, buy, transaction
+        auth, mypage, route, sell, item, buy, transaction,
+        ajax, user
     )
 
     app.register_blueprint(auth.bp)
@@ -91,5 +92,7 @@ def create_app():
     app.register_blueprint(item.bp)
     app.register_blueprint(buy.bp)
     app.register_blueprint(transaction.bp)
+    app.register_blueprint(ajax.bp)
+    app.register_blueprint(user.bp)
 
     return app
