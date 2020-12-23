@@ -3,6 +3,10 @@
 {% block title %}
 ログイン - {{ super() }}
 {% endblock %}
+{%block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}"> -->
+{% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
 {{ message }}
