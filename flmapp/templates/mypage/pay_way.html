@@ -20,6 +20,13 @@
                 <td>{{ credit.credit_name }}</td>
                 <td>{{ credit.credit_num | credit_num_format }}</td>
                 <td>{{ credit.expire }}</td>
+            <td>
+                <form method="POST" action="{{url_for('mypage.pay_way_delete')}}">
+                    {{ delete_form.csrf_token }}
+                    {{ delete_form.Credit_id(value=credit.Credit_id) }}
+                    {{ delete_form.submit() }}
+                </form>
+            </td>
             {% endif %}
         </tr>
     {% endfor %}
