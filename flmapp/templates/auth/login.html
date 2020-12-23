@@ -1,8 +1,12 @@
 {% from "_formhelpers.html" import render_field %}
-{% extends "base.html" %}
+{% extends "base01.html" %}
 {% block title %}
 ログイン - {{ super() }}
 {% endblock %}
+{%block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}"> -->
+{% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
 {{ message }}
@@ -15,7 +19,11 @@
         {{ form.submit() }}
     </form>
     <a href="{{url_for('auth.forgot_password')}}">
-        パスワードを忘れた場合
+        パスワードを忘れた方はこちら
+    </a>
+    <p>アカウントをお持ちでない方はこちら</p>
+    <a href="{{url_for('auth.register')}}">
+        新規会員登録
     </a>
 </div>
 {% endblock %}

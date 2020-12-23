@@ -71,13 +71,6 @@ class User(UserMixin, db.Model):
         """ユーザーIDによってユーザーを得る"""
         return cls.query.get(User_id)
 
-    @classmethod
-    def get_defalt(cls, User_id):
-        """ユーザーIDによってデフォルトの支払い方法と配送先を得る"""
-        return cls.query.get(User_id).with_entities(
-            cls.default_ShippingAddress_id, cls.default_pay_way, cls.default_Credit_id
-        )
-
     # setterに記載 変更する
     def save_new_password(self, new_password):
         """
@@ -192,9 +185,18 @@ class ShippingAddress(db.Model):
         db.session.add(self)
 
     @classmethod
+    def search_shippingaddress(cls, ShippingAddress_id):
+        return cls.query.get(ShippingAddress_id)
+
+    @classmethod
     def select_shippingaddresses_by_user_id(cls):
         return cls.query.filter_by(User_id = current_user.get_id()).all()
- 
+
+    @classmethod
+    def delete_shippingaddress(cls, shippingaddress_id):
+        """配送先住所レコードの削除"""
+        cls.query.filter_by(ShippingAddress_id=shippingaddress_id).delete()
+
 
 class Credit(db.Model):
     """クレジット情報テーブル"""
@@ -211,6 +213,15 @@ class Credit(db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
+    def __init__(self, User_id, credit_name, credit_num, expire):
+        self.User_id = User_id
+        self.credit_name = credit_name
+        self.credit_num = credit_num
+        self.expire = expire
+
+    def create_new_credit(self):
+        db.session.add(self)
+
     # Custom property getter
     @property
     def security_code(self):
@@ -220,7 +231,11 @@ class Credit(db.Model):
     @security_code.setter
     def security_code(self, security_code):
         # generate_password_hash()：ハッシュ値が生成される
-        self.security_code_hash = generate_password_hash(securitycode)
+        self.security_code_hash = generate_password_hash(security_code)
+
+    @classmethod
+    def search_credit(cls, Credit_id):
+        return cls.query.get(Credit_id)
 
     @classmethod
     def select_credits_by_user_id(cls):

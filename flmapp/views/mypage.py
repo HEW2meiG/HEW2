@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from datetime import date
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash,
@@ -17,7 +18,9 @@ from flmapp.models.token import (
     PasswordResetToken, MailResetToken
 )
 from flmapp.forms.mypage import (
-   ProfileForm, ChangePasswordForm, IdentificationForm,ShippingAddressForm
+   ProfileForm, ChangePasswordForm, IdentificationForm, ShippingAddressForm,
+   ShippingAddressRegisterForm, ShippingAddressEditForm, HiddenShippingAddressDeleteForm,
+   PayWayForm, CreditRegisterForm
 )
 
 from flmapp import mail # メール送信インポート
@@ -32,10 +35,39 @@ def allowed_image(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
 #ここまで------------------------------------------------------------------
 
+
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def shippingaddresses_processor():
+    def search_shippingaddress(ShippingAddress_id):
+        """配送先住所レコードを返す"""
+        shippingaddress = ShippingAddress.search_shippingaddress(ShippingAddress_id)
+        return shippingaddress
+    return dict(search_shippingaddress=search_shippingaddress)
+
+
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def credit_processor():
+    def search_credit(Credit_id):
+        """クレジット情報レコードを返す"""
+        credit = Credit.search_credit(Credit_id)
+        return credit
+    return dict(search_credit=search_credit)
+
+
+# カスタムテンプレートフィルター
+@bp.app_template_filter('credit_num_format')
+def credit_num_format(value):
+    """クレジットカード番号下4ケタ表示フィルター"""
+    return '*'*12 + str(value)[-4:]
+
+
 @bp.route('/')
 @login_required # login_requiredを追加するとログインしていないとアクセスができないようになる
 def mypagetop():
     return render_template('mypage/mypage.html')
+
 
 # プロフィール設定
 @bp.route('/profile', methods=['GET', 'POST'])
@@ -184,18 +216,29 @@ def identification():
         flash('更新に成功しました')
     return render_template('mypage/identification.html', form=form, userinfo=userinfo, useradress=useradress)
 
-# 発送元・お届け先住所一覧
+
 @bp.route('/shippingaddress', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress():
-    form = ShippingAddressForm(request.form)
-    return render_template('mypage/shippingaddress.html', form=form)
+    """配送先住所選択処理"""
+    form = ShippingAddressForm(request.form, ShippingAddress_id=current_user.default_ShippingAddress_id)
+    delete_form = HiddenShippingAddressDeleteForm(request.form)
+    shippingaddresses = ShippingAddress.select_shippingaddresses_by_user_id()
+    if shippingaddresses:
+        form.ShippingAddress_id.choices += [(int(shippingaddress.ShippingAddress_id),'この住所に送る') for shippingaddress in shippingaddresses]
+    if request.method=='POST' and form.validate():
+        with db.session.begin(subtransactions=True):
+            current_user.default_ShippingAddress_id = form.ShippingAddress_id.data
+        db.session.commit()
+        flash('配送先住所を設定しました。')
+    return render_template('mypage/shippingaddress.html', form=form, delete_form=delete_form, shippingaddresses=shippingaddresses)
 
-# 発送元・お届け先住所登録
+
 @bp.route('/shippingaddress_register', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress_register():
-    form = ShippingAddressForm(request.form)
+    """配送先住所登録処理"""
+    form = ShippingAddressRegisterForm(request.form)
     if request.method == 'POST' and form.validate():
         userid = current_user.get_id()
         shippingaddress = ShippingAddress(
@@ -214,5 +257,95 @@ def shippingaddress_register():
         with db.session.begin(subtransactions=True):
             shippingaddress.create_new_shippingaddress()
         db.session.commit()
-        flash('登録に成功しました')
+        # 配送先をデフォルトに設定する場合
+        if form.is_default.data:
+            with db.session.begin(subtransactions=True):
+                current_user.default_ShippingAddress_id = shippingaddress.ShippingAddress_id
+            db.session.commit()
+        flash('登録しました')
+        return redirect(url_for('mypage.shippingaddress'))
     return render_template('mypage/shippingaddress_register.html', form=form)
+
+
+@bp.route('/shippingaddress_delete', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def shippingaddress_delete():
+    """配送先住所削除処理"""
+    form = HiddenShippingAddressDeleteForm(request.form)
+    if request.method == 'POST' and form.validate():
+        with db.session.begin(subtransactions=True):
+            ShippingAddress.delete_shippingaddress(form.ShippingAddress_id.data)
+        db.session.commit()
+        flash('削除しました')
+    return redirect(url_for('mypage.shippingaddress'))
+
+
+@bp.route('/shippingaddress_edit/<int:shippingaddress_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def shippingaddress_edit(shippingaddress_id):
+    """配送先住所編集処理"""
+    form = ShippingAddressEditForm(request.form)
+    # 編集処理を追加してください。
+    return render_template('mypage/shippingaddress_edit.html', form=form)
+
+
+@bp.route('/pay_way', methods=['GET', 'POST'])
+@login_required
+def pay_way():
+    """支払い方法選択処理"""
+    if current_user.default_pay_way == 1:
+        default_pay_way = 0
+    elif current_user.default_pay_way == 2:
+        default_pay_way = current_user.default_Credit_id
+    form = PayWayForm(request.form, pay_way=default_pay_way)
+    credits = Credit.select_credits_by_user_id()
+    if credits:
+        form.pay_way.choices += [(credit.Credit_id, 'クレジットカード') for credit in credits]
+    if request.method=='POST' and form.validate():
+        # 代金引き換えのvalue:0に設定済み(1だとCredit_idと重複し判断できないため)
+        if form.pay_way.data == 0:
+            # デフォルト設定を代金引き換えに更新
+            with db.session.begin(subtransactions=True):
+                current_user.default_pay_way = 1
+            db.session.commit()
+        else:
+            # デフォルト設定をクレジットに更新
+            with db.session.begin(subtransactions=True):
+                current_user.default_pay_way = 2
+                current_user.default_Credit_id = form.pay_way.data
+            db.session.commit()
+        flash('支払い方法を選択しました。')
+    return render_template('mypage/pay_way.html', form=form, credits=credits)
+
+
+@bp.route('/creditcard_create', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def credit_register():
+    """クレジットカード登録"""
+    form = CreditRegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user_id = current_user.get_id()
+        credit = Credit(
+            # ユーザーID
+            User_id = user_id,
+            # クレジット名義人
+            credit_name = form.credit_name.data,
+            # クレジットカード番号
+            credit_num = form.credit_num.data,
+            # クレジット有効期限 Date型のため、日付はすべて1に設定するとする。
+            expire = date(form.expiration_date02.data, form.expiration_date01.data, 1)
+        )
+        credit.security_code = str(form.security_code.data)
+        # データベース処理
+        with db.session.begin(subtransactions=True):
+            credit.create_new_credit()
+        db.session.commit()
+        # デフォルトに設定する場合
+        if form.is_default.data:
+            with db.session.begin(subtransactions=True):
+                current_user.default_pay_way = 2
+                current_user.default_Credit_id = credit.Credit_id
+            db.session.commit()
+        flash('登録しました')
+        return redirect(url_for('mypage.pay_way'))
+    return render_template('mypage/credit_register.html', form=form)

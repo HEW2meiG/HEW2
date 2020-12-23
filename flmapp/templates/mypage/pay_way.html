@@ -1,0 +1,34 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+支払い方法選択画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>支払い方法選択</h2>
+<form method="POST">
+    {{ form.csrf_token }}
+    <table>
+    {% for field in form.pay_way %}
+        <tr>
+            <td>{{ field }}</td>
+            <td>{{ field.label }}</td>
+            {% if field.data != 0 %}
+                {% set credit = search_credit(field.data) %}
+                <td>{{ credit.credit_name }}</td>
+                <td>{{ credit.credit_num | credit_num_format }}</td>
+                <td>{{ credit.expire }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </table>
+    {% if credits|length < 5 %}
+        <a href="{{ url_for('mypage.credit_register') }}">クレジットカードを追加</a>
+    {% else %}
+        <P>クレジットカードは5件以上登録できません。</P>
+    {% endif%}
+    {{ form.submit() }}
+</form>
+{% endblock %}

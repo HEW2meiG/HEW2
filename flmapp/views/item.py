@@ -18,6 +18,8 @@ from flmapp.models.trade import (
 
 bp = Blueprint('item', __name__, url_prefix='/item')
 
+#! 出品したユーザーとログイン中のユーザーが一緒なら購入ボタンを消す
+
 @bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
 def itemdata(item_id):
     item = Sell.query.get(item_id)

@@ -1,0 +1,8 @@
+<form method="POST" action="{{url_for('ajax.follow_ajax')}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if followed %}
+        <button id="follow" name="{{ user.User_id }}" class="follow-btn">フォロー中</button>
+    {% else %}
+        <button id="follow" name="{{ user.User_id }}" class="unfollow-btn">フォロー</button>      
+    {% endif %}
+</form>
