@@ -240,3 +240,8 @@ class Credit(db.Model):
     @classmethod
     def select_credits_by_user_id(cls):
         return cls.query.filter_by(User_id = current_user.get_id()).all()
+        
+    @classmethod
+    def delete_credit(cls, Credit_id):
+        """支払い方法の削除"""
+        cls.query.filter_by(Credit_id=Credit_id).delete()

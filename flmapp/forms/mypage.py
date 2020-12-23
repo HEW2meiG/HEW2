@@ -136,6 +136,11 @@ class PayWayForm(FlaskForm):
     pay_way = RadioField('支払い方法',choices=[(0,'代金引換')], coerce=int)
     submit = SubmitField('選択した支払い方法を使う')
 
+class HiddenPayWayDeleteForm(FlaskForm):
+    """支払い方法削除Hiddenフォーム"""
+    Credit_id = HiddenField()
+    submit = SubmitField('削除')
+
 
 class HiddenCreditDeleteForm(FlaskForm):
     """配送先住所削除Hiddenフォーム"""

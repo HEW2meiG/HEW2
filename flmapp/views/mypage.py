@@ -20,7 +20,7 @@ from flmapp.models.token import (
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm, ShippingAddressForm,
    ShippingAddressRegisterForm, ShippingAddressEditForm, HiddenShippingAddressDeleteForm,
-   PayWayForm, CreditRegisterForm
+   PayWayForm, HiddenPayWayDeleteForm, CreditRegisterForm
 )
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
@@ -230,6 +230,7 @@ def pay_way():
     elif current_user.default_pay_way == 2:
         default_pay_way = current_user.default_Credit_id
     form = PayWayForm(request.form, pay_way=default_pay_way)
+    delete_form = HiddenPayWayDeleteForm(request.form)
     credits = Credit.select_credits_by_user_id()
     if credits:
         form.pay_way.choices += [(credit.Credit_id, 'クレジットカード') for credit in credits]
@@ -247,7 +248,19 @@ def pay_way():
                 current_user.default_Credit_id = form.pay_way.data
             db.session.commit()
         flash('支払い方法を選択しました。')
-    return render_template('mypage/pay_way.html', form=form, credits=credits)
+    return render_template('mypage/pay_way.html', form=form, credits=credits, delete_form=delete_form)
+
+@bp.route('/pay_way_delete', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def pay_way_delete():
+    """支払い方法削除処理"""
+    form = HiddenPayWayDeleteForm(request.form)
+    if request.method == 'POST' and form.validate():
+        with db.session.begin(subtransactions=True):
+            Credit.delete_credit(form.Credit_id.data)
+        db.session.commit()
+        flash('削除しました')
+    return redirect(url_for('mypage.pay_way'))
 
 
 @bp.route('/creditcard_create', methods=['GET', 'POST'])
