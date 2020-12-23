@@ -15,13 +15,16 @@ from flmapp.models.user import (
     User, UserInfo, Address, ShippingAddress, Credit
 )
 from flmapp.models.token import (
-    PasswordResetToken
+    PasswordResetToken, MailResetToken
 )
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm, ShippingAddressForm,
    ShippingAddressRegisterForm, ShippingAddressEditForm, HiddenShippingAddressDeleteForm,
    PayWayForm, CreditRegisterForm
 )
+
+from flmapp import mail # メール送信インポート
+from flask_mail import Mail, Message # メール送信インポート
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
 
@@ -109,18 +112,83 @@ def mail_password():
     if request.method == 'POST' and form.validate():
         # ログイン中のユーザーIDによってユーザーを取得
         user = User.select_user_by_id(current_user.get_id())
-        password = form.password.data
+        pass_f = 0
+        mail_f = 0
+        # パスワードの変更フラグ
+        if not form.now_password.data == '':
+            now_password = form.now_password.data
+            # 現在のパスワードチェック
+            if user.validate_password(now_password):
+                password = form.password.data
+                pass_f =1
+            else:
+                flash('現在のパスワードが誤っています。')
+        # emailの変更フラグ
+        if not user == User.select_user_by_email(form.email.data):
+            token = ''
+            email = form.email.data
+            mail_f = 1
         # データベース処理
         with db.session.begin(subtransactions=True):
-            # email更新
-            #! メールにURL送信、URLをクリックして更新
-            user.email = form.email.data
-            if password:
+            # パスワード更新
+            if pass_f == 1:
                 # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
                 user.save_new_password(password)
+            # email更新
+            if mail_f == 1:
+                token = MailResetToken.publish_token(user, form.email.data)
         db.session.commit()
-        flash('更新に成功しました')
+        print(str(mail_f) + 'メールフラグ')
+        if mail_f == 1:
+            # メール送信処理ここから----------------------------------------------------------
+            msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
+            msg.html = '<hr>【古書邂逅】 古書邂逅会員メールアドレス変更のお知らせ<hr>\
+                        この度は、古書邂逅会員にご登録いただきまして誠にありがとうございます。<br>\
+                        下記ページアドレス(URL)をクリックして登録を完了させてください。<br>\
+                        <br><br>\
+                        【ご登録されたメールアドレス】<br>\
+                        {email}<br>\
+                        【こちらをクリックして登録を完了させてください。】<br>\
+                        {url}'.format(email=email,url=url_for('mypage.mail_reset_complete', token=token, _external=True))
+            mail.send(msg)
+            # メール送信処理ここまで----------------------------------------------------------
+            # デバッグ用---------------------------------------------------------------
+            print('*'*120)
+            print(
+                f'本登録URL: http://127.0.0.1:5000/mypage/mail_reset_complete/{token}'
+            )
+            # デバッグ用---------------------------------------------------------------
+            flash(email + 'にURLを送信しました。URLをクリックするとメールアドレスの登録が完了します。')
+        elif pass_f == 1:
+            flash('更新に成功しました')
+        else:
+            flash('変更するメールアドレスまたはパスワードを入力してください')
     return render_template('mypage/mail_password.html', form=form)
+
+# メール再設定
+@bp.route('/mail_reset_complete/<uuid:token>', methods=['GET', 'POST'])
+def mail_reset_complete(token):
+    # トークンに紐づいたユーザーIDを得る
+    mailResetToken = MailResetToken.get_user_id_by_token(token)
+    # user = User.select_user_by_id(current_user.get_id())
+    if not mailResetToken:
+        abort(500)
+    
+    # MailResetTokenテーブルのemailデータを取得
+    # email = mailResetToken.email
+
+    # mailResetToken.User_idによってユーザーを絞り込みUserテーブルのデータを取得
+    user = User.select_user_by_id(int(mailResetToken.User_id))
+    # データベース処理
+    with db.session.begin(subtransactions=True):
+        # メール更新処理
+        user.email = mailResetToken.email
+        # トークンレコード削除
+        MailResetToken.delete_token(token)
+    db.session.commit()
+    flash('メールを再設定しました。')
+    return redirect(url_for('auth.login'))
+    return render_template('mypage/mail_reset_complete.html')
 
 # 本人情報編集
 @bp.route('/identification', methods=['GET', 'POST'])

@@ -10,6 +10,8 @@ from flask_login import current_user
 from flask import flash
 
 from flmapp.models.user import User
+from flmapp.models.token import UserTempToken
+from flmapp.models.token import MailResetToken
 
 
 class ProfileForm(FlaskForm):
@@ -22,11 +24,9 @@ class ProfileForm(FlaskForm):
 
 class ChangePasswordForm(FlaskForm):
     """パスワード・メール変更ページフォーム"""
+    now_password = PasswordField('現在のパスワード: ')
     email = StringField('メール: ', validators=[Email('メールアドレスが誤っています')])
-    password = PasswordField(
-        'パスワード',
-        validators=[EqualTo('confirm_password', message='パスワードが一致しません')]
-    )
+    password = PasswordField('パスワード')
     confirm_password = PasswordField('パスワード確認:')
     submit = SubmitField('更新する')
 
@@ -38,11 +38,29 @@ class ChangePasswordForm(FlaskForm):
             if user.User_id != int(current_user.get_id()):
                 flash('そのメールアドレスはすでに登録されています')
                 return False
+        if not self.password.data == self.confirm_password.data:
+            raise ValidationError('パスワードが一致しません')
         return True
 
+    def validate_email(self, field):
+        if UserTempToken.get_user_id_by_email(field.data):
+            raise ValidationError('メールアドレスはすでに登録されています')
+        if MailResetToken.get_user_by_email(field.data):
+            raise ValidationError('メールアドレスはすでに登録されています')
+        
     def validate_password(self, field):
-        if len(field.data) < 8:
-            raise ValidationError('パスワードは8文字以上です')
+        if not self.now_password.data == '':
+            if self.password.data == '':
+                raise ValidationError('新しいパスワードを入力してください')
+        if not self.password.data == '':
+            if len(field.data) < 8:
+                raise ValidationError('パスワードは8文字以上です')
+        
+    def validate_now_password(self, field):
+        if not self.password.data == '':
+            if self.now_password.data == '':
+                raise ValidationError('現在のパスワードを入力してください')
+                
 
 
 class IdentificationForm(FlaskForm):
