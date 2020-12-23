@@ -2,24 +2,29 @@
 {% block title %}
 ホーム - {{ super() }}
 {% endblock %}
+{%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
+{% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
     {{ message }}
 {% endfor %}
 <div>
+    <!-- ここから あとで消します -->
     {% if current_user.is_authenticated %}
         <p>ようこそ{{ current_user.username }}さん</p>
     {% else %}
         <p>ログイン or 登録をしてください</p>
     {% endif %}
+    <!-- ここまで あとで消します -->
     <a href="{{url_for('sell.sell')}}">出品する</a>
     <table>
         {% for item in items %}
         <tr>
-            <td>
+            <td><a href="{{url_for('user.userdata', user_id=item.user.User_id)}}">
                 <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
                 {{ item.user.username }}
-            </td>
+            </a></td>
             <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
                 {{ item.deal_status.name }}
                 {{ item.key1 }}
@@ -27,8 +32,47 @@
                 {{ item.key3 }}
                 {{ item.sell_comment }}
             </a></td>
+            <td>
+                {% include "like.html" %}
+            </td>
         </tr>
         {% endfor %}
     </table>
 </div>
+<script>
+    // ここから ajaxでcsrf_tokenを使用するとき
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    // ここまで ajaxでcsrf_tokenを使用するとき
+    // ここから いいね処理
+    $(document).ready(function(event){
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('ajax.like_ajax') }}",
+                data: {'sell_id': $(this).attr('name')},
+                dataType: 'json',
+                success: function(data){
+                    selector = document.getElementsByName(data['item_id']);
+                    if(data['liked']){
+                        $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
+                    }
+                    else {
+                        $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
+                    }
+                    selector2 = document.getElementsByName(data['item_id'] + "-count");
+                    $(selector2).text(data['count']);
+                }
+            });
+        });
+    });
+    // ここまで いいね処理
+</script>
 {% endblock %}

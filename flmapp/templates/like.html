@@ -1,0 +1,9 @@
+<form method="POST" action="{{url_for('ajax.like_ajax')}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% if item.Sell_id in liked_list %}
+        <button id="like" name="{{ item.Sell_id }}"><i class="fas fa-lg fa-heart like-btn"></i></button>
+    {% else %}
+        <button id="like" name="{{ item.Sell_id }}"><i class="far fa-lg fa-heart unlike-btn"></i></button>      
+    {% endif %}
+</form>
+<p name="{{ item.Sell_id }}-count" class="count">{{ likes_count(item.Sell_id) }}</p>
