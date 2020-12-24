@@ -6,18 +6,23 @@
         <!-- ↓ajax -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <!-- ↓bootstrap -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"> -->
         <!-- ↓読み込むcssファイルをここに記述してください。 -->
-        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}"> -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kosho-flame.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common1.css')}}">
         {%block head %}{% endblock%}
     </head>
     <body>
-        <header>
-            <h1 class="headerLogo"><img src="images/logo.png" alt="ロゴ"></h1>
-        </header>
-        <div class="container">
-            {% block content %}
-            {% endblock %}
+        <div class="page">
+            <header>
+                <div class="headerLogo"><img src="{{ url_for('static', filename='images/logo.png')}}" alt="ロゴ"></div>
+            </header>
+            <div class="common1-bar"></div>
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <footer><p>© 2021 koshokaikou</p></footer>
         </div>
     </body>
 </html>
