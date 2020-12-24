@@ -141,10 +141,11 @@ def mail_password():
         print(str(mail_f) + 'メールフラグ')
         if mail_f == 1:
             # メール送信処理ここから----------------------------------------------------------
-            msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
+            msg = Message('古書邂逅 メールアドレス変更手続きを完了してください', recipients=[email])
             msg.html = '<hr>【古書邂逅】 古書邂逅会員メールアドレス変更のお知らせ<hr>\
-                        この度は、古書邂逅会員にご登録いただきまして誠にありがとうございます。<br>\
-                        下記ページアドレス(URL)をクリックして登録を完了させてください。<br>\
+                        古書邂逅をご利用いただきありがとうございます。<br>\
+                        以下のURLをクリックして、メールアドレス変更手続きを完了してください<br>\
+                        このURLの有効期限は24時間です。<br>\
                         <br><br>\
                         【ご登録されたメールアドレス】<br>\
                         {email}<br>\
@@ -170,13 +171,8 @@ def mail_password():
 def mail_reset_complete(token):
     # トークンに紐づいたユーザーIDを得る
     mailResetToken = MailResetToken.get_user_id_by_token(token)
-    # user = User.select_user_by_id(current_user.get_id())
     if not mailResetToken:
         abort(500)
-    
-    # MailResetTokenテーブルのemailデータを取得
-    # email = mailResetToken.email
-
     # mailResetToken.User_idによってユーザーを絞り込みUserテーブルのデータを取得
     user = User.select_user_by_id(int(mailResetToken.User_id))
     # データベース処理
@@ -186,8 +182,6 @@ def mail_reset_complete(token):
         # トークンレコード削除
         MailResetToken.delete_token(token)
     db.session.commit()
-    flash('メールを再設定しました。')
-    return redirect(url_for('auth.login'))
     return render_template('mypage/mail_reset_complete.html')
 
 # 本人情報編集
@@ -274,7 +268,11 @@ def shippingaddress_delete():
     form = HiddenShippingAddressDeleteForm(request.form)
     if request.method == 'POST' and form.validate():
         with db.session.begin(subtransactions=True):
-            ShippingAddress.delete_shippingaddress(form.ShippingAddress_id.data)
+            # デフォルトで設定されているdefault_ShippingAddress_idが
+            # 削除するShippingAddress_idと一致していればNull値に更新
+            if current_user.default_ShippingAddress_id == int(form.ShippingAddress_id.data):
+                current_user.default_ShippingAddress_id = None
+            ShippingAddress.delete_shippingaddress(int(form.ShippingAddress_id.data))
         db.session.commit()
         flash('削除しました')
     return redirect(url_for('mypage.shippingaddress'))
@@ -308,12 +306,15 @@ def pay_way():
             # デフォルト設定を代金引き換えに更新
             with db.session.begin(subtransactions=True):
                 current_user.default_pay_way = 1
+                # デフォルト設定ですでにdefault_Credit_idが設定されていればNull値に更新
+                if current_user.default_Credit_id:
+                    current_user.default_Credit_id = None
             db.session.commit()
         else:
             # デフォルト設定をクレジットに更新
             with db.session.begin(subtransactions=True):
                 current_user.default_pay_way = 2
-                current_user.default_Credit_id = form.pay_way.data
+                current_user.default_Credit_id = int(form.pay_way.data)
             db.session.commit()
         flash('支払い方法を選択しました。')
     return render_template('mypage/pay_way.html', form=form, credits=credits, delete_form=delete_form)
@@ -323,9 +324,15 @@ def pay_way():
 def pay_way_delete():
     """支払い方法削除処理"""
     form = HiddenPayWayDeleteForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST':
         with db.session.begin(subtransactions=True):
-            Credit.delete_credit(form.Credit_id.data)
+            # デフォルトで設定されているdefault_Credit_idが
+            # 削除するdefault_Credit_idと一致していればNull値に更新し
+            # default_pay_wayを1(代金引換)に更新する
+            if current_user.default_Credit_id == int(form.Credit_id.data):
+                current_user.default_pay_way = 1
+                current_user.default_Credit_id = None
+            Credit.delete_credit(int(form.Credit_id.data))
         db.session.commit()
         flash('削除しました')
     return redirect(url_for('mypage.pay_way'))

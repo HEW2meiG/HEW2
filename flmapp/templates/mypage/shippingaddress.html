@@ -11,7 +11,7 @@
 {{ form.csrf_token(form="choice") }}
 <table>
 {% for field in form.ShippingAddress_id %}
-{% set shippingaddress = search_shippingaddress(field.data) %}
+    {% set shippingaddress = search_shippingaddress(field.data) %}
     <tr>
         <td>{{ field(form="choice") }}</td>
         <td>{{ field.label }}</td>
