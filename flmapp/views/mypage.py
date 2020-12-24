@@ -281,10 +281,25 @@ def shippingaddress_delete():
 @bp.route('/shippingaddress_edit/<int:shippingaddress_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress_edit(shippingaddress_id):
+    shippingaddress = ShippingAddress.search_shippingaddress(shippingaddress_id)
     """配送先住所編集処理"""
-    form = ShippingAddressEditForm(request.form)
+    form = ShippingAddressEditForm(request.form, pref01 = shippingaddress.prefecture)
     # 編集処理を追加してください。
-    return render_template('mypage/shippingaddress_edit.html', form=form)
+    if request.method == 'POST' and form.validate():
+    # データベース処理
+        with db.session.begin(subtransactions=True):
+            shippingaddress.last_name = form.last_name.data 
+            shippingaddress.first_name = form.first_name.data 
+            shippingaddress.last_name_kana = form.last_name_kana.data 
+            shippingaddress.first_name_kana = form.first_name_kana.data 
+            shippingaddress.zip_code = form.zip01.data 
+            shippingaddress.prefecture = form.pref01.data
+            shippingaddress.address1 = form.addr01.data 
+            shippingaddress.address2 = form.addr02.data
+            shippingaddress.address3 = form.addr03.data 
+        db.session.commit()
+        flash('更新に成功しました')
+    return render_template('mypage/shippingaddress_edit.html', form=form, shippingaddress=shippingaddress)
 
 
 @bp.route('/pay_way', methods=['GET', 'POST'])

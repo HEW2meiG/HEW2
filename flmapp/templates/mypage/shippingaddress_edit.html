@@ -18,17 +18,17 @@
     <form method="POST">
         {{ form.csrf_token }}
         <h3>お名前(全角)</h3>
-        {{ render_field(form.last_name) }}
-        {{ render_field(form.first_name) }}
+        {{ render_field(form.last_name, value=shippingaddress.last_name) }}
+        {{ render_field(form.first_name, value=shippingaddress.first_name) }}
         <h3>お名前カナ(全角)</h3>
-        {{ render_field(form.last_name_kana) }}
-        {{ render_field(form.first_name_kana) }}
+        {{ render_field(form.last_name_kana, value=shippingaddress.last_name_kana) }}
+        {{ render_field(form.first_name_kana, value=shippingaddress.first_name_kana) }}
         <h3>住所登録</h3>
-        {{ render_field(form.zip01, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
-        {{ render_field(form.pref01) }}
-        {{ render_field(form.addr01) }}
-        {{ render_field(form.addr02) }}
-        {{ render_field(form.addr03) }}
+        {{ render_field(form.zip01, value=shippingaddress.zip_code, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
+        {{ render_field(form.pref01, value=shippingaddress.prefecture) }}
+        {{ render_field(form.addr01, value=shippingaddress.address1) }}
+        {{ render_field(form.addr02, value=shippingaddress.address2) }}
+        {{ render_field(form.addr03, value=shippingaddress.address3) }}
         {{ form.submit() }}
     </form>
 </div>
