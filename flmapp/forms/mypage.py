@@ -30,20 +30,14 @@ class ChangePasswordForm(FlaskForm):
     confirm_password = PasswordField('パスワード確認:')
     submit = SubmitField('更新する')
 
-    def validate(self):
-        if not super(FlaskForm, self).validate():
-            return False
-        user = User.select_user_by_email(self.email.data)
-        if user:
-            if user.User_id != int(current_user.get_id()):
-                flash('そのメールアドレスはすでに登録されています')
-                return False
-        return True
 
     def validate_email(self, field):
-        if UserTempToken.get_user_id_by_email(field.data):
+        user = User.select_user_by_email(self.email.data)
+        if user and user.User_id != int(current_user.get_id()):
             raise ValidationError('メールアドレスはすでに登録されています')
-        if MailResetToken.get_user_by_email(field.data):
+        if UserTempToken.email_exists(field.data):
+            raise ValidationError('メールアドレスはすでに登録されています')
+        if MailResetToken.email_exists(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
         
     def validate_password(self, field):

@@ -17,37 +17,41 @@ class User(UserMixin, db.Model):
     __tablename__ = 'User'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
-    User_id = db.Column(db.Integer, primary_key=True)
+    User_id = db.Column(db.Integer, primary_key=True) #!
     user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False, default='あとで消します')
     username = db.Column(db.String(64), index=True, nullable=False, default='あとで消します')
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False, default='あとで消します')
-    picture_path = db.Column(db.Text, default='default.jpeg', nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False, default='あとで消します') #!
+    picture_path = db.Column(db.Text, default='default.jpeg', nullable=False) #!
     prof_comment = db.Column(db.Text)
-    default_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id'))
-    default_pay_way = db.Column(db.Integer, default=1, nullable=False)
-    default_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id'))
-    is_active = db.Column(db.Boolean, default=True, nullable=True)
-    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
-    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    default_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id')) #!
+    default_pay_way = db.Column(db.Integer, default=1, nullable=False) #!
+    default_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id')) #!
+    is_active = db.Column(db.Boolean, default=True, nullable=True) #!
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False) #!
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False) #!
 
+    #TODO: #!以外をかいてください
     def __init__(self, email):
         self.email = email
+
+    def create_new_user(self):
+        db.session.add(self)
 
     def get_id(self):
         """load_userが受け取る引数"""
         return (self.User_id)
 
-    # # Custom property getter
-    # @property
-    # def password(self):
-    #     raise AttributeError('パスワードは読み取り可能な属性ではありません。')
+    # Custom property getter
+    @property
+    def password(self):
+        raise AttributeError('パスワードは読み取り可能な属性ではありません。')
 
-    # # Custom property setter
-    # @password.setter
-    # def password(self, password):
-    #     # generate_password_hash()：ハッシュ値が生成される
-    #     self.password_hash = generate_password_hash(password)
+    # Custom property setter
+    @password.setter
+    def password(self, password):
+        # generate_password_hash()：ハッシュ値が生成される
+        self.password_hash = generate_password_hash(password)
 
     def validate_password(self, password):
         """
@@ -57,9 +61,6 @@ class User(UserMixin, db.Model):
         # check_password_hash():ハッシュ値が指定した文字列のものと一致しているか判定
         # 一致→True 不一致→False
         return check_password_hash(self.password_hash, password)
-
-    def create_new_user(self):
-        db.session.add(self)
 
     @classmethod
     def select_user_by_email(cls, email):
@@ -71,16 +72,10 @@ class User(UserMixin, db.Model):
         """ユーザーIDによってユーザーを得る"""
         return cls.query.get(User_id)
 
-    # setterに記載 変更する
-    def save_new_password(self, new_password):
-        """
-        パスワード更新処理
-        変更してください。
-        """
-        # generate_password_hash()：ハッシュ値が生成される
-        self.password_hash = generate_password_hash(new_password)
-        # 有効フラグをTrue
-        self.is_active = True
+    @classmethod
+    def select_user_by_user_code(cls, user_code):
+        """ユーザーコードによってユーザーを得る"""
+        return cls.query.filter_by(user_code=user_code).first()
 
 
 class UserInfo(db.Model):

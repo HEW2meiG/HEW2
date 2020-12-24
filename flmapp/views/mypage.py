@@ -132,8 +132,8 @@ def mail_password():
         with db.session.begin(subtransactions=True):
             # パスワード更新
             if pass_f == 1:
-                # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
-                user.save_new_password(password)
+                # パスワード更新処理
+                user.password = password
             # email更新
             if mail_f == 1:
                 token = MailResetToken.publish_token(user, form.email.data)
