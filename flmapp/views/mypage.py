@@ -132,8 +132,8 @@ def mail_password():
         with db.session.begin(subtransactions=True):
             # パスワード更新
             if pass_f == 1:
-                # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
-                user.save_new_password(password)
+                # パスワード更新処理
+                user.password = password
             # email更新
             if mail_f == 1:
                 token = MailResetToken.publish_token(user, form.email.data)
@@ -172,7 +172,7 @@ def mail_reset_complete(token):
     # トークンに紐づいたユーザーIDを得る
     mailResetToken = MailResetToken.get_user_id_by_token(token)
     if not mailResetToken:
-        abort(500)
+        abort(404)
     # mailResetToken.User_idによってユーザーを絞り込みUserテーブルのデータを取得
     user = User.select_user_by_id(int(mailResetToken.User_id))
     # データベース処理
@@ -281,12 +281,10 @@ def shippingaddress_delete():
 @bp.route('/shippingaddress_edit/<int:shippingaddress_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress_edit(shippingaddress_id):
-    shippingaddress = ShippingAddress.search_shippingaddress(shippingaddress_id)
     """配送先住所編集処理"""
+    shippingaddress = ShippingAddress.search_shippingaddress(shippingaddress_id)
     form = ShippingAddressEditForm(request.form, pref01 = shippingaddress.prefecture)
-    # 編集処理を追加してください。
     if request.method == 'POST' and form.validate():
-    # データベース処理
         with db.session.begin(subtransactions=True):
             shippingaddress.last_name = form.last_name.data 
             shippingaddress.first_name = form.first_name.data 
@@ -298,7 +296,8 @@ def shippingaddress_edit(shippingaddress_id):
             shippingaddress.address2 = form.addr02.data
             shippingaddress.address3 = form.addr03.data 
         db.session.commit()
-        flash('更新に成功しました')
+        flash('更新しました')
+        return redirect(url_for('mypage.shippingaddress'))
     return render_template('mypage/shippingaddress_edit.html', form=form, shippingaddress=shippingaddress)
 
 

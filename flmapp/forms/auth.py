@@ -18,6 +18,7 @@ class LoginForm(FlaskForm):
         'メール: ', validators=[DataRequired(), Email()]
     )
     password = PasswordField('パスワード: ', validators=[DataRequired()])
+    captcha = StringField('画像に表示されている文字を入力してください。')
     submit = SubmitField('ログイン')
 
 class CreateUserForm(FlaskForm):
@@ -29,10 +30,11 @@ class CreateUserForm(FlaskForm):
     def validate_email(self, field):
         if User.select_user_by_email(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
-        if UserTempToken.get_user_id_by_email(field.data):
+        if UserTempToken.email_exists(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
-        if MailResetToken.get_user_by_email(field.data):
+        if MailResetToken.email_exists(field.data):
             raise ValidationError('メールアドレスはすでに登録されています')
+
 
 class RegisterForm(FlaskForm):
     password = PasswordField(
@@ -44,6 +46,7 @@ class RegisterForm(FlaskForm):
     )
     picture_path = FileField('アイコン画像を設定')
     username = StringField('ユーザーネーム', validators=[DataRequired()],render_kw={"placeholder":"例)ポチ"})
+    usercode = StringField('ユーザーコード', validators=[DataRequired()],render_kw={"placeholder":"pochi0830"})
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
     last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
@@ -67,6 +70,10 @@ class RegisterForm(FlaskForm):
     def validate_password(self, field):
         if len(field.data) < 8:
             raise ValidationError('パスワードは8文字以上です')
+
+    def validate_usercode(self, field):
+        if User.select_user_by_user_code(field.data):
+            raise ValidationError('このユーザーコードはすでに使用されています')
 
 class ForgotPasswordForm(FlaskForm):
     email = StringField('メール: ', validators=[DataRequired(), Email()])
