@@ -16,6 +16,8 @@
         {{ form.csrf_token }}
         {{ render_field(form.email) }}
         {{ render_field(form.password) }}
+        {{ captcha() }}
+        {{ render_field(form.captcha) }}
         {{ form.submit() }}
     </form>
     <a href="{{url_for('auth.forgot_password')}}">

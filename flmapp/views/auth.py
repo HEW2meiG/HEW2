@@ -44,6 +44,11 @@ def logout():
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
+        # キャプチャ判定処理 ここから---------------------------------------------------
+        if flask_session_captcha.session.get('captcha_answer') != form.captcha.data:
+            flash('画像に表示されている文字と違います。')
+            return render_template('auth/login.html', form=form)
+        # キャプチャ判定処理 ここまで---------------------------------------------------
         user = User.select_user_by_email(form.email.data)
         # ユーザーが存在するかつ、ユーザーのis_activeがTrue(有効)かつ、ユーザーが入力したパスワードがユーザーのパスワードと一致する
         if user and user.is_active and user.validate_password(form.password.data):

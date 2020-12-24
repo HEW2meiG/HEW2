@@ -18,6 +18,7 @@ class LoginForm(FlaskForm):
         'メール: ', validators=[DataRequired(), Email()]
     )
     password = PasswordField('パスワード: ', validators=[DataRequired()])
+    captcha = StringField('画像に表示されている文字を入力してください。')
     submit = SubmitField('ログイン')
 
 class CreateUserForm(FlaskForm):
