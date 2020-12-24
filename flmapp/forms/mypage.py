@@ -26,7 +26,7 @@ class ChangePasswordForm(FlaskForm):
     """パスワード・メール変更ページフォーム"""
     now_password = PasswordField('現在のパスワード: ')
     email = StringField('メール: ', validators=[Email('メールアドレスが誤っています')])
-    password = PasswordField('パスワード')
+    password = PasswordField('パスワード', validators=[EqualTo('confirm_password', message='パスワードが一致しません')])
     confirm_password = PasswordField('パスワード確認:')
     submit = SubmitField('更新する')
 
@@ -38,8 +38,6 @@ class ChangePasswordForm(FlaskForm):
             if user.User_id != int(current_user.get_id()):
                 flash('そのメールアドレスはすでに登録されています')
                 return False
-        if not self.password.data == self.confirm_password.data:
-            raise ValidationError('パスワードが一致しません')
         return True
 
     def validate_email(self, field):
