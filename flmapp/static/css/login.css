@@ -1,0 +1,14 @@
+#pass-forgot{
+    width: 200px;
+    margin: 0 auto;
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: black;
+    border-bottom: solid 2px black;
+}
+#pass-forgot:hover{
+    text-decoration: none;
+    color: gray;
+    border-bottom: solid 2px gray;
+}

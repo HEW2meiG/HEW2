@@ -5,7 +5,8 @@
 {% endblock %}
 {%block head %}
 <!-- ↓読み込むcssファイルをここに記述してください。 -->
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}"> -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kosho-flame.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
@@ -14,18 +15,32 @@
 <div class="row">
     <form method="POST">
         {{ form.csrf_token }}
-        {{ render_field(form.email) }}
-        {{ render_field(form.password) }}
-        {{ captcha() }}
-        {{ render_field(form.captcha) }}
+
+        <div class="mg-tb-2 kosho-form-300">
+          {{ render_field(form.email) }}
+        </div>
+
+        <div class="mg-tb-2 kosho-form-300">
+            {{ render_field(form.password) }}
+
+            <a id="pass-forgot" href="{{url_for('auth.forgot_password')}}">
+                パスワードを忘れた方はこちら
+            </a>
+        </div>
+
+        <div class="mg-tb-3 kosho-form-300">
+            {{ captcha() }}
+            {{ render_field(form.captcha) }}
+        </div>
+
         {{ form.submit() }}
     </form>
-    <a href="{{url_for('auth.forgot_password')}}">
-        パスワードを忘れた方はこちら
-    </a>
-    <p>アカウントをお持ちでない方はこちら</p>
-    <a href="{{url_for('auth.register')}}">
-        新規会員登録
-    </a>
+
+    <div class="mg-tb-2">
+        <p class="mg-tb-1">アカウントをお持ちでない方はこちら</p>
+        <button class="kosho-button-300 center-margin" onclick="location.href='{{url_for('auth.register')}}'">
+            新規会員登録
+        </button>
+    </div>
 </div>
 {% endblock %}
