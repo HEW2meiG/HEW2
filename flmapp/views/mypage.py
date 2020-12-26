@@ -385,3 +385,9 @@ def credit_register():
         flash('登録しました')
         return redirect(url_for('mypage.pay_way'))
     return render_template('mypage/credit_register.html', form=form)
+
+
+@bp.route('/logout', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def logout():
+    return render_template('mypage/logout.html')
