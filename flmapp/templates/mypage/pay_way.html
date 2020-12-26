@@ -18,7 +18,7 @@
             {% set credit = search_credit(field.data) %}
             <td>{{ credit.credit_name }}</td>
             <td>{{ credit.credit_num | credit_num_format }}</td>
-            <td>{{ credit.expire }}</td>
+            <td>{{ credit.expire.strftime('%m/%y') }}</td>
             <td>
                 <form method="POST" action="{{url_for('mypage.pay_way_delete')}}">
                     {{ delete_form.csrf_token }}
