@@ -12,3 +12,7 @@
     color: gray;
     border-bottom: solid 2px gray;
 }
+
+label{
+    padding: 20px 0;
+}

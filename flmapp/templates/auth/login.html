@@ -16,7 +16,8 @@
         {{ form.csrf_token }}
 
         <div class="mg-tb-2 kosho-form-300">
-          {{ form.email.label }}{{ form.email() }}
+          {{ form.email.label }}<br>
+          {{ form.email() }}
         </div>
 
         {% if form.email.errors %}
@@ -28,15 +29,17 @@
         {% endif %}
 
         <div class="mg-tb-2 kosho-form-300">
-            {{ form.password.label }}{{ form.password() }}
+            {{ form.password.label }}<br>
+            {{ form.password() }}
             <a id="pass-forgot" href="{{url_for('auth.forgot_password')}}">
                 パスワードを忘れた方はこちら
             </a>
         </div>
 
         <div class="mg-tb-3 kosho-form-300">
-            {{ captcha() }}
-            {{ form.captcha.label }}{{ form.captcha() }}
+            {{ captcha() }}<br>
+            {{ form.captcha.label }}<br>
+            {{ form.captcha() }}
         </div>
 
         {{ form.submit() }}
