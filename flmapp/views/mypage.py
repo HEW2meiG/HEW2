@@ -191,7 +191,7 @@ def identification():
     userinfo = UserInfo.select_userinfo_by_user_id()
     #ユーザーIDによって住所テーブルのUser_idが一致しているレコードを取得
     useradress = Address.select_address_by_user_id()
-    form = IdentificationForm(request.form, pref01 = useradress.prefecture, b_year=userinfo.birth.strftime('%Y')) #TODO: ←月・日のデフォルト値も設定
+    form = IdentificationForm(request.form, pref01 = useradress.prefecture, b_year=userinfo.birth.strftime('%Y'), b_month=userinfo.birth.strftime('%m'), b_date=userinfo.birth.strftime('%d'))
     form.b_year.choices += [(i, i) for i in reversed(range(1900, datetime.date.today().year+1))]
     form.b_month.choices += [(i, i) for i in range(1, 13)]
     form.b_date.choices += [(i, i) for i in range(1, 32)]
@@ -202,7 +202,7 @@ def identification():
             userinfo.first_name = form.first_name.data 
             userinfo.last_name_kana = form.last_name_kana.data 
             userinfo.first_name_kana = form.first_name_kana.data 
-            #TODO: userinfo.birth = datetime.date(年,月,日)
+            userinfo.birth = datetime.date(form.b_year.data, form.b_month.data, form.b_date.data)
             useradress.zip_code = form.zip01.data 
             useradress.prefecture = form.pref01.data
             useradress.address1 = form.addr01.data 
