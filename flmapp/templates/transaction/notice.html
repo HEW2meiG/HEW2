@@ -4,7 +4,7 @@
         {% if item.has_sent == item.has_got == False %}
             <h4>発送をしてください。</h4>
             <p>商品が購入されました。商品の発送を行ってください。</p>
-            <form method=POST >
+            <form method=POST action="{{ url_for('transaction.notice_rating', item_id=item.Sell_id) }}">
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='has_sent') }}
                 {{ noticeform.notice_flg.label('商品を発送しました') }}{{ noticeform.notice_flg() }} <br>
@@ -16,7 +16,7 @@
         {% elif item.has_sent == item.has_got == True %}
             <h4>評価をしてください。</h4>
             <p>購入者に商品が到着し評価がありました。購入者の評価を行って取引を完了してください。</p>
-            <form method=POST >
+            <form method=POST action="{{ url_for('transaction.notice_rating', item_id=item.Sell_id) }}">
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='seller_rating') }}
                 {{ noticeform.rating() }}<br>
@@ -33,7 +33,7 @@
         {% elif item.has_sent == True and item.has_got == False %}
             <h4>受け取り評価をしてください。</h4>
             <p>商品が発送されました。商品が到着したら、出品者の評価をしてください。</p>  
-            <form method=POST >
+            <form method=POST action="{{ url_for('transaction.notice_rating', item_id=item.Sell_id) }}" >
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='has_got') }}
                 {{ noticeform.notice_flg.label('商品を受け取りました') }}{{ noticeform.notice_flg() }}<br>

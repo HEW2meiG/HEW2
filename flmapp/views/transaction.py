@@ -13,7 +13,7 @@ from flmapp.models.user import (
     User, ShippingAddress
 )
 from flmapp.models.trade import (
-    Sell, Buy
+    Sell, Buy, Rating, Deal_status
 )
 from flmapp.models.message import (
     DealMessage
@@ -111,3 +111,47 @@ def load_old_messages():
     messages = DealMessage.get_messages_by_sell_id(sell_id, offset_value*50)
     dest_user = User.select_user_by_id(dest_user_id)
     return jsonify(data=make_old_deal_message_format(dest_user, messages))
+
+
+@bp.route('/notice_rating/<int:item_id>', methods=['POST'])
+@login_required
+def notice_rating(item_id):
+    sell = Sell.select_sell_by_sell_id(item_id)
+    buy = Buy.select_buy_by_sell_id(item_id)
+    form = NoticeRatingForm(request.form)
+    if request.method == 'POST' and form.validate():
+        if form.notice_condition.data == 'has_sent':
+            with db.session.begin(subtransactions=True):
+                sell.has_sent = True
+            db.session.commit()
+            flash('発送通知を送信しました。')
+            return redirect(url_for('transaction.transaction', item_id=item_id))
+        if form.notice_condition.data == 'has_got':
+            rating = Rating(
+                Sell_id = item_id,
+                to_user_id = sell.User_id,
+                from_user_id = current_user.User_id,
+                rating = form.rating.data,
+                rating_message = form.rating_message.data
+            )
+            with db.session.begin(subtransactions=True):
+                rating.create_new_rating()
+                sell.has_got = True
+            db.session.commit()
+            flash('受け取り確認と評価を送信しました')
+            return redirect(url_for('transaction.transaction', item_id=item_id))
+        if form.notice_condition.data == 'seller_rating':
+            rating = Rating(
+                Sell_id = item_id,
+                to_user_id = buy.User_id,
+                from_user_id = current_user.User_id,
+                rating = form.rating.data,
+                rating_message = form.rating_message.data
+            )
+            with db.session.begin(subtransactions=True):
+                rating.create_new_rating()
+                sell.deal_status = Deal_status['取引済み']
+            db.session.commit()
+            flash('評価を送信しました。取引が完了しました。')
+            return redirect(url_for('transaction.transaction', item_id=item_id))
+    return redirect(url_for('transaction.transaction', item_id=item_id))
