@@ -14,3 +14,12 @@ class DealMessageForm(FlaskForm):
     """取引メッセージフォーム"""
     message = TextAreaField()
     submit = SubmitField('送信')
+
+
+class NoticeRatingForm(FlaskForm):
+    """通知・評価フォーム"""
+    notice_condition = HiddenField()
+    notice_flg = BooleanField()
+    rating = RadioField('評価',choices=[(1,'良かった'),(2,'残念だった')], default=2, coerce=int)
+    rating_message = TextAreaField(render_kw={"placeholder":"この度はお取引ありがとうございました。"})
+    submit = SubmitField()

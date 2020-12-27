@@ -1,0 +1,52 @@
+{% if item.deal_status.value == 2 %}
+    <!-- ログイン中のユーザーが出品者だった場合 -->
+    {% if current_user.User_id == item.User_id %}
+        {% if item.has_sent == item.has_got == False %}
+            <h4>発送をしてください。</h4>
+            <p>商品が購入されました。商品の発送を行ってください。</p>
+            <form method=POST >
+                {{ noticeform.csrf_token }}
+                {{ noticeform.notice_condition(value='has_sent') }}
+                {{ noticeform.notice_flg.label('商品を発送しました') }}{{ noticeform.notice_flg() }} <br>
+                {{ noticeform.submit(value='発送通知を送る') }}
+            </form>
+        {% elif item.has_sent == True and item.has_got == False %}
+            <h4>購入者の受け取りをお待ちください。</h4>
+            <p>購入者の受け取り確認と評価をしばらくお待ちください。</p>
+        {% elif item.has_sent == item.has_got == True %}
+            <h4>評価をしてください。</h4>
+            <p>購入者に商品が到着し評価がありました。購入者の評価を行って取引を完了してください。</p>
+            <form method=POST >
+                {{ noticeform.csrf_token }}
+                {{ noticeform.notice_condition(value='seller_rating') }}
+                {{ noticeform.rating() }}<br>
+                {{ noticeform.rating_message() }}<br>
+                {{ noticeform.submit(value='購入者を評価して取引を完了する') }}
+            </form>
+        {% endif %}
+    {% endif %}
+    <!-- ログイン中のユーザーが購入者だった場合 -->
+    {% if current_user.User_id == buy.User_id %}
+        {% if item.has_sent == item.has_got == False %}
+            <h4>発送をお待ちください。</h4>
+            <p>出品者からの発送通知をお待ちください。</p>
+        {% elif item.has_sent == True and item.has_got == False %}
+            <h4>受け取り評価をしてください。</h4>
+            <p>商品が発送されました。商品が到着したら、出品者の評価をしてください。</p>  
+            <form method=POST >
+                {{ noticeform.csrf_token }}
+                {{ noticeform.notice_condition(value='has_got') }}
+                {{ noticeform.notice_flg.label('商品を受け取りました') }}{{ noticeform.notice_flg() }}<br>
+                {{ noticeform.rating() }}<br>
+                {{ noticeform.rating_message() }}<br>
+                {{ noticeform.submit(value='受け取り確認と評価を送る') }}
+            </form>
+        {% elif item.has_sent == item.has_got == True %}
+            <h4>出品者の評価をお待ちください。</h4>
+            <p>出品者から評価が送信されると取引が完了します。</p>
+        {% endif %}
+    {% endif %}
+{% elif item.deal_status.value == 3 %}
+    <h4>取引が完了しました。</h4>
+    <p>この度は古書邂逅のご利用ありがとうございました。</p>
+{% endif %}

@@ -19,7 +19,7 @@ from flmapp.models.message import (
     DealMessage
 )
 from flmapp.forms.transaction import (
-    DealMessageForm
+    DealMessageForm, NoticeRatingForm
 )
 from flmapp.utils.message_format import make_deal_message_format, make_old_deal_message_format
 
@@ -35,6 +35,7 @@ def transaction(item_id):
     shippingaddress = ShippingAddress.search_shippingaddress(buy.ShippingAddress_id)
     messageform = DealMessageForm(request.form)
     messages = DealMessage.get_messages_by_sell_id(item_id)
+    noticeform = NoticeRatingForm(request.form)
     # ログイン中のユーザーが出品者だった場合
     if current_user.User_id == item.User_id:
         dest_user = User.select_user_by_id(buy.User_id)
@@ -71,7 +72,8 @@ def transaction(item_id):
         shippingaddress=shippingaddress,
         messageform=messageform,
         messages=messages,
-        dest_user=dest_user
+        dest_user=dest_user,
+        noticeform=noticeform
     )
 
 
