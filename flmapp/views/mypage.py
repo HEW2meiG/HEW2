@@ -203,9 +203,7 @@ def identification():
             userinfo.last_name_kana = form.last_name_kana.data 
             userinfo.first_name_kana = form.first_name_kana.data 
             #TODO: userinfo.birth = datetime.date(年,月,日)
-            useradress.birth = form.b_year.data 
-            useradress.birth = form.b_month.data 
-            useradress.birth = form.b_date.data 
+            userinfo.birth = datetime.date(form.b_year.data, form.b_month.data, form.b_date.data)
             useradress.zip_code = form.zip01.data 
             useradress.prefecture = form.pref01.data
             useradress.address1 = form.addr01.data 
