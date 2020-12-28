@@ -8,6 +8,7 @@ from flask_login import (
     login_user, login_required, current_user
 )
 from flmapp import db # SQLAlchemy
+from functools import wraps # カスタムデコレーターに使用
 
 from flmapp.models.user import (
     User, ShippingAddress
@@ -26,8 +27,34 @@ from flmapp.utils.message_format import make_deal_message_format, make_old_deal_
 bp = Blueprint('transaction', __name__, url_prefix='/transaction')
 
 
+def check_transaction(func):
+    """
+        出品者と購入者以外のユーザー,
+        出品状態、有効フラグが無効だった場合,
+        取引状態が1の場合,
+        取引エラー画面へ遷移
+    """
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        sell_id = kwargs['item_id']
+        sell = Sell.select_sell_by_sell_id(sell_id)
+        buy = Buy.select_buy_by_sell_id(sell_id)
+        user_id = current_user.get_id()
+        if sell.User_id != user_id and buy.User_id != user_id:
+            return render_template('transaction/transaction_error.html')
+        elif not sell.sell_flg:
+            return render_template('transaction/transaction_error.html')
+        elif not sell.is_active:
+            return render_template('transaction/transaction_error.html')
+        elif sell.deal_status == Deal_status['出品中']:
+            return render_template('transaction/transaction_error.html')
+        return func(*args, **kwargs)
+    return decorated_function
+
+
 @bp.route('/<int:item_id>', methods=['GET', 'POST'])
 @login_required
+@check_transaction
 def transaction(item_id):
     """取引画面処理"""
     item = Sell.select_sell_by_sell_id(item_id)
@@ -154,4 +181,3 @@ def notice_rating(item_id):
             db.session.commit()
             flash('評価を送信しました。取引が完了しました。')
             return redirect(url_for('transaction.transaction', item_id=item_id))
-    return redirect(url_for('transaction.transaction', item_id=item_id))
