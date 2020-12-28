@@ -1,0 +1,21 @@
+h1{
+    font-size: large;
+    margin: 50px 0;
+}
+
+#submit{
+    margin-top: 50px;
+}
+
+ul{
+    width: 300px;
+    margin: 20px auto;
+    padding: 0;
+    border-radius: 10px;
+    color: white;
+    background-color: red;
+}
+
+li{
+    list-style: none;
+}
