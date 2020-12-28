@@ -74,6 +74,21 @@ class Sell(db.Model):
         """Sell_id(item_id)によってSell(商品)レコードを得る"""
         return cls.query.get(Sell_id)
 
+    @classmethod
+    def select_sell_by_user_id(cls, User_id):
+        """Sell_id(User_id)によってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.User_id==User_id).all()
+
+    @classmethod
+    def select_sell_by_deal_status(cls, deal_status):
+        """Sell_id(deal_status)によってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.deal_status==deal_status).all()
+
+    @classmethod
+    def select_sell_by_sell_flg(cls, sell_flg):
+        """Sell_id(sell_flg)によってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.sell_flg==sell_flg).all()
+
 
 class Buy(db.Model):
     """購入情報テーブル"""

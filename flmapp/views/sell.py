@@ -68,3 +68,34 @@ def sell_register():
         db.session.commit()
         return render_template('sell/sell_complete.html')
     return redirect(url_for('route.home'))
+
+# 商品更新
+@bp.route('/item_update/<int:item_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def sell_update(sell_id):
+    form = SellForm(request.form)
+    if request.method=='POST' and form.validate():
+        userid = current_user.get_id()
+        sell = Sell(
+            User_id = userid,
+            sell_title = form.sell_title.data,
+            key1 = form.key1.data,
+            key2 = form.key2.data,
+            key3 = form.key3.data,
+            sell_comment = form.sell_comment.data,
+            price = form.price.data,
+            genre = form.genre.data,
+            item_state = form.item_state.data,
+            postage = form.postage.data,
+            send_way = form.send_way.data,
+            consignor = form.consignor.data,
+            schedule = form.schedule.data,
+            remarks = form.remarks.data
+        )
+        # データベース処理
+        with db.session.begin(subtransactions=True):
+            # Sellテーブルにレコードの挿入
+            sell.create_new_sell()
+        db.session.commit()
+        return render_template('sell/sell_complete.html')
+    return redirect(url_for('route.home'))

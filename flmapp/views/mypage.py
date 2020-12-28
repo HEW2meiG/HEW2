@@ -19,6 +19,9 @@ from flmapp.models.token import (
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm,ShippingAddressForm
 )
+from flmapp.models.trade import (
+    Sell
+)
 
 bp = Blueprint('mypage', __name__, url_prefix='/mypage')
 
@@ -148,3 +151,12 @@ def shippingaddress_register():
         db.session.commit()
         flash('登録に成功しました')
     return render_template('mypage/shippingaddress_register.html', form=form)
+
+# 出品した本
+@bp.route('/sell_history', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def sell_history():
+    user = current_user.get_id()
+    # 出品中の本
+    items = Sell.select_sell_by_user_id(user)
+    return render_template('mypage/sell_history.html', items=items)

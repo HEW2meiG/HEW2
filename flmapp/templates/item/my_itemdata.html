@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+{{ item.key1 }}/{{ item.key2 }}/{{ item.key3 }}の本 - {{ super() }}
+{% endblock %}
+{% block content %}
+<div>
+    {% if item.picture_path %}
+    <img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">
+    {% endif %}
+    {{ item.username }}
+    {{ item.key1 }}
+    {{ item.key2 }}
+    {{ item.key3 }}
+    {{ item.price }}
+    {{ item.sell_comment }}
+    {{ item.genre.name }}
+    {{ item.item_state.name }}
+    {{ item.postage.name }}
+    {{ item.send_way.name }}
+    {{ item.deal_status.name }}
+    <a href="{{url_for('sell.sell')}}">商品編集</a>
+    <!-- <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">一時停止</a>
+    <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">削除</a> -->
+</div>
+{% endblock %}

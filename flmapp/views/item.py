@@ -21,4 +21,12 @@ bp = Blueprint('item', __name__, url_prefix='/item')
 @bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
 def itemdata(item_id):
     item = Sell.query.get(item_id)
-    return render_template('item/itemdata.html', item=item)
+    # ログイン中のユーザーIDによってユーザーを取得
+    user = User.select_user_by_id(current_user.get_id())
+    if user:    
+        if user.User_id == item.User_id:
+            return render_template('item/my_itemdata.html', item=item)
+        else:
+            return render_template('item/itemdata.html', item=item)
+    else:
+        return render_template('item/itemdata.html', item=item)
