@@ -53,7 +53,13 @@ def home():
 @bp.app_errorhandler(404)
 def page_not_found(e):
     """ページが見つからない場合"""
-    return redirect(url_for('route.home'))
+    return redirect(url_for('route.home')), 404
+
+
+@bp.app_errorhandler(405)
+def method_not_allowed(e):
+    """許可されていないHTTPメソッドアクセス時エラー"""
+    return render_template('405.html'), 405
 
 
 @bp.app_errorhandler(500)
