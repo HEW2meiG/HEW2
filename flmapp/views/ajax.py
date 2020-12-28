@@ -6,6 +6,7 @@ from flask_login import (
     login_required, current_user
 )
 from flmapp import db
+from functools import wraps # カスタムデコレーターに使用
 
 from flmapp.models.user import (
     User
@@ -21,8 +22,19 @@ from flmapp.models.reaction import (
 bp = Blueprint('ajax', __name__, url_prefix='')
 
 
+def ajax_login_required(func):
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated:
+            return func(*args, **kwargs)
+        else:
+            not_authenticated = True
+            return jsonify(not_authenticated=not_authenticated)
+    return decorated_function
+
+
 @bp.route('/like_ajax', methods=['POST'])
-@login_required
+@ajax_login_required
 def like_ajax():
     """いいね機能ajax処理"""
     sell_id = request.form.get('sell_id', -1, type=int)

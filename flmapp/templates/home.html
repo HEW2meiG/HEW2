@@ -60,15 +60,19 @@
                 data: {'sell_id': $(this).attr('name')},
                 dataType: 'json',
                 success: function(data){
-                    selector = document.getElementsByName(data['item_id']);
-                    if(data['liked']){
-                        $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
+                    if(data['not_authenticated']){
+                        alert('ログインしてください。');
+                    }else{
+                        selector = document.getElementsByName(data['item_id']);
+                        if(data['liked']){
+                            $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
+                        }
+                        else {
+                            $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
+                        }
+                        selector2 = document.getElementsByName(data['item_id'] + "-count");
+                        $(selector2).text(data['count']);
                     }
-                    else {
-                        $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
-                    }
-                    selector2 = document.getElementsByName(data['item_id'] + "-count");
-                    $(selector2).text(data['count']);
                 }
             });
         });
