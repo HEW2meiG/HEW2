@@ -25,7 +25,7 @@ class CreateUserForm(FlaskForm):
     email = StringField(
         'メールアドレス',render_kw={"placeholder":"PC・携帯どちらでも可"},validators=[DataRequired(), Email('メールアドレスが誤っています')]
     )
-    submit = SubmitField('登録する')
+    submit = SubmitField('メールを送信する')
 
     def validate_email(self, field):
         if User.select_user_by_email(field.data):
@@ -77,7 +77,7 @@ class RegisterForm(FlaskForm):
 
 class ForgotPasswordForm(FlaskForm):
     email = StringField('メールアドレス', validators=[DataRequired(), Email()])
-    submit = SubmitField('パスワードを再設定する')
+    submit = SubmitField('メールを送信する')
 
     def validate_email(self, field):
         if not User.select_user_by_email(field.data):
