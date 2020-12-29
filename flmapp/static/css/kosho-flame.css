@@ -17,37 +17,12 @@ div.kosho-form-300 input:focus{
     line-height: 40px;
     border-radius: 10px;
     color: white;
-    background-color: #D2B48C;
+    transition: .2s;
+    background-color: #a73836;
 }
 .kosho-button-300:hover{
-    background-color: #998367;
-}
-
-.kosho-button-500{
-    width: 500px;
-    border-radius: 10px;
-    color: white;
-    background-color: #D2B48C;
-}
-
-
-.kosho-button-700{
-    width: 700px;
-    border-radius: 10px;
-    color: white;
-    background-color: #D2B48C;
-}
-
-.kosho-login-b-300{
-    width: 300px;
-    height: 40px;
-    line-height: 40px;
-    border-radius: 10px;
-    color: white;
-    background-color: #CFC0AE;
-}
-.kosho-login-b-300:hover{
-    background-color: #998367;
+    transition: .7s;
+    background-color: #662222;
 }
 
 #submit{
@@ -58,10 +33,12 @@ div.kosho-form-300 input:focus{
     border: none;
     border-radius: 10px;
     color: white;
-    background-color: #D2B48C;
+    transition: .2s;
+    background-color: #0f2396;
 }
 #submit:hover{
-    background-color: #998367;
+    transition: .7s;
+    background-color:#0e0e42;
 }
 #submit:focus{
     outline: none;
