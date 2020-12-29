@@ -8,6 +8,7 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
+import flask_session_captcha
 
 from flmapp.models.user import User
 from flmapp.models.token import UserTempToken
@@ -20,6 +21,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('パスワード', validators=[DataRequired('入力してください。')])
     captcha = StringField('画像に表示されている文字を入力してください。')
     submit = SubmitField('ログイン')
+
+    def validate_captcha(self, field):
+        if flask_session_captcha.session.get('captcha_answer') != field.data:
+            raise ValidationError('画像に表示されている文字と違います。')
+
 
 class CreateUserForm(FlaskForm):
     email = StringField(
@@ -74,6 +80,11 @@ class RegisterForm(FlaskForm):
     def validate_usercode(self, field):
         if User.select_user_by_user_code(field.data):
             raise ValidationError('このユーザーコードはすでに使用されています')
+
+    def validate_captcha(self, field):
+        if flask_session_captcha.session.get('captcha_answer') != field.data:
+            raise ValidationError('画像に表示されている文字と違います。')
+
 
 class ForgotPasswordForm(FlaskForm):
     email = StringField('メールアドレス', validators=[DataRequired(), Email()])
