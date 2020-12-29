@@ -38,6 +38,18 @@ div.kosho-form-300 input:focus{
     background-color: #D2B48C;
 }
 
+.kosho-login-b-300{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 10px;
+    color: white;
+    background-color: #CFC0AE;
+}
+.kosho-login-b-300:hover{
+    background-color: #998367;
+}
+
 #submit{
     width: 300px;
     height: 40px;
@@ -69,9 +81,16 @@ button:focus{
 }
 
 /* 中央揃え(要素) */
+.txt-center{
+    text-align: center;
+}
 
 
 /* margin設定 */
+.kosho-pd{
+    padding: 100px 0 50px 0;
+}
+
 .mg-1{
     margin: 10px;
 }
@@ -166,6 +185,21 @@ button:focus{
 .mg-tb-5{
     margin: 50px 0px;
 }
+.mg-tb-6{
+    margin: 60px 0px;
+}
+.mg-tb-7{
+    margin: 70px 0px;
+}
+.mg-tb-8{
+    margin: 80px 0px;
+}
+.mg-tb-9{
+    margin: 90px 0px;
+}
+.mg-tb-10{
+    margin: 100px 0px;
+}
 
 /* padding設定 */
 .pd-1{
@@ -249,4 +283,39 @@ button:focus{
 }
 .lh-6{
     line-height: 60px;
+}
+
+/* z-indexの設定 */
+.z-in0{
+    z-index: 0;
+}
+.z-in1{
+    z-index: 1;
+}
+.z-in2{
+    z-index: 2;
+}
+.z-in3{
+    z-index: 3;
+}
+.z-in4{
+    z-index: 4;
+}
+.z-in5{
+    z-index: 5;
+}
+/* boxshadowの設定 */
+.box-shadow {
+    box-shadow: 0 0 99px black;
+}
+
+/* positionの設定 */
+.posi-ab{
+    position: absolute;
+}
+.posi-re{
+    position: relative;
+}
+.posi-fix{
+    position: fixed;
 }

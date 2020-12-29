@@ -1,23 +1,26 @@
-html{
-    height: 100%;
-}
-
 body{
-    margin: 0;
-    height: 100%;
-    
     background-image: url(../images/bg.jpg);
     background-size: cover;
+    background-repeat: no-repeat;
 }
 
-.page{
+.contentsArea{
     width: 800px;
-    height: 100%;
+    margin: 100px auto;
+    border-radius: 50px;
+    
+    background-color: #FFE4B5;
+}
+
+.container{
+    border-top: solid 2px white;
+}
+
+header,.container,footer{
+    width: 800px;
     margin: 0 auto;
     font-size: 14px;
     text-align: center;
-    box-shadow: 0 0 99px  black;
-    background-color: #FFE4B5;
 }
 
 header {
@@ -36,17 +39,22 @@ header {
         }
 
 
-.common1-bar{
-    border-bottom: solid 2px white;
-}
-
 dt{
-    margin: px 0;
+    margin: 0;
 }
 
 dd{
     margin: 0;
 }
+
+ul{
+    padding: 0;
+}
+
+li{
+    list-style: none;
+}
+
 
 p{
     margin: 0;
@@ -55,8 +63,7 @@ p{
 footer{
     height: 50px;
     line-height: 50px;
-    position: absolute;
-    bottom: 0;
+
 }
     footer p{
         width: 800px;
