@@ -63,7 +63,7 @@ def like_ajax():
 
 
 @bp.route('/follow_ajax', methods=['POST'])
-@login_required
+@ajax_login_required
 def follow_ajax():
     """フォロー機能ajax処理"""
     user_id = request.form.get('user_id', -1, type=int)
