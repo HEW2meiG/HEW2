@@ -4,9 +4,10 @@ body{
     background-repeat: no-repeat;
 }
 
-.contentsArea{
+.content-area{
     width: 800px;
     margin: 100px auto;
+    box-shadow: 0 0 99px black;
     border-radius: 50px;
     
     background-color: #FFE4B5;
