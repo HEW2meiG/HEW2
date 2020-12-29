@@ -28,14 +28,18 @@
         {{ form.pay_way(value=2) }}
         {{ form.Credit_id(value=session['Credit_id']) }}
         <p>クレジットカード</p>
-        <!-- ここに下4桁の番号いれる -->
-        <p>{{ session['Credit_id'] }}</p>
+        {% set credit = search_credit(session['Credit_id']) %}
+        <p>{{ credit.credit_name }}</p>
+        <p>{{ credit.credit_num | credit_num_format }}</p>
+        <p>{{ credit.expire.strftime('%m/%y') }}</p>
     {% elif current_user.default_pay_way==2 %}
         {{ form.pay_way(value=2) }}
-        {{ form.Credit_id(value=session['Credit_id']) }}
+        {{ form.Credit_id(value=current_user.default_Credit_id) }}
         <p>クレジットカード</p>
-        <!-- ここに下4桁の番号いれる -->
-        <p>{ current_user.default_Credit_id }</p>
+        {% set credit = search_credit(current_user.default_Credit_id) %}
+        <p>{{ credit.credit_name }}</p>
+        <p>{{ credit.credit_num | credit_num_format }}</p>
+        <p>{{ credit.expire.strftime('%m/%y') }}</p>
     {% else %}
         {{ form.pay_way(value=1) }}
         <p>代金引換</p>
@@ -51,8 +55,15 @@
         <p>{{ shippingaddress.address3 }}</p>
         {{ form.ShippingAddress_id(value=session['ShippingAddress_id']) }}
         <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">変更する</a>
-    {% elif current_user.defalt_ShippingAddress_id %}
-        {{ form.ShippingAddress_id(value=user.defalt_ShippingAddress_id) }}
+    {% elif current_user.default_ShippingAddress_id %}
+        {% set shippingaddress = search_shippingaddress(current_user.default_ShippingAddress_id) %}
+        <p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
+        <p>{{ shippingaddress.zip_code }}</p>
+        <p>{{ shippingaddress.prefecture }}</p>
+        <p>{{ shippingaddress.address1 }}</p>
+        <p>{{ shippingaddress.address2 }}</p>
+        <p>{{ shippingaddress.address3 }}</p>
+        {{ form.ShippingAddress_id(value=current_user.default_ShippingAddress_id) }}
         <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">変更する</a>
     {% else %}
         <p>配送先住所を追加してください。</p>

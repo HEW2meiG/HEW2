@@ -1,6 +1,6 @@
 from flask import (
-     Blueprint, abort, request, render_template,
-    redirect, url_for, flash, jsonify
+    Blueprint, abort, request, render_template,
+    redirect, url_for, flash, jsonify, session
 )
 from flask_login import (
     login_user, login_required, current_user
@@ -36,6 +36,10 @@ def likes_count_processor():
 @bp.route('/')
 def home():
     """ホーム"""
+    # セッションの破棄
+    session.pop('pay_way', None)
+    session.pop('Credit_id', None)
+    session.pop('ShippingAddress_id', None)
     items = Sell.query.all()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []

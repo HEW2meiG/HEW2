@@ -354,7 +354,7 @@ def pay_way_delete():
     return redirect(url_for('mypage.pay_way'))
 
 
-@bp.route('/creditcard_create', methods=['GET', 'POST'])
+@bp.route('/credit_register', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def credit_register():
     """クレジットカード登録"""
