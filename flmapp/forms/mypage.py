@@ -154,12 +154,6 @@ class HiddenPayWayDeleteForm(FlaskForm):
     submit = SubmitField('削除')
 
 
-class HiddenCreditDeleteForm(FlaskForm):
-    """配送先住所削除Hiddenフォーム"""
-    ShippingAddress_id = HiddenField()
-    submit = SubmitField('削除')
-
-
 class CreditRegisterForm(FlaskForm):
     """クレジットカード情報登録ページフォーム"""
     credit_name = StringField('クレジットカード名義',validators=[DataRequired()])
