@@ -4,6 +4,7 @@
 {% endblock %}
 {%block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
@@ -39,6 +40,16 @@
         {% endfor %}
     </table>
 </div>
+<div id="login-required-modal" class="login-required-modal">
+    <div class="modal-bg js-modal-close"></div>
+    <div class="modal-content">
+        <p>ログインしてください</p>
+        <a class="navbar-brand" href="{{url_for('auth.login')}}">ログイン</a>
+        <p>アカウントをお持ちでないですか？</p>
+        <a class="navbar-brand" href="{{url_for('auth.register')}}">新規会員登録</a>
+        <a class="js-modal-close" href="">閉じる</a>
+    </div>
+</div>
 <script>
     // ここから ajaxでcsrf_tokenを使用するとき
     var csrf_token = "{{ csrf_token() }}";
@@ -52,6 +63,7 @@
     // ここまで ajaxでcsrf_tokenを使用するとき
     // ここから いいね処理
     $(document).ready(function(event){
+        var winScrollTop;
         $(document).on('click', '#like', function(event){
             event.preventDefault();
             $.ajax({
@@ -61,7 +73,9 @@
                 dataType: 'json',
                 success: function(data){
                     if(data['not_authenticated']){
-                        alert('ログインしてください。');
+                        //スクロール位置を取得
+                        winScrollTop = $(window).scrollTop();
+                        login_required_modal_open();
                     }else{
                         selector = document.getElementsByName(data['item_id']);
                         if(data['liked']){
@@ -75,6 +89,15 @@
                     }
                 }
             });
+        });
+        function login_required_modal_open(){
+            $('#login-required-modal').fadeIn();
+            return false;
+        }
+        $('.js-modal-close').on('click',function(){
+            $('#login-required-modal').fadeOut();
+            $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
+            return false;
         });
     });
     // ここまで いいね処理
