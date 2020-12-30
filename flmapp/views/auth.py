@@ -133,18 +133,16 @@ def userregister(token):
                 flash('画像のアップロードに失敗しました。')
                 return redirect(url_for('auth.userregister', token=token))
         # 画像アップロード処理 ここまで--------------------------------------------------
-        #TODO: userインスタンスを生成してください
+        # Userインスタンス作成
         user = User(
             user_cord = form.user_cord.data,
             username = form.username.data,
             email = email
-            # prof_comment = form.prof_comment.data
         )
-        #TODO: ↓コメントアウトをはずしてください
         user.password = form.password.data
         # データベース登録処理
         with db.session.begin(subtransactions=True):
-            #TODO: Userテーブルにレコードの挿入をするクラスメソッドを以下に追加してください
+            #Userテーブルにレコードの挿入
             User.create_new_user(user)
         db.session.commit()
         userinfo = UserInfo(
