@@ -122,19 +122,18 @@ def userregister(token):
                 flash('画像のアップロードに失敗しました。')
                 return redirect(url_for('auth.userregister', token=token))
         # 画像アップロード処理 ここまで--------------------------------------------------
-        #TODO: userインスタンスを生成してください
-        """
+        # Userインスタンス作成
         user = User(
-            user_code = form.user_code.data
-            ....
+            user_cord = form.user_cord.data,
+            username = form.username.data,
+            email = email
         )
-        """
-        #TODO: ↓コメントアウトをはずしてください
-        # user.password = form.password.data
+        user.password = form.password.data
         # データベース登録処理
-        # with db.session.begin(subtransactions=True):
-            #TODO: Userテーブルにレコードの挿入をするクラスメソッドを以下に追加してください
-        # db.session.commit()
+        with db.session.begin(subtransactions=True):
+            #Userテーブルにレコードの挿入
+            User.create_new_user(user)
+        db.session.commit()
         userinfo = UserInfo(
             User_id = user.User_id,
             last_name = form.last_name.data,
@@ -157,9 +156,10 @@ def userregister(token):
             # Adressテーブルにレコードの挿入
             address.create_new_useraddress()
             #TODO: コメントアウトをけしてください
-            # if imagename:
-            #     user.picture_path = imagename
+            if imagename:
+                user.picture_path = imagename
             #TODO: トークンレコード削除を削除するクラスメソッドを以下に追加してください
+            UserTempToken.delete_token(token)
         db.session.commit()
         flash('新規会員登録が完了しました。')
         login_user(user, remember=True)

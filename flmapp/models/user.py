@@ -17,22 +17,23 @@ class User(UserMixin, db.Model):
     __tablename__ = 'User'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
-    User_id = db.Column(db.Integer, primary_key=True) #!
-    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False, default='あとで消します')
-    username = db.Column(db.String(64), index=True, nullable=False, default='あとで消します')
+    User_id = db.Column(db.Integer, primary_key=True)
+    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    username = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False, default='あとで消します') #!
-    picture_path = db.Column(db.Text, default='default.jpeg', nullable=False) #!
+    password_hash = db.Column(db.String(128), nullable=False)
+    picture_path = db.Column(db.Text, default='default.jpeg', nullable=False)
     prof_comment = db.Column(db.Text)
-    default_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id')) #!
-    default_pay_way = db.Column(db.Integer, default=1, nullable=False) #!
-    default_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id')) #!
-    is_active = db.Column(db.Boolean, default=True, nullable=True) #!
-    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False) #!
-    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False) #!
+    default_ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id'))
+    default_pay_way = db.Column(db.Integer, default=1, nullable=False)
+    default_Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id'))
+    is_active = db.Column(db.Boolean, default=True, nullable=True)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    #TODO: #!以外をかいてください
-    def __init__(self, email):
+    def __init__(self, user_cord, username, email):
+        self.user_cord = user_cord
+        self.username = username
         self.email = email
 
     def create_new_user(self):
