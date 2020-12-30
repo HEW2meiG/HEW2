@@ -110,4 +110,4 @@ class SellUpdateForm(FlaskForm):
         validators=[DataRequired()]
     )
     remarks = TextAreaField('備考')
-    submit = SubmitField('出品確認画面へ')
+    submit = SubmitField('更新する')

@@ -16,7 +16,7 @@ from flmapp.models.trade import (
     Sell
 )
 from flmapp.forms.sell import (
-    SellForm, HiddenSellForm
+    SellForm, HiddenSellForm, SellUpdateForm
 )
 
 bp = Blueprint('sell', __name__, url_prefix='/sell')
@@ -70,32 +70,81 @@ def sell_register():
     return redirect(url_for('route.home'))
 
 # 商品更新
-@bp.route('/item_update/<int:item_id>', methods=['GET', 'POST'])
+@bp.route('/sell_update/<int:item_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def sell_update(sell_id):
-    form = SellForm(request.form)
-    if request.method=='POST' and form.validate():
-        userid = current_user.get_id()
-        sell = Sell(
-            User_id = userid,
-            sell_title = form.sell_title.data,
-            key1 = form.key1.data,
-            key2 = form.key2.data,
-            key3 = form.key3.data,
-            sell_comment = form.sell_comment.data,
-            price = form.price.data,
-            genre = form.genre.data,
-            item_state = form.item_state.data,
-            postage = form.postage.data,
-            send_way = form.send_way.data,
-            consignor = form.consignor.data,
-            schedule = form.schedule.data,
-            remarks = form.remarks.data
+def sell_update(item_id):
+    sell = Sell.select_sell_by_sell_id(item_id)
+    form = SellUpdateForm(
+        request.form,
+        sell_comment = sell.sell_comment,
+        genre = str(sell.genre.name),
+        item_state = str(sell.item_state.name),
+        postage = str(sell.postage.name),
+        send_way = str(sell.send_way.name),
+        consignor = sell.consignor,
+        schedule = str(sell.schedule.name)
         )
+    if request.method == 'POST' and form.validate():
+        # ログイン中のユーザーIDによってユーザーを取得
+        user = User.select_user_by_id(current_user.get_id())
+        # enum型のみ更新
+        Sell.update_sell_enum(
+            form.genre.data,
+            form.item_state.data,
+            form.postage.data,
+            form.send_way.data,
+            form.consignor.data,
+            form.schedule.data
+            )
         # データベース処理
         with db.session.begin(subtransactions=True):
-            # Sellテーブルにレコードの挿入
-            sell.create_new_sell()
+            sell.sell_title = form.sell_title.data
+            sell.key1 = form.key1.data
+            sell.key2 = form.key2.data
+            sell.key3 = form.key3.data
+            sell.sell_comment = form.sell_comment.data
+            sell.price = form.price.data
+            # enum型動かない
+            # sell.genre = form.genre.data
+            # sell.item_state = form.item_state.data
+            # sell.postage = form.postage.data
+            # sell.send_way = form.send_way.data
+            # sell.consignor = form.consignor.data
+            # sell.schedule = form.schedule.data
+            sell.remarks = form.remarks.data
         db.session.commit()
-        return render_template('sell/sell_complete.html')
+        flash('更新に成功しました')
+    return render_template('sell/sell_update.html', form=form, sell=sell)
+
+
+# 商品一時停止
+@bp.route('/sell_update_sell_flg/<int:item_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def sell_update_sell_flg(item_id):
+    item = Sell.query.get(item_id)
+    # ログイン中のユーザーIDによってユーザーを取得
+    user_id = current_user.get_id()
+    sell = Sell.select_sell_by_sell_id(item_id)
+    sell_flg = sell.sell_flg
+    # データベース処理
+    with db.session.begin(subtransactions=True):
+        if sell.sell_flg:
+            sell.sell_flg = False
+            print('出品一時停止')
+            flash('一時停止に更新しました')
+        else:
+            sell.sell_flg = True
+            print('出品中')
+            flash('出品中に更新しました')
+    db.session.commit()
+    return render_template('item/itemdata.html', item=item, user_id=user_id)
+
+# 商品削除
+@bp.route('/sell_delete/<int:item_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def sell_delete(item_id):
+    with db.session.begin(subtransactions=True):
+        Sell.delete_sell(item_id)
+    db.session.commit()
+    flash('削除に成功しました')
     return redirect(url_for('route.home'))

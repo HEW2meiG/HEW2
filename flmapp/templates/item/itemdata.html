@@ -18,6 +18,12 @@
     {{ item.postage.name }}
     {{ item.send_way.name }}
     {{ item.deal_status.name }}
+    {% if item.User_id==user_id %}
+    <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">商品編集</a>
+    <a href="{{url_for('sell.sell_update_sell_flg', item_id=item.Sell_id)}}">一時停止</a>
+    <a href="{{url_for('sell.sell_delete', item_id=item.Sell_id)}}">削除</a>
+    {% else %}
     <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">購入画面に進む</a>
+    {% endif %}
 </div>
 {% endblock %}

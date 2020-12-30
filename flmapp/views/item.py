@@ -22,11 +22,5 @@ bp = Blueprint('item', __name__, url_prefix='/item')
 def itemdata(item_id):
     item = Sell.query.get(item_id)
     # ログイン中のユーザーIDによってユーザーを取得
-    user = User.select_user_by_id(current_user.get_id())
-    if user:    
-        if user.User_id == item.User_id:
-            return render_template('item/my_itemdata.html', item=item)
-        else:
-            return render_template('item/itemdata.html', item=item)
-    else:
-        return render_template('item/itemdata.html', item=item)
+    user_id = current_user.get_id()
+    return render_template('item/itemdata.html', item=item, user_id=user_id)

@@ -156,7 +156,7 @@ def shippingaddress_register():
 @bp.route('/sell_history', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell_history():
-    user = current_user.get_id()
+    user_id = current_user.get_id()
     # 出品中の本
-    items = Sell.select_sell_by_user_id(user)
+    items = Sell.select_sell_by_deal_status(user_id, 1)
     return render_template('mypage/sell_history.html', items=items)
