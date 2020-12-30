@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
     User_id = db.Column(db.Integer, primary_key=True) #!
-    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False, default='あとで消します')
+    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False)
     username = db.Column(db.String(64), index=True, nullable=False, default='あとで消します')
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False, default='あとで消します') #!
@@ -32,8 +32,11 @@ class User(UserMixin, db.Model):
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False) #!
 
     #TODO: #!以外をかいてください
-    def __init__(self, email):
+    def __init__(self, user_cord, username, email):
+        self.user_cord = user_cord
+        self.username = username
         self.email = email
+        # self.prof_comment = prof_comment
 
     def create_new_user(self):
         db.session.add(self)

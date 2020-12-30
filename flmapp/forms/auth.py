@@ -46,7 +46,7 @@ class RegisterForm(FlaskForm):
     )
     picture_path = FileField('アイコン画像を設定')
     username = StringField('ユーザーネーム', validators=[DataRequired()],render_kw={"placeholder":"例)ポチ"})
-    usercode = StringField('ユーザーコード', validators=[DataRequired()],render_kw={"placeholder":"pochi0830"})
+    user_cord = StringField('ユーザーコード', validators=[DataRequired()],render_kw={"placeholder":"pochi0830"})
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
     last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
