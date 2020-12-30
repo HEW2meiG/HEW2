@@ -6,9 +6,24 @@
     text-decoration: none;
     color: black;
     border-bottom: solid 2px black;
+    transition: .1s;
 }
 #pass-forgot:hover{
     text-decoration: none;
     color: gray;
     border-bottom: solid 2px gray;
+    transition: .2s;
+}
+
+label{
+    padding: 20px 0;
+}
+
+ul{
+    width: 300px;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    background-color: #ff5959;
 }

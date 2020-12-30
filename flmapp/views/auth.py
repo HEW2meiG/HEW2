@@ -8,7 +8,6 @@ from flask import (
 from flask_login import (
     login_user, login_required, logout_user, current_user
 )
-import flask_session_captcha
 from flmapp import db # SQLAlchemy
 
 from flmapp.models.user import (
@@ -44,11 +43,6 @@ def logout():
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
-        # キャプチャ判定処理 ここから---------------------------------------------------
-        if flask_session_captcha.session.get('captcha_answer') != form.captcha.data:
-            flash('画像に表示されている文字と違います。')
-            return render_template('auth/login.html', form=form)
-        # キャプチャ判定処理 ここまで---------------------------------------------------
         user = User.select_user_by_email(form.email.data)
         # ユーザーが存在するかつ、ユーザーのis_activeがTrue(有効)かつ、ユーザーが入力したパスワードがユーザーのパスワードと一致する
         if user and user.is_active and user.validate_password(form.password.data):
@@ -111,11 +105,6 @@ def userregister(token):
     if not email:
         abort(404)
     if request.method=='POST' and form.validate():
-        # キャプチャ判定処理 ここから---------------------------------------------------
-        if flask_session_captcha.session.get('captcha_answer') != form.captcha.data:
-            flash('画像に表示されている文字と違います。')
-            return redirect(url_for('auth.userregister', token=token))
-        # キャプチャ判定処理 ここまで---------------------------------------------------
         # 画像アップロード処理 ここから-------------------------------------------------
         imagename = ''
         image = request.files[form.picture_path.name]

@@ -17,25 +17,12 @@ div.kosho-form-300 input:focus{
     line-height: 40px;
     border-radius: 10px;
     color: white;
-    background-color: #D2B48C;
+    transition: .2s;
+    background-color: #a73836;
 }
 .kosho-button-300:hover{
-    background-color: #998367;
-}
-
-.kosho-button-500{
-    width: 500px;
-    border-radius: 10px;
-    color: white;
-    background-color: #D2B48C;
-}
-
-
-.kosho-button-700{
-    width: 700px;
-    border-radius: 10px;
-    color: white;
-    background-color: #D2B48C;
+    transition: .7s;
+    background-color: #662222;
 }
 
 #submit{
@@ -46,10 +33,12 @@ div.kosho-form-300 input:focus{
     border: none;
     border-radius: 10px;
     color: white;
-    background-color: #D2B48C;
+    transition: .2s;
+    background-color: #0f2396;
 }
 #submit:hover{
-    background-color: #998367;
+    transition: .7s;
+    background-color:#0e0e42;
 }
 #submit:focus{
     outline: none;
@@ -69,9 +58,16 @@ button:focus{
 }
 
 /* 中央揃え(要素) */
+.txt-center{
+    text-align: center;
+}
 
 
 /* margin設定 */
+.kosho-pd{
+    padding: 100px 0 50px 0;
+}
+
 .mg-1{
     margin: 10px;
 }
@@ -102,6 +98,21 @@ button:focus{
 }
 .mg-t-5{
     margin-top: 50px;
+}
+.mg-t-6{
+    margin-top: 60px;
+}
+.mg-t-7{
+    margin-top: 70px;
+}
+.mg-t-8{
+    margin-top: 80px;
+}
+.mg-t-9{
+    margin-top: 90px;
+}
+.mg-t-10{
+    margin-top: 100px;
 }
 
 .mg-b-1{
@@ -150,6 +161,21 @@ button:focus{
 }
 .mg-tb-5{
     margin: 50px 0px;
+}
+.mg-tb-6{
+    margin: 60px 0px;
+}
+.mg-tb-7{
+    margin: 70px 0px;
+}
+.mg-tb-8{
+    margin: 80px 0px;
+}
+.mg-tb-9{
+    margin: 90px 0px;
+}
+.mg-tb-10{
+    margin: 100px 0px;
 }
 
 /* padding設定 */
@@ -234,4 +260,39 @@ button:focus{
 }
 .lh-6{
     line-height: 60px;
+}
+
+/* z-indexの設定 */
+.z-in0{
+    z-index: 0;
+}
+.z-in1{
+    z-index: 1;
+}
+.z-in2{
+    z-index: 2;
+}
+.z-in3{
+    z-index: 3;
+}
+.z-in4{
+    z-index: 4;
+}
+.z-in5{
+    z-index: 5;
+}
+/* boxshadowの設定 */
+.box-shadow {
+    box-shadow: 0 0 99px black;
+}
+
+/* positionの設定 */
+.posi-ab{
+    position: absolute;
+}
+.posi-re{
+    position: relative;
+}
+.posi-fix{
+    position: fixed;
 }

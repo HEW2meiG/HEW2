@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from flask import (
     Blueprint, abort, request, render_template,
-    redirect, url_for, flash,
+    redirect, url_for, flash, session
 )
 from flask_login import (
     login_user, login_required, current_user
@@ -22,5 +22,9 @@ bp = Blueprint('item', __name__, url_prefix='/item')
 
 @bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
 def itemdata(item_id):
+    # セッションの破棄
+    session.pop('pay_way', None)
+    session.pop('Credit_id', None)
+    session.pop('ShippingAddress_id', None)
     item = Sell.query.get(item_id)
     return render_template('item/itemdata.html', item=item)

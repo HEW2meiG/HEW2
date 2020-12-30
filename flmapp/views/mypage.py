@@ -1,6 +1,5 @@
 import os
-from datetime import datetime
-from datetime import date
+import datetime
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash,
@@ -87,7 +86,7 @@ def profile():
                 ext = image.filename.rsplit('.', 1)[1]
                 # imagenameはユーザーID+現在の時間+.拡張子
                 imagename = str(user.User_id) + '_' + \
-                            str(int(datetime.now().timestamp())) + '.' + ext
+                            str(int(datetime.datetime.now().timestamp())) + '.' + ext
                 # ファイルの保存
                 image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
             else:
@@ -192,7 +191,10 @@ def identification():
     userinfo = UserInfo.select_userinfo_by_user_id()
     #ユーザーIDによって住所テーブルのUser_idが一致しているレコードを取得
     useradress = Address.select_address_by_user_id()
-    form = IdentificationForm(request.form, pref01 = useradress.prefecture)
+    form = IdentificationForm(request.form, pref01 = useradress.prefecture, b_year=userinfo.birth.strftime('%Y'), b_month=userinfo.birth.strftime('%m'), b_date=userinfo.birth.strftime('%d'))
+    form.b_year.choices += [(i, i) for i in reversed(range(1900, datetime.date.today().year+1))]
+    form.b_month.choices += [(i, i) for i in range(1, 13)]
+    form.b_date.choices += [(i, i) for i in range(1, 32)]
     if request.method == 'POST' and form.validate():
         # データベース処理
         with db.session.begin(subtransactions=True):
@@ -200,7 +202,7 @@ def identification():
             userinfo.first_name = form.first_name.data 
             userinfo.last_name_kana = form.last_name_kana.data 
             userinfo.first_name_kana = form.first_name_kana.data 
-            userinfo.birth = form.birth.data 
+            userinfo.birth = datetime.date(form.b_year.data, form.b_month.data, form.b_date.data)
             useradress.zip_code = form.zip01.data 
             useradress.prefecture = form.pref01.data
             useradress.address1 = form.addr01.data 
@@ -352,7 +354,7 @@ def pay_way_delete():
     return redirect(url_for('mypage.pay_way'))
 
 
-@bp.route('/creditcard_create', methods=['GET', 'POST'])
+@bp.route('/credit_register', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def credit_register():
     """クレジットカード登録"""
@@ -367,7 +369,7 @@ def credit_register():
             # クレジットカード番号
             credit_num = form.credit_num.data,
             # クレジット有効期限 Date型のため、日付はすべて1に設定するとする。
-            expire = date(form.expiration_date02.data, form.expiration_date01.data, 1)
+            expire = datetime.date(form.expiration_date02.data, form.expiration_date01.data, 1)
         )
         credit.security_code = str(form.security_code.data)
         # データベース処理
@@ -383,3 +385,9 @@ def credit_register():
         flash('登録しました')
         return redirect(url_for('mypage.pay_way'))
     return render_template('mypage/credit_register.html', form=form)
+
+
+@bp.route('/logout', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def logout():
+    return render_template('mypage/logout.html')

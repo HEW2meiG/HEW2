@@ -19,7 +19,10 @@
     <p>代金引換</p>
 {% elif buy.pay_way==2 %}
     <p>クレジットカード</p>
-    <!-- クレジット情報 -->
+    {% set credit = search_credit(buy.Credit_id) %}
+    <p>{{ credit.credit_name }}</p>
+    <p>{{ credit.credit_num | credit_num_format }}</p>
+    <p>{{ credit.expire.strftime('%m/%y') }}</p>
 {% endif %}
 <h3>配送先</h3>
 {% set shippingaddress = search_shippingaddress(buy.ShippingAddress_id) %}

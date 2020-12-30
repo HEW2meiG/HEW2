@@ -106,8 +106,8 @@ class Buy(db.Model):
         return cls.query.filter_by(Sell_id=Sell_id).first()
 
 
-# 購入情報テーブルのEnum型を定義
-Rating = Enum("rating", [("良い", 1), ("悪い", 2)])
+# 相互評価情報テーブルのEnum型を定義
+Rating_enum = Enum("rating", [("良い", 1), ("悪い", 2)])
 
 class Rating(db.Model):
     """相互評価情報テーブル"""
@@ -119,7 +119,17 @@ class Rating(db.Model):
     Sell_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), nullable=False)
     to_user_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
     from_user_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    rating = db.Column(EnumType(enum_class=Rating), nullable=False)
+    rating = db.Column(EnumType(enum_class=Rating_enum), nullable=False)
     rating_message = db.Column(db.Text)
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+
+    def __init__(self, Sell_id, to_user_id, from_user_id, rating, rating_message):
+        self.Sell_id = Sell_id
+        self.to_user_id = to_user_id
+        self.from_user_id = from_user_id
+        self.rating = Rating_enum(rating)
+        self.rating_message = rating_message
+
+    def create_new_rating(self):
+        db.session.add(self)

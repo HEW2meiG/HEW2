@@ -1,6 +1,6 @@
 from flask import (
-     Blueprint, abort, request, render_template,
-    redirect, url_for, flash, jsonify
+    Blueprint, abort, request, render_template,
+    redirect, url_for, flash, jsonify, session
 )
 from flask_login import (
     login_user, login_required, current_user
@@ -36,6 +36,10 @@ def likes_count_processor():
 @bp.route('/')
 def home():
     """ホーム"""
+    # セッションの破棄
+    session.pop('pay_way', None)
+    session.pop('Credit_id', None)
+    session.pop('ShippingAddress_id', None)
     items = Sell.query.all()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
@@ -53,7 +57,13 @@ def home():
 @bp.app_errorhandler(404)
 def page_not_found(e):
     """ページが見つからない場合"""
-    return redirect(url_for('route.home'))
+    return redirect(url_for('route.home')), 404
+
+
+@bp.app_errorhandler(405)
+def method_not_allowed(e):
+    """許可されていないHTTPメソッドアクセス時エラー"""
+    return render_template('405.html'), 405
 
 
 @bp.app_errorhandler(500)
