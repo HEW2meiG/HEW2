@@ -3,6 +3,9 @@
 {{ item.key1 }}/{{ item.key2 }}/{{ item.key3 }}の本 - {{ super() }}
 {% endblock %}
 {% block content %}
+{% for message in get_flashed_messages() %}
+{{ message }}
+{% endfor %}
 <div>
     {% if item.picture_path %}
     <img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">
@@ -20,8 +23,10 @@
     {{ item.deal_status.name }}
     {% if item.User_id==user_id %}
     <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">商品編集</a>
-    <a href="{{url_for('sell.sell_update_sell_flg', item_id=item.Sell_id)}}">一時停止</a>
-    <a href="{{url_for('sell.sell_delete', item_id=item.Sell_id)}}">削除</a>
+    <form method="POST" action="{{url_for('sell.sell_update_sell_flg_delete', item_id=item.Sell_id)}}">
+        <input type="submit" name="submit" value="一時停止" onclick="{{url_for('sell.sell_update_sell_flg_delete', item_id=item.Sell_id)}}">
+        <input type="submit" name="submit" value="商品削除" onclick="{{url_for('sell.sell_update_sell_flg_delete', item_id=item.Sell_id)}}">
+    </form>
     {% else %}
     <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">購入画面に進む</a>
     {% endif %}

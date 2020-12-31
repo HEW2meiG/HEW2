@@ -13,7 +13,7 @@ from flmapp.models.user import (
     User
 )
 from flmapp.models.trade import (
-    Sell
+    Sell, Genre, Item_state, Postage, Send_way, Schedule, Deal_status
 )
 from flmapp.forms.sell import (
     SellForm, HiddenSellForm, SellUpdateForm
@@ -76,75 +76,62 @@ def sell_update(item_id):
     sell = Sell.select_sell_by_sell_id(item_id)
     form = SellUpdateForm(
         request.form,
-        sell_comment = sell.sell_comment,
+        sell_comment = str(sell.sell_comment),
         genre = str(sell.genre.name),
         item_state = str(sell.item_state.name),
         postage = str(sell.postage.name),
         send_way = str(sell.send_way.name),
-        consignor = sell.consignor,
-        schedule = str(sell.schedule.name)
+        consignor = str(sell.consignor),
+        schedule = str(sell.schedule.name),
+        remarks = str(sell.remarks)
         )
     if request.method == 'POST' and form.validate():
         # ログイン中のユーザーIDによってユーザーを取得
         user = User.select_user_by_id(current_user.get_id())
-        # enum型のみ更新
-        Sell.update_sell_enum(
-            form.genre.data,
-            form.item_state.data,
-            form.postage.data,
-            form.send_way.data,
-            form.consignor.data,
-            form.schedule.data
-            )
         # データベース処理
         with db.session.begin(subtransactions=True):
-            sell.sell_title = form.sell_title.data
-            sell.key1 = form.key1.data
-            sell.key2 = form.key2.data
-            sell.key3 = form.key3.data
-            sell.sell_comment = form.sell_comment.data
-            sell.price = form.price.data
-            # enum型動かない
-            # sell.genre = form.genre.data
-            # sell.item_state = form.item_state.data
-            # sell.postage = form.postage.data
-            # sell.send_way = form.send_way.data
-            # sell.consignor = form.consignor.data
-            # sell.schedule = form.schedule.data
-            sell.remarks = form.remarks.data
+            sell.sell_title = str(form.sell_title.data)
+            sell.key1 = str(form.key1.data)
+            sell.key2 = str(form.key2.data)
+            sell.key3 = str(form.key3.data)
+            sell.sell_comment = str(form.sell_comment.data)
+            sell.price = int(form.price.data)
+            sell.genre = Genre[str(form.genre.data)]
+            sell.item_state = Item_state[str(form.item_state.data)]
+            sell.postage = Postage[str(form.postage.data)]
+            sell.send_way = Send_way[str(form.send_way.data)]
+            sell.consignor = str(form.consignor.data)
+            sell.schedule = Schedule[str(form.schedule.data)]
+            sell.remarks = str(form.remarks.data)
         db.session.commit()
         flash('更新に成功しました')
     return render_template('sell/sell_update.html', form=form, sell=sell)
 
 
 # 商品一時停止
-@bp.route('/sell_update_sell_flg/<int:item_id>', methods=['GET', 'POST'])
+@bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def sell_update_sell_flg(item_id):
+def sell_update_sell_flg_delete(item_id):
     item = Sell.query.get(item_id)
     # ログイン中のユーザーIDによってユーザーを取得
     user_id = current_user.get_id()
     sell = Sell.select_sell_by_sell_id(item_id)
-    sell_flg = sell.sell_flg
     # データベース処理
-    with db.session.begin(subtransactions=True):
-        if sell.sell_flg:
-            sell.sell_flg = False
-            print('出品一時停止')
-            flash('一時停止に更新しました')
-        else:
-            sell.sell_flg = True
-            print('出品中')
-            flash('出品中に更新しました')
-    db.session.commit()
+    if request.method == 'POST':
+        with db.session.begin(subtransactions=True):
+            if (request.form.get('submit')) == '一時停止':
+                if sell.sell_flg:
+                    sell.sell_flg = False
+                    print('出品一時停止')
+                    flash('一時停止に更新しました')
+                else:
+                    sell.sell_flg = True
+                    print('出品中')
+                    flash('出品中に更新しました')
+            elif (request.form.get('submit')) == '商品削除':
+                Sell.delete_sell(item_id)
+                flash('削除に成功しました')
+        db.session.commit()
+        if (request.form.get('submit')) == '商品削除':
+            return redirect(url_for('route.home'))
     return render_template('item/itemdata.html', item=item, user_id=user_id)
-
-# 商品削除
-@bp.route('/sell_delete/<int:item_id>', methods=['GET', 'POST'])
-@login_required # ログインしていないと表示できないようにする
-def sell_delete(item_id):
-    with db.session.begin(subtransactions=True):
-        Sell.delete_sell(item_id)
-    db.session.commit()
-    flash('削除に成功しました')
-    return redirect(url_for('route.home'))
