@@ -68,16 +68,6 @@ class Sell(db.Model):
 
     def create_new_sell(self):
         db.session.add(self)
-    
-    #enum更新のため書きました。やり方がわからなかったので勝手に作ってしまいました。（てへぺろ） 
-    @classmethod
-    def update_sell_enum(cls, genre, item_state, postage, send_way, consignor, schedule):
-        cls.genre = Genre[genre]
-        cls.item_state = Item_state[item_state]
-        cls.postage = Postage[postage]
-        cls.send_way = Send_way[send_way]
-        cls.consignor = consignor
-        cls.schedule = Schedule[schedule]
 
     @classmethod
     def select_sell_by_sell_id(cls, Sell_id):
@@ -93,11 +83,6 @@ class Sell(db.Model):
     def select_sell_by_deal_status(cls, User_id, deal_status):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
-
-    @classmethod
-    def select_sell_by_sell_flg(cls, sell_flg):
-        """sell_flgによってSell(商品)レコードを得る"""
-        return cls.query.filter(cls.sell_flg==sell_flg).all()
         
     @classmethod
     def delete_sell(cls, Sell_id):

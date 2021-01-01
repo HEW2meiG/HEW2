@@ -111,3 +111,8 @@ class SellUpdateForm(FlaskForm):
     )
     remarks = TextAreaField('備考')
     submit = SubmitField('更新する')
+    
+class SellUpdateFlgAndDeleteForm(FlaskForm):
+    """出品フラグ更新・出品削除フォーム"""
+    Sell_id = HiddenField()
+    submit = SubmitField()

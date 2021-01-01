@@ -20,8 +20,20 @@
     {{ item.deal_status.name }}
     {% if item.User_id==user_id %}
     <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">商品編集</a>
-    <a href="{{url_for('sell.sell_update_sell_flg', item_id=item.Sell_id)}}">一時停止</a>
-    <a href="{{url_for('sell.sell_delete', item_id=item.Sell_id)}}">削除</a>
+        <form method="POST" action="{{url_for('sell.sell_flg_update', item_id=item.Sell_id, sell_flg=item.sell_flg)}}">
+            {{ form.csrf_token }}
+            {{ form.Sell_id(value=item.Sell_id) }}
+            {% if item.sell_flg %}
+                {{ form.submit(value='出品を一時停止する') }}
+            {% else %}
+                {{ form.submit(value='出品を再開する') }}
+            {% endif %}
+        </form>
+        <form method="POST" action="{{url_for('sell.sell_delete', item_id=item.Sell_id)}}">
+            {{ form.csrf_token }}
+            {{ form.Sell_id(value=item.Sell_id) }}
+            {{ form.submit(value='削除') }}
+        </form>
     {% else %}
     <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">購入画面に進む</a>
     {% endif %}
