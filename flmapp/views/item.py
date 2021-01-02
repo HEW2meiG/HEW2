@@ -15,6 +15,9 @@ from flmapp.models.user import (
 from flmapp.models.trade import (
     Sell
 )
+from flmapp.forms.sell import (
+    SellUpdateFlgAndDeleteForm
+)
 
 bp = Blueprint('item', __name__, url_prefix='/item')
 
@@ -27,4 +30,7 @@ def itemdata(item_id):
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
     item = Sell.query.get(item_id)
-    return render_template('item/itemdata.html', item=item)
+    form = SellUpdateFlgAndDeleteForm(request.form)
+    # ログイン中のユーザーIDによってユーザーを取得
+    user_id = current_user.get_id()
+    return render_template('item/itemdata.html', item=item, user_id=user_id, form=form)

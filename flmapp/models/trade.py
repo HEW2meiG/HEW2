@@ -74,6 +74,21 @@ class Sell(db.Model):
         """Sell_id(item_id)によってSell(出品情報)レコードを得る"""
         return cls.query.get(Sell_id)
 
+    @classmethod
+    def select_sell_by_user_id(cls, User_id):
+        """User_idによってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.User_id==User_id).all()
+
+    @classmethod
+    def select_sell_by_deal_status(cls, User_id, deal_status):
+        """User_idとdeal_statusによってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
+        
+    @classmethod
+    def delete_sell(cls, Sell_id):
+        """トークンの削除"""
+        cls.query.filter_by(Sell_id=Sell_id).delete()
+
 
 class Buy(db.Model):
     """購入情報テーブル"""

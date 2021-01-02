@@ -21,6 +21,9 @@ from flmapp.forms.mypage import (
    ShippingAddressRegisterForm, ShippingAddressEditForm, HiddenShippingAddressDeleteForm,
    PayWayForm, HiddenPayWayDeleteForm, CreditRegisterForm
 )
+from flmapp.models.trade import (
+    Sell
+)
 
 from flmapp import mail # メール送信インポート
 from flask_mail import Mail, Message # メール送信インポート
@@ -263,6 +266,16 @@ def shippingaddress_register():
     return render_template('mypage/shippingaddress_register.html', form=form)
 
 
+# 出品した本
+@bp.route('/sell_history', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+def sell_history():
+    user_id = current_user.get_id()
+    # 出品中の本
+    items = Sell.select_sell_by_deal_status(user_id, 1)
+    return render_template('mypage/sell_history.html', items=items)
+
+  
 @bp.route('/shippingaddress_delete', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def shippingaddress_delete():

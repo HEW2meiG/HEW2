@@ -1,0 +1,32 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+    出品履歴画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 offset-lg-2">
+        <h2>出品中の本</h2>
+        <a href="{{url_for('sell.sell')}}">出品する</a>
+        <table>
+            {% for item in items %}
+            <tr>
+                <td>
+                    {% if item.picture_path %}
+                    <img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">
+                    {% endif %}
+                    {{ item.username }}
+                </td>
+                <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+                    {{ item.deal_status.name }}
+                    {{ item.key1 }}
+                    {{ item.key2 }}
+                    {{ item.key3 }}
+                    {{ item.sell_comment }}
+                </a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}
