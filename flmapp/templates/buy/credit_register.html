@@ -1,0 +1,22 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+クレジットカード登録画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>クレジットカード登録</h2>
+{% for message in get_flashed_messages() %}
+{{ message }}
+{% endfor %}
+<form method="POST">
+    {{ form.csrf_token }}
+    {{ render_field(form.credit_name) }}
+    {{ render_field(form.credit_num) }}
+    {{ render_field(form.expiration_date01) }}
+    {{ render_field(form.expiration_date02) }}
+    {{ render_field(form.security_code) }}
+    {{ render_field(form.is_default) }}
+    {{ form.submit() }}
+</form>
+<a href="{{url_for('buy.pay_way', item_id=item_id)}}">戻る</a>
+{% endblock %} 

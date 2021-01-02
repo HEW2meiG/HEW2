@@ -47,7 +47,7 @@ class Sell(db.Model):
     create_at = db.Column(db.DateTime,default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime,default=datetime.now, nullable=False)
     # Sellテーブルからデータを取得時にUserテーブルも取得
-    sell_items = db.relationship('User', backref='sell', lazy='joined')
+    user = db.relationship('User', backref='sell', lazy='joined', uselist=False)
 
     def __init__(self, User_id, sell_title, key1, key2, key3, sell_comment, price, genre, item_state, \
                  postage, send_way, consignor, schedule, remarks):
@@ -71,7 +71,7 @@ class Sell(db.Model):
 
     @classmethod
     def select_sell_by_sell_id(cls, Sell_id):
-        """Sell_id(item_id)によってSell(商品)レコードを得る"""
+        """Sell_id(item_id)によってSell(出品情報)レコードを得る"""
         return cls.query.get(Sell_id)
 
     @classmethod
@@ -105,20 +105,24 @@ class Buy(db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    def __init__(self, Buy_id, User_id, Sell_id, pay_way, Credit_id, ShippingAddress_id):
-        self.Buy_id = Buy_id
+    def __init__(self, User_id, Sell_id, pay_way, Credit_id, ShippingAddress_id):
         self.User_id = User_id
         self.Sell_id = Sell_id
         self.pay_way = pay_way
         self.Credit_id = Credit_id
         self.ShippingAddress_id = ShippingAddress_id
 
-    def create_new_Buy(self):
+    def create_new_buy(self):
         db.session.add(self)
 
+    @classmethod
+    def select_buy_by_sell_id(cls, Sell_id):
+        """Sell_id(item_id)によってBuy(購入情報)レコードを得る"""
+        return cls.query.filter_by(Sell_id=Sell_id).first()
 
-# 購入情報テーブルのEnum型を定義
-Rating = Enum("rating", [("良い", 1), ("悪い", 2)])
+
+# 相互評価情報テーブルのEnum型を定義
+Rating_enum = Enum("rating", [("良い", 1), ("悪い", 2)])
 
 class Rating(db.Model):
     """相互評価情報テーブル"""
@@ -130,7 +134,17 @@ class Rating(db.Model):
     Sell_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), nullable=False)
     to_user_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
     from_user_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
-    rating = db.Column(EnumType(enum_class=Rating), nullable=False)
+    rating = db.Column(EnumType(enum_class=Rating_enum), nullable=False)
     rating_message = db.Column(db.Text)
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+
+    def __init__(self, Sell_id, to_user_id, from_user_id, rating, rating_message):
+        self.Sell_id = Sell_id
+        self.to_user_id = to_user_id
+        self.from_user_id = from_user_id
+        self.rating = Rating_enum(rating)
+        self.rating_message = rating_message
+
+    def create_new_rating(self):
+        db.session.add(self)

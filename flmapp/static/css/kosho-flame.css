@@ -1,0 +1,298 @@
+/* 古書邂逅フォーム */
+div.kosho-form-300 input{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-300 input:focus{
+    outline: none;
+}
+
+/* 古書邂逅ボタン */
+.kosho-button-300{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 10px;
+    color: white;
+    transition: .2s;
+    background-color: #a73836;
+}
+.kosho-button-300:hover{
+    transition: .7s;
+    background-color: #662222;
+}
+
+#submit{
+    width: 300px;
+    height: 40px;
+    margin: 0 20px;
+    line-height: 40px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    transition: .2s;
+    background-color: #0f2396;
+}
+#submit:hover{
+    transition: .7s;
+    background-color:#0e0e42;
+}
+#submit:focus{
+    outline: none;
+}
+
+button{
+    margin: 0 20px;
+    border: none;
+}
+button:focus{
+    outline:none
+}
+
+/* 中央揃え(ブロック要素) */
+.center-margin{
+    margin: 0 auto;
+}
+
+/* 中央揃え(要素) */
+.txt-center{
+    text-align: center;
+}
+
+
+/* margin設定 */
+.kosho-pd{
+    padding: 100px 0 50px 0;
+}
+
+.mg-1{
+    margin: 10px;
+}
+.mg-2{
+    margin: 20px;
+}
+.mg-3{
+    margin: 30px;
+}
+.mg-4{
+    margin: 40px;
+}
+.mg-5{
+    margin: 50px;
+}
+
+.mg-t-1{
+    margin-top: 10px;
+}
+.mg-t-2{
+    margin-top: 20px;
+}
+.mg-t-3{
+    margin-top: 30px;
+}
+.mg-t-4{
+    margin-top: 40px;
+}
+.mg-t-5{
+    margin-top: 50px;
+}
+.mg-t-6{
+    margin-top: 60px;
+}
+.mg-t-7{
+    margin-top: 70px;
+}
+.mg-t-8{
+    margin-top: 80px;
+}
+.mg-t-9{
+    margin-top: 90px;
+}
+.mg-t-10{
+    margin-top: 100px;
+}
+
+.mg-b-1{
+    margin-bottom: 10px;
+}
+.mg-b-2{
+    margin-bottom: 20px;
+}
+.mg-b-3{
+    margin-bottom: 30px;
+}
+.mg-b-4{
+    margin-bottom: 40px;
+}
+.mg-b-5{
+    margin-bottom: 50px;
+}
+
+.mg-rl-1{
+    margin: 0px 10px;
+}
+.mg-rl-2{
+    margin: 0px 20px;
+}
+.mg-rl-3{
+    margin: 0px 30px;
+}
+.mg-rl-4{
+    margin: 0px 40px;
+}
+.mg-rl-5{
+    margin: 0px 50px;
+}
+
+.mg-tb-1{
+    margin: 10px 0px;
+}
+.mg-tb-2{
+    margin: 20px 0px;
+}
+.mg-tb-3{
+    margin: 30px 0px;
+}
+.mg-tb-4{
+    margin: 40px 0px;
+}
+.mg-tb-5{
+    margin: 50px 0px;
+}
+.mg-tb-6{
+    margin: 60px 0px;
+}
+.mg-tb-7{
+    margin: 70px 0px;
+}
+.mg-tb-8{
+    margin: 80px 0px;
+}
+.mg-tb-9{
+    margin: 90px 0px;
+}
+.mg-tb-10{
+    margin: 100px 0px;
+}
+
+/* padding設定 */
+.pd-1{
+    padding: 10px;
+}
+.pd-2{
+    padding: 20px;
+}
+.pd-3{
+    padding: 30px;
+}
+.pd-4{
+    padding: 40px;
+}
+.pd-5{
+    padding: 50px;
+}
+
+.pd-rl-1{
+    padding: 0px 10px;
+}
+.pd-rl-2{
+    padding: 0px 20px;
+}
+.pd-rl-3{
+    padding: 0px 30px;
+}
+.pd-rl-4{
+    padding: 0px 40px;
+}
+.pd-rl-5{
+    padding: 0px 50px;
+}
+
+.pd-tb-1{
+    padding: 10px 0px;
+}
+.pd-tb-2{
+    padding: 20px 0px;
+}
+.pd-tb-3{
+    padding: 30px 0px;
+}
+.pd-tb-4{
+    padding: 40px 0px;
+}
+.pd-tb-5{
+    padding: 50px 0px;
+}
+
+.pd-t-1{
+    padding-top: 10px;
+}
+.pd-t-2{
+    padding-top: 20px;
+}
+.pd-t-3{
+    padding-top: 30px;
+}
+.pd-t-4{
+    padding-top: 40px;
+}
+.pd-t-5{
+    padding-top: 50px;
+}
+
+.lh-1{
+    line-height: 10px;
+}
+.lh-2{
+    line-height: 20px;
+}
+.lh-3{
+    line-height: 30px;
+}
+.lh-4{
+    line-height: 40px;
+}
+.lh-5{
+    line-height: 50px;
+}
+.lh-6{
+    line-height: 60px;
+}
+
+/* z-indexの設定 */
+.z-in0{
+    z-index: 0;
+}
+.z-in1{
+    z-index: 1;
+}
+.z-in2{
+    z-index: 2;
+}
+.z-in3{
+    z-index: 3;
+}
+.z-in4{
+    z-index: 4;
+}
+.z-in5{
+    z-index: 5;
+}
+/* boxshadowの設定 */
+.box-shadow {
+    box-shadow: 0 0 99px black;
+}
+
+/* positionの設定 */
+.posi-ab{
+    position: absolute;
+}
+.posi-re{
+    position: relative;
+}
+.posi-fix{
+    position: fixed;
+}

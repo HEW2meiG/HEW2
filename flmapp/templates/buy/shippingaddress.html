@@ -1,0 +1,52 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+配送先住所選択画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>配送先住所選択</h2>
+{{ form.csrf_token(form="choice") }}
+<table>
+{% for field in form.ShippingAddress_id %}
+    {% set shippingaddress = search_shippingaddress(field.data) %}
+    <tr>
+        <td>{{ field(form="choice") }}</td>
+        <td>{{ field.label }}</td>
+        <td>
+            <p>
+                {{ shippingaddress.last_name }}
+                {{ shippingaddress.first_name }}
+            </p>
+            <p>
+                {{ shippingaddress.zip_code }}
+                {{ shippingaddress.prefecture }}
+                {{ shippingaddress.address1 }}
+                {{ shippingaddress.address2 }}
+                {{ shippingaddress.address3 }}
+            </p>
+        </td>
+        <td>
+            <form method="POST" action="{{url_for('buy.shippingaddress_delete', item_id=item_id)}}">
+                {{ delete_form.csrf_token }}
+                {{ delete_form.ShippingAddress_id(value=shippingaddress.ShippingAddress_id) }}
+                {{ delete_form.submit() }}
+            </form>
+        </td>
+        <td><a href="{{ url_for('buy.shippingaddress_edit', item_id=item_id, shippingaddress_id=shippingaddress.ShippingAddress_id) }}">編集</a></td>
+    </tr>
+{% endfor %}
+</table>
+{% if shippingaddresses|length < 5 %}
+    <a href="{{ url_for('buy.shippingaddress_register', item_id=item_id) }}">配送先住所を追加</a>
+{% else %}
+    <P>配送先住所は5件以上登録できません。</P>
+{% endif %}
+{{ form.is_default.label}}{{form.is_default(form="choice") }}
+{{ form.submit(form="choice") }}
+<!-- formは入れ子構造にできないため、form属性を使用 -->
+<form method="POST" id="choice"></form>
+<a href="{{ url_for('buy.buy', item_id=item_id )}}">戻る</a>
+{% endblock %}

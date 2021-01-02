@@ -8,14 +8,13 @@ from flask import (
 from flask_login import (
     login_user, login_required, logout_user, current_user
 )
-import flask_session_captcha
 from flmapp import db # SQLAlchemy
 
 from flmapp.models.user import (
     User, UserInfo, Address
 )
 from flmapp.models.token import (
-    PasswordResetToken
+    UserTempToken, PasswordResetToken
 )
 from flmapp.forms.auth import (
     LoginForm, RegisterForm, CreateUserForm, ForgotPasswordForm, ResetPasswordForm
@@ -70,20 +69,13 @@ def login():
 def register():
     form = CreateUserForm(request.form)
     if request.method == 'POST' and form.validate():
-        user = User(
-            email = form.email.data
-        )
-        # データベースにユーザー情報登録
+        email = form.email.data
+        # ユーザー仮登録トークン情報テーブルにメールアドレスを登録
         with db.session.begin(subtransactions=True):
-            user.create_new_user()
-        db.session.commit()
-        token = ''
-        # データベースにパスワードリセットトークンを登録
-        with db.session.begin(subtransactions=True):
-            token = PasswordResetToken.publish_token(user)
+            token = UserTempToken.publish_token(email)
         db.session.commit()
         # メール送信処理ここから----------------------------------------------------------
-        msg = Message('古書邂逅 仮登録メール', recipients=[user.email])
+        msg = Message('古書邂逅 仮登録メール', recipients=[email])
         msg.html = '<hr>【古書邂逅】 古書邂逅会員仮登録完了のお知らせ<hr>\
                     この度は、古書邂逅会員にご登録いただきまして誠にありがとうございます。<br>\
                     下記ページアドレス(URL)から会員登録をしてください。<br>\
@@ -91,7 +83,7 @@ def register():
                     【ご登録されたメールアドレス】<br>\
                     {email}<br>\
                     【こちらから本登録を行ってください】<br>\
-                    {url}'.format(email=user.email,url=url_for('auth.userregister', token=token, _external=True))
+                    {url}'.format(email=email,url=url_for('auth.userregister', token=token, _external=True))
         mail.send(msg)
         # メール送信処理ここまで----------------------------------------------------------
         # デバッグ用---------------------------------------------------------------
@@ -102,26 +94,46 @@ def register():
         print('*'*120)
         # デバッグ用---------------------------------------------------------------
         flash('本登録用のURLをお送りしました。ご確認ください')
-        return redirect(url_for('auth.login'))
+        return redirect(url_for('route.home'))
     return render_template('auth/create_user.html', form=form)
 
 # ユーザー本登録
 @bp.route('/userregister/<uuid:token>', methods=['GET', 'POST'])
 def userregister(token):
     form = RegisterForm(request.form)
-    # トークンによってユーザーIDを取得する
-    reset_user_id = PasswordResetToken.get_user_id_by_token(token)
-    if not reset_user_id:
-        # ユーザーIDが取得できない場合
-        abort(500)
+    email = UserTempToken.get_email_by_token(token)
+    if not email:
+        abort(404)
     if request.method=='POST' and form.validate():
-        # キャプチャ判定処理
-        if flask_session_captcha.session.get('captcha_answer') != form.captcha.data:
-            flash('画像に表示されている文字と違います。')
-            return redirect(url_for('auth.userregister', token=token))
-        password = form.password.data
-        # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得
-        user = User.select_user_by_id(reset_user_id)
+        # 画像アップロード処理 ここから-------------------------------------------------
+        imagename = ''
+        image = request.files[form.picture_path.name]
+        if image:
+            # 画像アップロード処理用関数
+            if allowed_image(image.filename):
+                # ファイル名から拡張子を取り出す
+                ext = image.filename.rsplit('.', 1)[1]
+                # imagenameはユーザーID+現在の時間+.拡張子
+                imagename = str(user.User_id) + '_' + \
+                            str(int(datetime.now().timestamp())) + '.' + ext
+                # ファイルの保存
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
+            else:
+                flash('画像のアップロードに失敗しました。')
+                return redirect(url_for('auth.userregister', token=token))
+        # 画像アップロード処理 ここまで--------------------------------------------------
+        # Userインスタンス作成
+        user = User(
+            user_cord = form.user_cord.data,
+            username = form.username.data,
+            email = email
+        )
+        user.password = form.password.data
+        # データベース登録処理
+        with db.session.begin(subtransactions=True):
+            #Userテーブルにレコードの挿入
+            User.create_new_user(user)
+        db.session.commit()
         userinfo = UserInfo(
             User_id = user.User_id,
             last_name = form.last_name.data,
@@ -138,36 +150,16 @@ def userregister(token):
             address2 = form.addr02.data,
             address3 = form.addr03.data
         )
-        # 画像アップロード処理 ここから--------------------------
-        imagename = ''
-        image = request.files[form.picture_path.name]
-        if image:
-            # 画像アップロード処理用関数
-            if allowed_image(image.filename):
-                # ファイル名から拡張子を取り出す
-                ext = image.filename.rsplit('.', 1)[1]
-                # imagenameはユーザーID+現在の時間+.拡張子
-                imagename = str(user.User_id) + '_' + \
-                            str(int(datetime.now().timestamp())) + '.' + ext
-                # ファイルの保存
-                image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
-            else:
-                flash('画像のアップロードに失敗しました。')
-                return redirect(url_for('auth.userregister', token=token))
-        # 画像アップロード処理 ここまで--------------------------
-        # データベース登録処理
         with db.session.begin(subtransactions=True):
-            # トークンレコード削除
-            PasswordResetToken.delete_token(token)
-            # パスワード更新処理
-            user.save_new_password(password)
-            user.username = form.username.data
             # UserInfoテーブルにレコードの挿入
             userinfo.create_new_userinfo()
             # Adressテーブルにレコードの挿入
             address.create_new_useraddress()
-            if imagename: # imagenameが設定されていれば(画像があれば)更新する
+            #TODO: コメントアウトをけしてください
+            if imagename:
                 user.picture_path = imagename
+            #TODO: トークンレコード削除を削除するクラスメソッドを以下に追加してください
+            UserTempToken.delete_token(token)
         db.session.commit()
         flash('新規会員登録が完了しました。')
         login_user(user, remember=True)
@@ -206,6 +198,7 @@ def forgot_password():
             )
             # デバッグ用---------------------------------------------------------------
             flash('パスワード再登録用のURLを発行しました。')
+            return redirect(url_for('auth.login'))
         else:
             flash('存在しないユーザです。')
     return render_template('auth/forgot_password.html', form=form)
@@ -217,15 +210,14 @@ def reset_password(token):
     # トークンに紐づいたユーザーIDを得る
     reset_user_id = PasswordResetToken.get_user_id_by_token(token)
     if not reset_user_id:
-        abort(500)
+        abort(404)
     if request.method=='POST' and form.validate():
         password = form.password.data
         # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得
         user = User.select_user_by_id(reset_user_id)
         # データベース処理
         with db.session.begin(subtransactions=True):
-            # パスワード更新処理(パスワードのハッシュ化とユーザーの有効化)
-            user.save_new_password(password)
+            user.password = password
             # トークンレコード削除
             PasswordResetToken.delete_token(token)
         db.session.commit()

@@ -6,6 +6,9 @@ from flask_login import LoginManager
 from flask_mail import Mail, Message
 from flask_sessionstore import Session
 from flask_session_captcha import FlaskSessionCaptcha
+from flask_wtf.csrf import CsrfProtect
+
+from flmapp.utils.template_filters import replace_newline
 
 # LoginManagerの登録
 login_manager = LoginManager()
@@ -39,7 +42,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_ECHO'] = False
     # ここまで /// データベースの設定
 
     # ここから /// メール送信の設定
@@ -71,10 +74,15 @@ def create_app():
     mail.init_app(app)
     Session(app)
     captcha = FlaskSessionCaptcha(app)
+    CsrfProtect(app)
+
+    # カスタムテンプレートフィルターの登録
+    app.add_template_filter(replace_newline)
 
     # 分割したblueprintを登録する
     from flmapp.views import (
-        auth, mypage, route, sell, item, buy, transaction
+        auth, mypage, route, sell, item, buy, transaction,
+        ajax, user
     )
 
     app.register_blueprint(auth.bp)
@@ -84,5 +92,7 @@ def create_app():
     app.register_blueprint(item.bp)
     app.register_blueprint(buy.bp)
     app.register_blueprint(transaction.bp)
+    app.register_blueprint(ajax.bp)
+    app.register_blueprint(user.bp)
 
     return app

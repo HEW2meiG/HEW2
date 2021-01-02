@@ -21,7 +21,7 @@
     {{ form.remarks.data }}
 
     <form method="POST" action="{{url_for('sell.sell_register')}}">
-        {{ form.csrf_token }}
+        {{ hiddenform.csrf_token }}
         {{ hiddenform.sell_title(value=form.sell_title.data) }}
         {{ hiddenform.key1(value=form.key1.data) }}
         {{ hiddenform.key2(value=form.key2.data) }}
@@ -39,7 +39,7 @@
     </form>
 
     <form method="POST" action="{{url_for('sell.sell')}}">
-        {{ form.csrf_token }}
+        {{ hiddenform.csrf_token }}
         {{ hiddenform.sell_title(value=form.sell_title.data) }}
         {{ hiddenform.key1(value=form.key1.data) }}
         {{ hiddenform.key2(value=form.key2.data) }}

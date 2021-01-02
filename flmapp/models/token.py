@@ -32,7 +32,10 @@ class UserTempToken(db.Model):
 
     @classmethod
     def publish_token(cls, email):
-        """ユーザー仮登録トークン情報テーブルにレコードの挿入をする"""
+        """
+        ユーザー仮登録トークン情報テーブルにレコードの挿入し、
+        tokenを返す
+        """
         token = str(uuid4())
         new_token = cls(
             token,
@@ -44,7 +47,7 @@ class UserTempToken(db.Model):
         return token
     
     @classmethod
-    def get_user_id_by_token(cls, email):
+    def get_email_by_token(cls, token):
         """トークンより仮登録したemailを返す"""
         now = datetime.now()
         record = cls.query.filter_by(token=str(token)).filter(cls.expire_at > now).first()
@@ -54,14 +57,17 @@ class UserTempToken(db.Model):
             return None
 
     @classmethod
-    def get_user_id_by_email(cls, email):
-        """emailより仮登録したレコードを抽出"""
+    def email_exists(cls, email):
+        """
+        引数のemailに紐づくレコードがあればTrue,
+        なければFalseを返す
+        """
         now = datetime.now()
         record = cls.query.filter_by(email=email).filter(cls.expire_at > now).first()
         if record:
-            return record
+            return True
         else:
-            return None
+            return False
 
     @classmethod
     def delete_token(cls, token):
@@ -120,14 +126,17 @@ class MailResetToken(db.Model):
             return None
 
     @classmethod
-    def get_user_by_email(cls, email):
-        """期限内のユーザーIDをemailで取り出す"""
+    def email_exists(cls, email):
+        """
+        引数のemailに紐づくレコードがあればTrue,
+        なければFalseを返す
+        """
         now = datetime.now()
         record = cls.query.filter_by(email=email).filter(cls.expire_at > now).first()
         if record:
-            return record
+            return True
         else:
-            return None
+            return False
 
     @classmethod
     def delete_token(cls, token):

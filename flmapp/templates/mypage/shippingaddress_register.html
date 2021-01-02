@@ -1,18 +1,18 @@
 {% from "_formhelpers.html" import render_field %}
 {% extends "base.html" %}
 {% block title %}
-発送元・お届け先住所編集画面 - {{ super() }}
+配送先住所登録画面 - {{ super() }}
 {% endblock %}
 {% block head %}
 <!-- 郵便番号から住所自動入力 -->
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 {% endblock %}
 {% block content %}
-<h1>発送元・お届け先住所変更画面</h1>
+<h2>配送先住所登録</h2>
 <div class="row">
     <div class="col-lg-8 offset-lg-4">
         {% for message in get_flashed_messages() %}
-        {{ message }}
+            {{ message }}
         {% endfor %}
     </div>
     <form method="POST">
@@ -29,6 +29,7 @@
         {{ render_field(form.addr01) }}
         {{ render_field(form.addr02) }}
         {{ render_field(form.addr03) }}
+        {{ render_field(form.is_default) }}
         {{ form.submit() }}
     </form>
 </div>

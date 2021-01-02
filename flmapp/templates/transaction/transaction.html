@@ -1,0 +1,147 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/message.css')}}">
+{% endblock%}
+{% block title %}
+取引画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>取引画面</h2>
+{% include "transaction/notice.html" %}
+<h3>取引情報</h3>
+<table>
+    <tr>
+        <th>商品</th>
+        <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+            {{ item.key1 }}
+            {{ item.key2 }}
+            {{ item.key3 }}
+            {{ item.price }}
+            {{ item.sell_comment }}
+        </a></td>
+    </tr>
+    <tr>
+        <th>送料</th>
+        <td>{{ item.postage.name }}</td>
+    </tr>
+    <tr>
+        <th>購入日時</th>
+        <td>{{ buy.create_at.strftime("%Y/%m/%d %H:%M") }}</td>
+    </tr>
+    <tr>
+        <th>商品ID</th>
+        <td>{{ '%08d' % item.Sell_id }}</td>
+    </tr>
+    <tr>
+        <th>お届け先</th>
+        <td>
+            <p>
+                {{ shippingaddress.zip_code }}<br>
+                {{ shippingaddress.prefecture }}
+                {{ shippingaddress.address1 }}
+                {{ shippingaddress.address2 }}<br>
+                {{ shippingaddress.address3 }}
+            </p>
+            <p>
+                {{ shippingaddress.last_name }}
+                {{ shippingaddress.first_name }}
+                様
+            </p>
+        </td>
+    </tr>
+</table>
+<h3>出品者情報</h3>
+<img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+{{ item.user.username }}
+<h3>取引メッセージ</h3>
+<div id="losd_message_button" class="col-12">
+    <button class="col12 bth bth-light btn-outline-primary" onclick="load_old_messages();">メッセージを読み込む</button>
+</div>
+{% for message in messages|reverse %}
+    {% if message.from_user_id == current_user.User_id %}
+        <!-- 自分側 -->
+        <div class="msg-box">
+            <div id="self-message-tag-{{ message.DealMessage_id }}">
+            {% if message.is_checked %}
+                <p>既読</p>
+            {% endif %}
+            </div>
+            <div class="speech-bubble-self">
+                <!-- 改行部分を区切ってforループする -->
+                {% for splitted_message in message.message|replace_newline %}
+                    <p>{{ splitted_message|urlize }}</p>
+                {% endfor %}
+            </div>
+            <div class="msger-wrap">
+                <img src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+                <p>{{ current_user.username }}</p>
+            </div>
+        </div>
+    {% else %}
+        <!-- 相手側 -->
+        <div class="msg-box">
+            <div class="msger-wrap">
+                <img src="{{url_for('static', filename='user_image/' + dest_user.picture_path)}}">
+                <p>{{ dest_user.username }}</p>
+            </div>
+            <div class="speech-bubble-dest">
+                <!-- 改行部分を区切ってforループする -->
+                {% for splitted_message in message.message|replace_newline %}
+                    <p>{{ splitted_message|urlize }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+<!-- ↓message-formの上にajaxで取得されるメッセージが入ります -->
+<div id="message-form"></div>
+<form method="POST">
+    {{ messageform.csrf_token }}
+    {{ render_field(messageform.message, cols="50", rows="5") }}
+    {{ messageform.submit() }}
+</form>
+<script>
+    $(function(){
+        // 1秒間隔でget_new_messagesを実行
+        timer = setInterval("get_new_messages()", 1000);
+        // 初期表示で画面の一番下に行く
+        var scroll = (document.scrollingElement || document.body);
+        scroll.scrollTop = scroll.scrollHeight;
+    });
+    dest_user_id = "{{ dest_user.User_id }}";
+    sell_id = "{{ item.Sell_id }}";
+    offset_value = 1;
+    function get_new_messages(){
+        $.getJSON("/transaction/message_ajax", {
+            dest_user_id: dest_user_id,
+            sell_id : sell_id
+        }, function(data){
+            $('#message-form').before(data['data']);
+            var checked_message_ids = data['checked_message_ids'];
+            for(let idx = 0; idx < checked_message_ids.length; idx++){
+                $('#self-message-tag-' + checked_message_ids[idx]).append('<p>既読</p>');
+            }
+        });
+    };
+    function load_old_messages(){
+        $.getJSON("/transaction/load_old_messages", {
+            dest_user_id : dest_user_id,
+            sell_id : sell_id,
+            offset_value : offset_value
+        }, function(data){
+            if(data['data']){
+                hidden_id = "load_message_" + offset_value;
+                hidden_tag = '<div id=">' + hidden_id + '"></div>';
+                $(hidden_tag).insertAfter('#load_message_button');
+                $(data['data']).insertAfter('#load_message_button');
+                $('body, html').animate({scrollTop: $('#' + hidden_id).offset().top},0);
+                offset_value += 1;
+            }
+        });
+    }
+</script>
+{% endblock %}

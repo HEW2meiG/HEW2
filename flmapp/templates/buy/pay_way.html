@@ -4,12 +4,40 @@
 支払い方法選択画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>支払い方法</h2>
-<form method="POST">
-    {{form.csrf_token}}
-    {{render_field(form.pay_way)}}
-    <a href="{{url_for('buy.buy', item_id=item_id)}}">クレジットカードを追加</a>
-    {{form.submit()}}
-</form>
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>支払い方法選択</h2>
+{{ form.csrf_token(form="choice") }}
+<table>
+{% for field in form.pay_way %}
+    <tr>
+        <td>{{ field(form="choice") }}</td>
+        <td>{{ field.label }}</td>
+        {% if field.data != 0 %}
+            {% set credit = search_credit(field.data) %}
+            <td>{{ credit.credit_name }}</td>
+            <td>{{ credit.credit_num | credit_num_format }}</td>
+            <td>{{ credit.expire.strftime('%m/%y') }}</td>
+            <td>
+                <form method="POST" action="{{url_for('buy.pay_way_delete', item_id=item_id)}}">
+                    {{ delete_form.csrf_token }}
+                    {{ delete_form.Credit_id(value=credit.Credit_id) }}
+                    {{ delete_form.submit() }}
+                </form>
+            </td>
+        {% endif %}
+    </tr>
+{% endfor %}
+</table>
+{% if credits|length < 5 %}
+    <a href="{{ url_for('buy.credit_register', item_id=item_id) }}">クレジットカードを追加</a>
+{% else %}
+    <P>クレジットカードは5件以上登録できません。</P>
+{% endif%}
+{{ form.is_default.label}}{{form.is_default(form="choice") }}
+{{ form.submit(form="choice") }}
+<!-- formは入れ子構造にできないため、form属性を使用 -->
+<form method="POST" id="choice"></form>
 <a href="{{url_for('buy.buy', item_id=item_id)}}">戻る</a>
 {% endblock %}

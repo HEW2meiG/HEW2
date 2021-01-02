@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}
+メールアドレス更新完了画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>メールアドレスを更新しました</h2>
+<p>古書邂逅をご利用いただきありがとうございます。</p>
+<p>{{ current_user.email }}の確認が完了しました。</p>
+<p>引き続き古書邂逅をお楽しみください。</p>
+{% endblock %}

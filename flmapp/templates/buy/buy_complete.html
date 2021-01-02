@@ -1,0 +1,37 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base.html" %}
+{% block title %}
+購入完了画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+<h2>購入が完了しました</h2>
+<img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+{{ item.user.username }}
+{{ item.key1 }}
+{{ item.key2 }}
+{{ item.key3 }}
+{{ item.price }}
+{{ item.sell_comment }}
+{{ item.postage.name }}
+<p>支払い金額:<span>{{ item.price }}</span>円</p>
+<h3>支払い方法</h3>
+{% if buy.pay_way==1 %}
+    <p>代金引換</p>
+{% elif buy.pay_way==2 %}
+    <p>クレジットカード</p>
+    {% set credit = search_credit(buy.Credit_id) %}
+    <p>{{ credit.credit_name }}</p>
+    <p>{{ credit.credit_num | credit_num_format }}</p>
+    <p>{{ credit.expire.strftime('%m/%y') }}</p>
+{% endif %}
+<h3>配送先</h3>
+{% set shippingaddress = search_shippingaddress(buy.ShippingAddress_id) %}
+<p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
+<p>{{ shippingaddress.zip_code }}</p>
+<p>{{ shippingaddress.prefecture }}</p>
+<p>{{ shippingaddress.address1 }}</p>
+<p>{{ shippingaddress.address2 }}</p>
+<p>{{ shippingaddress.address3 }}</p>
+<a href="{{url_for('transaction.transaction', item_id=item.Sell_id)}}">取引画面をみる</a>
+<a href="{{url_for('route.home')}}">ホームへ戻る</a>
+{% endblock %}

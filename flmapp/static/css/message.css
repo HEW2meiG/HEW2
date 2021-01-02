@@ -1,0 +1,50 @@
+/* 
+メッセージ機能の吹き出しcssです。
+後から変えてください。 
+css参考URL:https://projects.verou.me/bubbly/
+*/
+.speech-bubble-dest {
+	position: relative;
+	background: #ffa39e;
+	padding: 20px;
+	border-radius: .4em;
+}
+
+.speech-bubble-dest:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-right-color: #ffa39e;
+	border-left: 0;
+	margin-top: -20px;
+	margin-left: -20px;
+}
+
+.speech-bubble-self {
+	position: relative;
+	background: #9ed5ff;
+	padding: 20px;
+	border-radius: .4em;
+}
+
+.speech-bubble-self:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-left-color: #9ed5ff;
+	border-right: 0;
+	margin-top: -20px;
+	margin-right: -20px;
+}
+
+.msg-box{
+	display: flex;
+}

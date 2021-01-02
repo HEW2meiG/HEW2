@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}
+{{ user.username }}さん - {{ super() }}
+{% endblock %}
+{%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
+{% endblock%}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<div>
+    <img src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+    {{ user.username }}
+    {{ user.prof_comment }}
+    {% include "follow.html" %}
+    <p>
+        フォロワー：
+        <span id="{{ user.User_id }}-count" class="count">{{ followers_count(user.User_id) }}</span>
+    </p>
+</div>
+<div id="login-required-modal" class="login-required-modal">
+    <div class="modal-bg js-modal-close"></div>
+    <div class="modal-content">
+        <p>ログインしてください</p>
+        <a class="navbar-brand" href="{{url_for('auth.login')}}">ログイン</a>
+        <p>アカウントをお持ちでないですか？</p>
+        <a class="navbar-brand" href="{{url_for('auth.register')}}">新規会員登録</a>
+        <a class="js-modal-close" href="">閉じる</a>
+    </div>
+</div>
+<script>
+    // ここから ajaxでcsrf_tokenを使用するとき
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+    // ここまで ajaxでcsrf_tokenを使用するとき
+    // ここから フォロー処理
+    $(document).ready(function(event){
+        var winScrollTop;
+        $(document).on('click', '#follow', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('ajax.follow_ajax') }}",
+                data: {'user_id': $(this).attr('name')},
+                dataType: 'json',
+                success: function(data){
+                    if(data['not_authenticated']){
+                        //スクロール位置を取得
+                        winScrollTop = $(window).scrollTop();
+                        login_required_modal_open();
+                    }else{
+                        selector = document.getElementsByName(data['user_id']);
+                        if(data['followed']){
+                            $(selector).attr('class', 'follow-btn');
+                            $(selector).text('フォロー中');
+                        }
+                        else {
+                            $(selector).attr('class', 'unfollow-btn');
+                            $(selector).text('フォロー');
+                        }
+                        selector2 = document.getElementById(data['user_id'] + "-count");
+                        $(selector2).text(data['count']);
+                    }
+                }
+            });
+        });
+        function login_required_modal_open(){
+            $('#login-required-modal').fadeIn();
+            return false;
+        }
+        $('.js-modal-close').on('click',function(){
+            $('#login-required-modal').fadeOut();
+            $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
+            return false;
+        });
+    });
+    // ここまで フォロー処理
+</script>
+{% endblock %}

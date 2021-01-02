@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}古書邂逅{% endblock %}</title>
+        <!-- ↓ajax -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <!-- ↓読み込むcssファイルをここに記述してください。 -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kosho-flame.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common1.css')}}">
+        {%block head %}{% endblock%}
+    </head>
+    <body>
+        <div class="content-area">
+            <header>
+                <div class="headerLogo"><img src="{{ url_for('static', filename='images/logo.png')}}" alt="ロゴ"></div>
+            </header>
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <footer><p>© 2021 koshokaikou</p></footer>
+        </div>
+    </body>
+</html>
