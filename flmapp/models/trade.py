@@ -49,7 +49,7 @@ class Sell(db.Model):
     # Sellテーブルからデータを取得時にUserテーブルも取得
     user = db.relationship('User', backref='sell', lazy='joined', uselist=False)
 
-    def __init__(self, User_id, sell_title, key1, key2, key3, sell_comment, price, genre, item_state, \
+    def __init__(self, User_id, sell_title, key1, key2, key3, sell_comment, price, item_picture_path, genre, item_state, \
                  postage, send_way, consignor, schedule, remarks):
         self.User_id = User_id
         self.sell_title = sell_title
@@ -58,6 +58,7 @@ class Sell(db.Model):
         self.key3 = key3
         self.sell_comment = sell_comment
         self.price = price
+        self.item_picture_path = item_picture_path
         self.genre = Genre[genre]
         self.item_state = Item_state[item_state]
         self.postage = Postage[postage]
@@ -83,10 +84,10 @@ class Sell(db.Model):
     def select_sell_by_deal_status(cls, User_id, deal_status):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
-        
+
     @classmethod
     def delete_sell(cls, Sell_id):
-        """トークンの削除"""
+        """出品情報の削除"""
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
 

@@ -1,13 +1,17 @@
+import shutil # ファイルの移動時使用
+import glob # フォルダ内のファイルを捜索時使用
 import os
 from datetime import datetime
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash,
+    current_app as app #Blueprint環境下で、設定値(config)を取得
 )
 from flask_login import (
     login_user, login_required, current_user
 )
 from flmapp import db # SQLAlchemy
+from functools import wraps # カスタムデコレーターに使用
 
 from flmapp.models.user import (
     User
@@ -21,29 +25,81 @@ from flmapp.forms.sell import (
 
 bp = Blueprint('sell', __name__, url_prefix='/sell')
 
+# 画像アップロード処理用関数 ここから--------------------------------------
+def allowed_image(filename):
+    # .があるかどうかのチェックと、拡張子の確認
+    # OKなら１、だめなら0
+    return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
+#ここまで------------------------------------------------------------------
+
+def check_sell_update(func):
+    """
+        出品者以外のユーザーが出品情報編集URLへ遷移した際
+        リダイレクトを行う
+    """
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        sell_id = kwargs['item_id']
+        sell = Sell.select_sell_by_sell_id(sell_id)
+        if sell.User_id != current_user.User_id:
+            return redirect(url_for('route.home'))
+        return func(*args, **kwargs)
+    return decorated_function
+
 @bp.route('/', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell():
     form = SellForm(request.form)
     if request.method=='POST' and form.validate():
         if form.submit(value='出品画面に戻る'):
+            # item_temp_image内のファイルを取得
+            files = glob.glob(app.config["ITEM_TEMP_IMAGE_UPLOADS"])
+            # item_temp_image内にform.item_picture_path.dataと一致するファイルがあれば実行
+            if form.item_picture_path.data in files:
+                # item_temp_imageに入っていた画像を削除
+                os.remove(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data))
             return render_template('sell/sell.html', form=form)
     return render_template('sell/sell.html', form=form)
 
 @bp.route('/preview', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell_preview():
-    form = SellForm(request.form)
+    form = SellForm()
     hiddenform = HiddenSellForm()
     if request.method=='POST' and form.validate():
-        return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform)
-    return redirect(url_for('route.home'))
+        # 画像アップロード処理 ここから--------------------------
+        # 画像ファイルがあった場合
+        if request.files:
+            image = request.files[form.item_picture_path.name]
+            # 画像アップロード処理用関数
+            if allowed_image(image.filename):
+                # ファイル名から拡張子を取り出す
+                ext = image.filename.rsplit('.', 1)[1]
+                # imagenameはユーザーID+現在の時間+.拡張子
+                imagename = str(current_user.User_id) + '_' + \
+                            str(int(datetime.now().timestamp())) + '.' + ext
+                # ファイルの保存
+                image.save(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], imagename))
+            else:
+                flash('画像のアップロードに失敗しました。')
+                return render_template('sell/sell.html', form=form)
+        # 画像アップロード処理 ここまで--------------------------
+        return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform, imagename=imagename)
+    return render_template('sell/sell.html', form=form)
 
 @bp.route('/sell_complete', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell_register():
     form = SellForm(request.form)
-    if request.method=='POST' and form.validate():
+    if request.method=='POST':
+        # 画像ファイルの移動 item_temp_image->item_image
+        shutil.move(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data), app.config["ITEM_IMAGE_UPLOADS"])
+        # item_temp_image内のファイルを取得
+        files = glob.glob(app.config["ITEM_TEMP_IMAGE_UPLOADS"])
+        # item_temp_image内にform.item_picture_path.dataと一致するファイルがあれば実行
+        if form.item_picture_path.data in files:
+            # item_temp_imageに入っていた画像を削除
+            os.remove(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data))
         userid = current_user.get_id()
         sell = Sell(
             User_id = userid,
@@ -53,6 +109,7 @@ def sell_register():
             key3 = form.key3.data,
             sell_comment = form.sell_comment.data,
             price = form.price.data,
+            item_picture_path = form.item_picture_path.data,
             genre = form.genre.data,
             item_state = form.item_state.data,
             postage = form.postage.data,
@@ -66,12 +123,13 @@ def sell_register():
             # Sellテーブルにレコードの挿入
             sell.create_new_sell()
         db.session.commit()
-        return render_template('sell/sell_complete.html')
+        return render_template('sell/sell_complete.html', item_id=sell.Sell_id)
     return redirect(url_for('route.home'))
 
 # 商品更新
 @bp.route('/sell_update/<int:item_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
+@check_sell_update
 def sell_update(item_id):
     sell = Sell.select_sell_by_sell_id(item_id)
     if sell.remarks==None:
@@ -85,8 +143,8 @@ def sell_update(item_id):
         send_way = str(sell.send_way.name),
         consignor = str(sell.consignor),
         schedule = str(sell.schedule.name),
-        remarks = str(remarks)
-        )
+        remarks = str(sell.remarks)
+    )
     if request.method == 'POST' and form.validate():
         # データベース処理
         with db.session.begin(subtransactions=True):
@@ -105,39 +163,38 @@ def sell_update(item_id):
             sell.remarks = str(form.remarks.data)
         db.session.commit()
         flash('更新に成功しました')
+        return redirect(url_for('item.itemdata', item_id=item_id))
     return render_template('sell/sell_update.html', form=form, sell=sell)
 
 # 商品一時停止
-@bp.route('/itemdata/<int:item_id>/<int:sell_flg>', methods=['GET', 'POST'])
+@bp.route('/sell_flg_update', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def sell_flg_update(item_id, sell_flg):
-    item = Sell.query.get(item_id)
+def sell_flg_update():
     form = SellUpdateFlgAndDeleteForm(request.form)
-    # ログイン中のユーザーIDによってユーザーを取得
-    user_id = current_user.get_id()
-    sell = Sell.select_sell_by_sell_id(item_id)
     # データベース処理
     if request.method == 'POST':
+        sell = Sell.select_sell_by_sell_id(form.Sell_id.data)
         with db.session.begin(subtransactions=True):
-            if sell_flg:
+            if sell.sell_flg:
                 sell.sell_flg = False
-                print('出品一時停止')
-                flash('一時停止に更新しました')
+                flash('出品を一時停止しました')
             else:
                 sell.sell_flg = True
-                print('出品中')
-                flash('出品中に更新しました')
+                flash('出品を再開しました')
         db.session.commit()
-    return redirect(url_for('item.itemdata', item_id=item_id))
+        return redirect(url_for('item.itemdata', item_id=form.Sell_id.data))
+    return redirect(url_for('route.home'))
 
 # 商品削除
-@bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
+@bp.route('/sell_delete', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def sell_delete(item_id):
+def sell_delete():
+    form = SellUpdateFlgAndDeleteForm(request.form)
     if request.method == 'POST':
         with db.session.begin(subtransactions=True):
-            Sell.delete_sell(item_id)
+            Sell.delete_sell(form.Sell_id.data)
         db.session.commit()
-        flash('削除に成功しました')
+        flash('削除しました')
+        return redirect(url_for('history.sell_history'))
     return redirect(url_for('route.home'))
     

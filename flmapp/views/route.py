@@ -40,7 +40,8 @@ def home():
     session.pop('pay_way', None)
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
-    items = Sell.query.all()
+    # 出品状態、有効フラグが有効の商品を取り出す
+    items = Sell.query.filter_by(sell_flg = True, is_active = True).all()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:

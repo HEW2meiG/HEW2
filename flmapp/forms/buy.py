@@ -9,8 +9,9 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-#購入情報Hiddenフォーム
+
 class HiddenBuyForm(FlaskForm):
+    """購入情報Hiddenフォーム"""
     pay_way = HiddenField()
     Credit_id = HiddenField()
     ShippingAddress_id = HiddenField()
@@ -33,13 +34,14 @@ class HiddenBuyForm(FlaskForm):
 
 #支払い方法選択フォーム
 class PayWayForm(FlaskForm):
+    """支払い方法選択フォーム"""
     pay_way = RadioField('支払い方法',choices=[(0,'代金引換')], coerce=int)
     is_default = BooleanField('デフォルトの配送先に設定する')
     submit = SubmitField('選択した支払い方法を使う')
 
 
-#配送先住所選択フォーム
 class ShippingAddressForm(FlaskForm):
+    """配送先住所選択フォーム"""
     ShippingAddress_id = RadioField('配送先住所', choices=[], coerce=int)
     is_default = BooleanField('デフォルトの配送先に設定する')
     submit = SubmitField('選択した住所に配送する')
@@ -54,8 +56,8 @@ class ShippingAddressForm(FlaskForm):
         return True
 
 
-#配送先住所登録フォーム
 class ShippingAddressRegisterForm(FlaskForm):
+    """配送先住所登録フォーム"""
     last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
     last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})

@@ -12,6 +12,9 @@
     {{ form.key3.data }}
     {{ form.sell_comment.data }}
     {{ form.price.data }}
+    {% if imagename %}
+        <img src="{{url_for('static', filename='item_temp_image/' + imagename)}}">
+    {% endif %}
     {{ form.genre.data }}
     {{ form.item_state.data }}
     {{ form.postage.data }}
@@ -28,6 +31,7 @@
         {{ hiddenform.key3(value=form.key3.data) }}
         {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
         {{ hiddenform.price(value=form.price.data) }}
+        {{ hiddenform.item_picture_path(value=imagename) }}
         {{ hiddenform.genre(value=form.genre.data) }}
         {{ hiddenform.item_state(value=form.item_state.data) }}
         {{ hiddenform.postage(value=form.postage.data) }}
@@ -46,6 +50,7 @@
         {{ hiddenform.key3(value=form.key3.data) }}
         {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
         {{ hiddenform.price(value=form.price.data) }}
+        {{ hiddenform.item_picture_path(value=imagename) }}
         {{ hiddenform.genre(value=form.genre.data) }}
         {{ hiddenform.item_state(value=form.item_state.data) }}
         {{ hiddenform.postage(value=form.postage.data) }}

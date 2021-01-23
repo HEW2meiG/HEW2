@@ -30,7 +30,6 @@ class ChangePasswordForm(FlaskForm):
     confirm_password = PasswordField('パスワード確認:')
     submit = SubmitField('更新する')
 
-
     def validate_email(self, field):
         user = User.select_user_by_email(self.email.data)
         if user and user.User_id != int(current_user.get_id()):
@@ -53,7 +52,6 @@ class ChangePasswordForm(FlaskForm):
             if self.now_password.data == '':
                 raise ValidationError('現在のパスワードを入力してください')
                 
-
 
 class IdentificationForm(FlaskForm):
     """本人情報更新ページフォーム"""

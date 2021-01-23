@@ -4,6 +4,9 @@
     出品履歴画面 - {{ super() }}
 {% endblock %}
 {% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
 <div class="row">
     <div class="col-lg-4 offset-lg-2">
         <h2>出品中の本</h2>
@@ -18,7 +21,12 @@
                     {{ item.username }}
                 </td>
                 <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-                    {{ item.deal_status.name }}
+                    {% if item.sell_flg %}
+                        {{ item.deal_status.name }}
+                    {% else %}
+                        公開停止中
+                    {% endif%}
+                    <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
                     {{ item.key1 }}
                     {{ item.key2 }}
                     {{ item.key3 }}
