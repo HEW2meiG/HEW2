@@ -31,6 +31,4 @@ def itemdata(item_id):
     session.pop('ShippingAddress_id', None)
     item = Sell.query.get(item_id)
     form = SellUpdateFlgAndDeleteForm(request.form)
-    # ログイン中のユーザーIDによってユーザーを取得
-    user_id = current_user.get_id()
-    return render_template('item/itemdata.html', item=item, user_id=user_id, form=form)
+    return render_template('item/itemdata.html', item=item, form=form)

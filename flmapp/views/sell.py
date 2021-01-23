@@ -85,8 +85,8 @@ def sell_update(item_id):
         send_way = str(sell.send_way.name),
         consignor = str(sell.consignor),
         schedule = str(sell.schedule.name),
-        remarks = str(remarks)
-        )
+        remarks = str(sell.remarks)
+    )
     if request.method == 'POST' and form.validate():
         # データベース処理
         with db.session.begin(subtransactions=True):
@@ -105,39 +105,38 @@ def sell_update(item_id):
             sell.remarks = str(form.remarks.data)
         db.session.commit()
         flash('更新に成功しました')
+        return redirect(url_for('item.itemdata', item_id=item_id))
     return render_template('sell/sell_update.html', form=form, sell=sell)
 
 # 商品一時停止
-@bp.route('/itemdata/<int:item_id>/<int:sell_flg>', methods=['GET', 'POST'])
+@bp.route('/sell_flg_update', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def sell_flg_update(item_id, sell_flg):
-    item = Sell.query.get(item_id)
+def sell_flg_update():
     form = SellUpdateFlgAndDeleteForm(request.form)
-    # ログイン中のユーザーIDによってユーザーを取得
-    user_id = current_user.get_id()
-    sell = Sell.select_sell_by_sell_id(item_id)
     # データベース処理
     if request.method == 'POST':
+        sell = Sell.select_sell_by_sell_id(form.Sell_id.data)
         with db.session.begin(subtransactions=True):
-            if sell_flg:
+            if sell.sell_flg:
                 sell.sell_flg = False
-                print('出品一時停止')
-                flash('一時停止に更新しました')
+                flash('出品を一時停止しました')
             else:
                 sell.sell_flg = True
-                print('出品中')
-                flash('出品中に更新しました')
+                flash('出品を再開しました')
         db.session.commit()
-    return redirect(url_for('item.itemdata', item_id=item_id))
+        return redirect(url_for('item.itemdata', item_id=form.Sell_id.data))
+    return redirect(url_for('route.home'))
 
 # 商品削除
-@bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
+@bp.route('/sell_delete', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-def sell_delete(item_id):
+def sell_delete():
+    form = SellUpdateFlgAndDeleteForm(request.form)
     if request.method == 'POST':
         with db.session.begin(subtransactions=True):
-            Sell.delete_sell(item_id)
+            Sell.delete_sell(form.Sell_id.data)
         db.session.commit()
-        flash('削除に成功しました')
+        flash('削除しました')
+        return redirect(url_for('mypage.sell_history'))
     return redirect(url_for('route.home'))
     

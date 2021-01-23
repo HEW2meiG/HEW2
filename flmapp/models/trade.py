@@ -86,7 +86,7 @@ class Sell(db.Model):
         
     @classmethod
     def delete_sell(cls, Sell_id):
-        """トークンの削除"""
+        """出品情報の削除"""
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
 

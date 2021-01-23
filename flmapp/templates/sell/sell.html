@@ -27,7 +27,11 @@
         {{ render_field(form.consignor, value=form.consignor.data) }}
         {{ render_field(form.schedule, value=form.schedule.data) }}
         {{ render_field(form.remarks, value=form.remarks.data) }}
-        {{ render_field(form.price, value=form.price.data) }}
+        {% if form.price.data %}
+            {{ render_field(form.price, value=form.price.data) }}
+        {% else %}
+            {{ render_field(form.price) }}
+        {% endif %}
         {{ form.submit() }}
     </form>
 </div>
