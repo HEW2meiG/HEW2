@@ -4,19 +4,22 @@ from wtforms.fields import (
     IntegerField,BooleanField,DateField,
     RadioField,SelectField,TextAreaField,
 )
+from flask_wtf.file import FileRequired
 from wtforms.validators import DataRequired, EqualTo, NumberRange
 from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
-#出品情報フォーム
+
 class SellForm(FlaskForm):
+    """出品情報フォーム"""
     sell_title = StringField('本のタイトル', validators=[DataRequired()])
     key1 = StringField('本のキーワード1', validators=[DataRequired()])
     key2 = StringField('本のキーワード2', validators=[DataRequired()])
     key3 = StringField('本のキーワード3', validators=[DataRequired()])
     sell_comment = TextAreaField('出品コメント', validators=[DataRequired()])
     price = IntegerField('販売価格', validators=[DataRequired(), NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
+    item_picture_path = FileField('商品の画像を設定',validators=[FileRequired('画像を選択してください')])
     genre = SelectField('ジャンル', choices=[('','選択してください'), ('SF', 'SF'), ('政治', '政治'),\
         ('恋愛', '恋愛'), ('青春', '青春'),  ('ミステリー', 'ミステリー'), ('イヤミス', 'イヤミス'),\
         ('歴史', '歴史'), ('時代', '時代'), ('物語(短編)', '物語(短編)'), ('物語(中編)', '物語(中編)'),\
@@ -52,14 +55,16 @@ class SellForm(FlaskForm):
     remarks = TextAreaField('備考')
     submit = SubmitField('出品確認画面へ')
 
-#出品情報Hiddenフォーム
+
 class HiddenSellForm(FlaskForm):
+    """出品情報Hiddenフォーム"""
     sell_title = HiddenField()
     key1 = HiddenField()
     key2 = HiddenField()
     key3 = HiddenField()
     sell_comment = HiddenField()
     price = HiddenField()
+    item_picture_path = HiddenField()
     genre = HiddenField()
     item_state = HiddenField()
     postage = HiddenField()   
@@ -69,8 +74,9 @@ class HiddenSellForm(FlaskForm):
     remarks = HiddenField()
     submit = SubmitField()
 
-#出品情報更新フォーム
+
 class SellUpdateForm(FlaskForm):
+    """出品情報更新フォーム"""
     sell_title = StringField('本のタイトル', validators=[DataRequired()])
     key1 = StringField('本のキーワード1', validators=[DataRequired()])
     key2 = StringField('本のキーワード2', validators=[DataRequired()])

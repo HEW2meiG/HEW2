@@ -1,8 +1,11 @@
+import shutil # ファイルの移動時使用
+import glob # フォルダ内のファイルを捜索時使用
 import os
 from datetime import datetime
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash,
+    current_app as app #Blueprint環境下で、設定値(config)を取得
 )
 from flask_login import (
     login_user, login_required, current_user
@@ -21,6 +24,13 @@ from flmapp.forms.sell import (
 )
 
 bp = Blueprint('sell', __name__, url_prefix='/sell')
+
+# 画像アップロード処理用関数 ここから--------------------------------------
+def allowed_image(filename):
+    # .があるかどうかのチェックと、拡張子の確認
+    # OKなら１、だめなら0
+    return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
+#ここまで------------------------------------------------------------------
 
 def check_sell_update(func):
     """
@@ -42,23 +52,54 @@ def sell():
     form = SellForm(request.form)
     if request.method=='POST' and form.validate():
         if form.submit(value='出品画面に戻る'):
+            # item_temp_image内のファイルを取得
+            files = glob.glob(app.config["ITEM_TEMP_IMAGE_UPLOADS"])
+            # item_temp_image内にform.item_picture_path.dataと一致するファイルがあれば実行
+            if form.item_picture_path.data in files:
+                # item_temp_imageに入っていた画像を削除
+                os.remove(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data))
             return render_template('sell/sell.html', form=form)
     return render_template('sell/sell.html', form=form)
 
 @bp.route('/preview', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell_preview():
-    form = SellForm(request.form)
+    form = SellForm()
     hiddenform = HiddenSellForm()
     if request.method=='POST' and form.validate():
-        return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform)
-    return redirect(url_for('route.home'))
+        # 画像アップロード処理 ここから--------------------------
+        # 画像ファイルがあった場合
+        if request.files:
+            image = request.files[form.item_picture_path.name]
+            # 画像アップロード処理用関数
+            if allowed_image(image.filename):
+                # ファイル名から拡張子を取り出す
+                ext = image.filename.rsplit('.', 1)[1]
+                # imagenameはユーザーID+現在の時間+.拡張子
+                imagename = str(current_user.User_id) + '_' + \
+                            str(int(datetime.now().timestamp())) + '.' + ext
+                # ファイルの保存
+                image.save(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], imagename))
+            else:
+                flash('画像のアップロードに失敗しました。')
+                return render_template('sell/sell.html', form=form)
+        # 画像アップロード処理 ここまで--------------------------
+        return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform, imagename=imagename)
+    return render_template('sell/sell.html', form=form)
 
 @bp.route('/sell_complete', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell_register():
     form = SellForm(request.form)
-    if request.method=='POST' and form.validate():
+    if request.method=='POST':
+        # 画像ファイルの移動 item_temp_image->item_image
+        shutil.move(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data), app.config["ITEM_IMAGE_UPLOADS"])
+        # item_temp_image内のファイルを取得
+        files = glob.glob(app.config["ITEM_TEMP_IMAGE_UPLOADS"])
+        # item_temp_image内にform.item_picture_path.dataと一致するファイルがあれば実行
+        if form.item_picture_path.data in files:
+            # item_temp_imageに入っていた画像を削除
+            os.remove(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data))
         userid = current_user.get_id()
         sell = Sell(
             User_id = userid,
@@ -68,6 +109,7 @@ def sell_register():
             key3 = form.key3.data,
             sell_comment = form.sell_comment.data,
             price = form.price.data,
+            item_picture_path = form.item_picture_path.data,
             genre = form.genre.data,
             item_state = form.item_state.data,
             postage = form.postage.data,

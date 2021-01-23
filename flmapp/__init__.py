@@ -31,6 +31,8 @@ def create_app():
     # ここから /// 画像アップロードの設定
     # 画像のアップロード先のディレクトリ
     app.config["IMAGE_UPLOADS"] = 'flmapp/static/user_image'
+    app.config["ITEM_IMAGE_UPLOADS"] = 'flmapp/static/item_image'
+    app.config["ITEM_TEMP_IMAGE_UPLOADS"] = 'flmapp/static/item_temp_image'
     # アップロードされる拡張子の制限
     app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
     # 画像サイズの制限

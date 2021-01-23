@@ -26,6 +26,7 @@
                     {% else %}
                         公開停止中
                     {% endif%}
+                    <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
                     {{ item.key1 }}
                     {{ item.key2 }}
                     {{ item.key3 }}
