@@ -8,6 +8,7 @@ from flask_login import (
     login_user, login_required, current_user
 )
 from flmapp import db # SQLAlchemy
+from functools import wraps # カスタムデコレーターに使用
 
 from flmapp.models.user import (
     User
@@ -20,6 +21,20 @@ from flmapp.forms.sell import (
 )
 
 bp = Blueprint('sell', __name__, url_prefix='/sell')
+
+def check_sell_update(func):
+    """
+        出品者以外のユーザーが出品情報編集URLへ遷移した際
+        リダイレクトを行う
+    """
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        sell_id = kwargs['item_id']
+        sell = Sell.select_sell_by_sell_id(sell_id)
+        if sell.User_id != current_user.User_id:
+            return redirect(url_for('route.home'))
+        return func(*args, **kwargs)
+    return decorated_function
 
 @bp.route('/', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
@@ -72,6 +87,7 @@ def sell_register():
 # 商品更新
 @bp.route('/sell_update/<int:item_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
+@check_sell_update
 def sell_update(item_id):
     sell = Sell.select_sell_by_sell_id(item_id)
     if sell.remarks==None:
