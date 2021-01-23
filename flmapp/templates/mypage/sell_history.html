@@ -21,7 +21,11 @@
                     {{ item.username }}
                 </td>
                 <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-                    {{ item.deal_status.name }}
+                    {% if item.sell_flg %}
+                        {{ item.deal_status.name }}
+                    {% else %}
+                        <p>公開停止中</p>
+                    {% endif%}
                     {{ item.key1 }}
                     {{ item.key2 }}
                     {{ item.key3 }}

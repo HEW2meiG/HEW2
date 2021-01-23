@@ -83,7 +83,7 @@ class Sell(db.Model):
     def select_sell_by_deal_status(cls, User_id, deal_status):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
-        
+
     @classmethod
     def delete_sell(cls, Sell_id):
         """出品情報の削除"""
