@@ -2,3 +2,5 @@ __pycache__
 data.sqlite
 .DS_Store
 flmapp/static/user_image/
+flmapp/static/item_image/
+flmapp/static/item_temp_image/
