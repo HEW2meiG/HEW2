@@ -7,7 +7,7 @@
 <div class="row">
    出品が完了しました。
    <a href="{{url_for('sell.sell')}}">続けて出品する</a>
-   <a href="">出品した本をみる</a>
+   <a href="{{url_for('item.itemdata', item_id=item_id)}}">出品した本をみる</a>
    <a href="{{url_for('route.home')}}">ホームへ戻る</a>
 </div>
 {% endblock %}

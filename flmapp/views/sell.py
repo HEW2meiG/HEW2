@@ -81,7 +81,7 @@ def sell_register():
             # Sellテーブルにレコードの挿入
             sell.create_new_sell()
         db.session.commit()
-        return render_template('sell/sell_complete.html')
+        return render_template('sell/sell_complete.html', item_id=sell.Sell_id)
     return redirect(url_for('route.home'))
 
 # 商品更新
@@ -153,6 +153,6 @@ def sell_delete():
             Sell.delete_sell(form.Sell_id.data)
         db.session.commit()
         flash('削除しました')
-        return redirect(url_for('mypage.sell_history'))
+        return redirect(url_for('history.sell_history'))
     return redirect(url_for('route.home'))
     
