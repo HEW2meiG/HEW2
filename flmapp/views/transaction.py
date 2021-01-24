@@ -135,7 +135,7 @@ def load_old_messages():
     offset_value = request.args.get('offset_value', -1, type=int)
     if dest_user_id == -1 or offset_value == -1:
         return
-    messages = DealMessage.get_messages_by_sell_id(sell_id, offset_value*50)
+    messages = DealMessage.get_messages_by_sell_id(sell_id, offset_value*5)
     dest_user = User.select_user_by_id(dest_user_id)
     return jsonify(data=make_old_deal_message_format(dest_user, messages))
 
@@ -181,3 +181,4 @@ def notice_rating(item_id):
             db.session.commit()
             flash('評価を送信しました。取引が完了しました。')
             return redirect(url_for('transaction.transaction', item_id=item_id))
+    return redirect(url_for('transaction.transaction', item_id=item_id))

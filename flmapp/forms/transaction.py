@@ -27,8 +27,12 @@ class NoticeRatingForm(FlaskForm):
     def validate(self):
         if not super(FlaskForm, self).validate():
             return False
-        if self.notice_condition.data == 'has_sent' or self.notice_condition.data == 'has_got':
+        if self.notice_condition.data == 'has_sent':
             if self.notice_flg.data == False:
-                flash('チェックしてください。')
+                flash('発送通知にチェックしてください。')
+                return False
+        if self.notice_condition.data == 'has_got':
+            if self.notice_flg.data == False:
+                flash('受け取り確認にチェックしてください。')
                 return False
         return True

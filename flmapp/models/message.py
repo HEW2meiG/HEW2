@@ -55,12 +55,12 @@ class DealMessage(db.Model):
         db.session.add(self)
 
     @classmethod
-    def get_messages_by_sell_id(cls, Sell_id, offset_value=0, limit_value=50):
+    def get_messages_by_sell_id(cls, Sell_id, offset_value=0, limit_value=5):
         """Sell_id(item_id)によって取引メッセージレコードを得る"""
         return cls.query.filter_by(
             Sell_id = Sell_id
         ).order_by(desc(cls.DealMessage_id)).offset(offset_value).limit(limit_value).all()
-        # 最新の50件が取り出される
+        # 最新の5件が取り出される
 
     @classmethod
     def update_is_read_by_ids(cls, ids):
