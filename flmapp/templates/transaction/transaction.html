@@ -58,9 +58,11 @@
 <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
 {{ item.user.username }}
 <h3>取引メッセージ</h3>
-<div id="losd_message_button" class="col-12">
-    <button class="col12 bth bth-light btn-outline-primary" onclick="load_old_messages();">メッセージを読み込む</button>
-</div>
+{% if messages | length >= 5 %}
+    <div id="load_message_button" class="col-12">
+        <button class="col12 bth bth-light btn-outline-primary" onclick="load_old_messages();">メッセージを読み込む</button>
+    </div>
+{% endif %}
 {% for message in messages|reverse %}
     {% if message.from_user_id == current_user.User_id %}
         <!-- 自分側 -->

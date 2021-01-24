@@ -27,7 +27,7 @@ def make_deal_message_format(dest_user, messages):
 def make_old_deal_message_format(dest_user, messages):
     message_tag = ''
     for message in messages[::-1]:
-        if message.from_user_id == int(curent_user.User_id):
+        if message.from_user_id == int(current_user.User_id):
             message_tag += f'''<div class="msg-box"><div id="self-message-tag-{ message.DealMessage_id }">'''
             if message.is_checked:
                 message_tag += '<p>既読<p>'
