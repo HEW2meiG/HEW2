@@ -22,7 +22,7 @@
     <table>
         {% for item in items %}
         <tr>
-            <td><a href="{{url_for('user.userdata', user_id=item.user.User_id)}}">
+            <td><a href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
                 <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
                 {{ item.user.username }}
             </a></td>

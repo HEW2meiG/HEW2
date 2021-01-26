@@ -28,10 +28,11 @@ def followers_count_processor():
     return dict(followers_count=followers_count)
 
 
-#! あとからユーザーコードに変更します
-@bp.route('/userdata/<int:user_id>', methods=['GET', 'POST'])
-def userdata(user_id):
-    user = User.select_user_by_id(user_id) #! あとからユーザーコードで検索をかけるよう変更
+@bp.route('/userdata/<string:user_code>', methods=['GET', 'POST'])
+def userdata(user_code):
+    user = User.select_user_by_user_code(user_code)
+    if user is None:
+        return redirect(url_for('route.home'))
     # ログイン中のユーザーがユーザーページのユーザーをフォローしているかの判定
-    followed = UserConnect.followed_exists(user_id)
+    followed = UserConnect.followed_exists(user.User_id)
     return render_template('user/userdata.html', user=user, followed=followed)

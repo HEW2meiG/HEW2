@@ -40,14 +40,17 @@ def check_transaction(func):
         sell = Sell.select_sell_by_sell_id(sell_id)
         buy = Buy.select_buy_by_sell_id(sell_id)
         user_id = current_user.get_id()
-        if sell.User_id != user_id and buy.User_id != user_id:
-            return render_template('transaction/transaction_error.html')
-        elif not sell.sell_flg:
-            return render_template('transaction/transaction_error.html')
-        elif not sell.is_active:
-            return render_template('transaction/transaction_error.html')
-        elif sell.deal_status == Deal_status['出品中']:
-            return render_template('transaction/transaction_error.html')
+        if sell is None or buy is None:
+            return redirect(url_for('route.home'))
+        else:
+            if sell.User_id != user_id and buy.User_id != user_id:
+                return render_template('transaction/transaction_error.html')
+            elif not sell.sell_flg:
+                return render_template('transaction/transaction_error.html')
+            elif not sell.is_active:
+                return render_template('transaction/transaction_error.html')
+            elif sell.deal_status == Deal_status['出品中']:
+                return render_template('transaction/transaction_error.html')
         return func(*args, **kwargs)
     return decorated_function
 

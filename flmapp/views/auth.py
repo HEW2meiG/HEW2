@@ -103,7 +103,7 @@ def userregister(token):
     form = RegisterForm(request.form)
     email = UserTempToken.get_email_by_token(token)
     if not email:
-        abort(404)
+        return redirect(url_for('route.home'))
     if request.method=='POST' and form.validate():
         # 画像アップロード処理 ここから-------------------------------------------------
         imagename = ''
@@ -210,7 +210,7 @@ def reset_password(token):
     # トークンに紐づいたユーザーIDを得る
     reset_user_id = PasswordResetToken.get_user_id_by_token(token)
     if not reset_user_id:
-        abort(404)
+        return redirect(url_for('route.home'))
     if request.method=='POST' and form.validate():
         password = form.password.data
         # reset_user_idによってユーザーを絞り込みUserテーブルのデータを取得

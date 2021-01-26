@@ -29,5 +29,7 @@ def itemdata(item_id):
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
     item = Sell.query.get(item_id)
+    if item is None:
+        return redirect(url_for('route.home'))
     form = SellUpdateFlgAndDeleteForm(request.form)
     return render_template('item/itemdata.html', item=item, form=form)
