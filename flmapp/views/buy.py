@@ -36,18 +36,21 @@ def check_buy(func):
         sell_id = kwargs['item_id']
         sell = Sell.select_sell_by_sell_id(sell_id)
         user_id = current_user.get_id()
-        if sell.user.User_id == user_id:
-            flash("出品者の商品は購入できません。")
-            return redirect(url_for('item.itemdata', item_id=sell_id))
-        elif not sell.sell_flg:
-            flash("選択された商品は購入できません。")
+        if sell is None:
             return redirect(url_for('route.home'))
-        elif not sell.is_active:
-            flash("選択された商品は購入できません。")
-            return redirect(url_for('route.home'))
-        elif sell.deal_status != Deal_status['出品中']:
-            flash("選択された商品は出品中ではありません。")
-            return redirect(url_for('item.itemdata', item_id=sell_id))
+        else:
+            if sell.user.User_id == user_id:
+                flash("出品者の商品は購入できません。")
+                return redirect(url_for('item.itemdata', item_id=sell_id))
+            elif not sell.sell_flg:
+                flash("選択された商品は購入できません。")
+                return redirect(url_for('route.home'))
+            elif not sell.is_active:
+                flash("選択された商品は購入できません。")
+                return redirect(url_for('route.home'))
+            elif sell.deal_status != Deal_status['出品中']:
+                flash("選択された商品は出品中ではありません。")
+                return redirect(url_for('item.itemdata', item_id=sell_id))
         return func(*args, **kwargs)
     return decorated_function
 

@@ -174,7 +174,7 @@ def mail_reset_complete(token):
     # トークンに紐づいたユーザーIDを得る
     mailResetToken = MailResetToken.get_user_id_by_token(token)
     if not mailResetToken:
-        abort(404)
+        return redirect(url_for('route.home'))
     # mailResetToken.User_idによってユーザーを絞り込みUserテーブルのデータを取得
     user = User.select_user_by_id(int(mailResetToken.User_id))
     # データベース処理
@@ -288,6 +288,8 @@ def shippingaddress_delete():
 def shippingaddress_edit(shippingaddress_id):
     """配送先住所編集処理"""
     shippingaddress = ShippingAddress.search_shippingaddress(shippingaddress_id)
+    if shippingaddress is None:
+        return redirect(url_for('mypage.shippingaddress'))
     form = ShippingAddressEditForm(request.form, pref01 = shippingaddress.prefecture)
     if request.method == 'POST' and form.validate():
         with db.session.begin(subtransactions=True):

@@ -40,8 +40,11 @@ def check_sell_update(func):
     def decorated_function(*args, **kwargs):
         sell_id = kwargs['item_id']
         sell = Sell.select_sell_by_sell_id(sell_id)
-        if sell.User_id != current_user.User_id:
+        if sell is None:
             return redirect(url_for('route.home'))
+        else:
+            if sell.User_id != current_user.User_id:
+                return redirect(url_for('route.home'))
         return func(*args, **kwargs)
     return decorated_function
 
