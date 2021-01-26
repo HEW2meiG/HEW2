@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from flask_mail import Mail, Message
 from flask_sessionstore import Session
 from flask_session_captcha import FlaskSessionCaptcha
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf.csrf import CSRFProtect
 
 from flmapp.utils.template_filters import replace_newline
 
@@ -76,7 +76,7 @@ def create_app():
     mail.init_app(app)
     Session(app)
     captcha = FlaskSessionCaptcha(app)
-    CsrfProtect(app)
+    CSRFProtect(app)
 
     # カスタムテンプレートフィルターの登録
     app.add_template_filter(replace_newline)

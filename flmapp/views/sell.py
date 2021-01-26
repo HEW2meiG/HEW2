@@ -1,5 +1,4 @@
 import shutil # ファイルの移動時使用
-import glob # フォルダ内のファイルを捜索時使用
 import os
 from datetime import datetime
 from flask import (
@@ -52,12 +51,6 @@ def sell():
     form = SellForm(request.form)
     if request.method=='POST' and form.validate():
         if form.submit(value='出品画面に戻る'):
-            # item_temp_image内のファイルを取得
-            files = glob.glob(app.config["ITEM_TEMP_IMAGE_UPLOADS"])
-            # item_temp_image内にform.item_picture_path.dataと一致するファイルがあれば実行
-            if form.item_picture_path.data in files:
-                # item_temp_imageに入っていた画像を削除
-                os.remove(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data))
             return render_template('sell/sell.html', form=form)
     return render_template('sell/sell.html', form=form)
 
@@ -94,12 +87,6 @@ def sell_register():
     if request.method=='POST':
         # 画像ファイルの移動 item_temp_image->item_image
         shutil.move(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data), app.config["ITEM_IMAGE_UPLOADS"])
-        # item_temp_image内のファイルを取得
-        files = glob.glob(app.config["ITEM_TEMP_IMAGE_UPLOADS"])
-        # item_temp_image内にform.item_picture_path.dataと一致するファイルがあれば実行
-        if form.item_picture_path.data in files:
-            # item_temp_imageに入っていた画像を削除
-            os.remove(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], form.item_picture_path.data))
         userid = current_user.get_id()
         sell = Sell(
             User_id = userid,

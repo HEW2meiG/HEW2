@@ -15,6 +15,7 @@ class PostMessage(db.Model):
     Sell_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), nullable=False)
     from_user_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False, nullable=False)
     is_active = db.Column(db.Boolean, default=True, nullable=False)
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)

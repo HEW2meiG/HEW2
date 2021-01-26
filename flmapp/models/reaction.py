@@ -109,3 +109,23 @@ class UserConnect(db.Model):
                         cls.from_user_id == current_user.get_id()
                     )
                 ).delete()
+
+
+class BrowsingHistory(db.Model):
+    """閲覧履歴テーブル"""
+
+    __tablename__ = 'BrowsingHistory'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
+
+    BrowsingHistory_id = db.Column(db.Integer, primary_key=True)
+    Sell_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), nullable=False)
+    User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
+    create_at = db.Column(db.DateTime,default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime,default=datetime.now, nullable=False)
+
+    def __init__(self, Sell_id, User_id):
+        self.Sell_id = Sell_id
+        self.User_id = User_id
+
+    def create_new_browsinghistory(self):
+        db.session.add(self)
