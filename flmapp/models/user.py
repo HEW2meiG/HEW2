@@ -18,7 +18,7 @@ class User(UserMixin, db.Model):
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
     
     User_id = db.Column(db.Integer, primary_key=True)
-    user_cord = db.Column(db.String(64), unique=True, index=True, nullable=False)
+    user_code = db.Column(db.String(64), unique=True, index=True, nullable=False)
     username = db.Column(db.String(64), index=True, nullable=False)
     email = db.Column(db.String(64), unique=True, index=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -31,8 +31,8 @@ class User(UserMixin, db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    def __init__(self, user_cord, username, email):
-        self.user_cord = user_cord
+    def __init__(self, user_code, username, email):
+        self.user_code = user_code
         self.username = username
         self.email = email
 

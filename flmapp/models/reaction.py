@@ -117,7 +117,7 @@ class BrowsingHistory(db.Model):
     __tablename__ = 'BrowsingHistory'
     __table_args__ = (CheckConstraint('update_at >= create_at'),)
 
-    BrowsingHistory_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), primary_key=True)
+    BrowsingHistory_id = db.Column(db.Integer, primary_key=True)
     Sell_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), nullable=False)
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
     create_at = db.Column(db.DateTime,default=datetime.now, nullable=False)

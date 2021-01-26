@@ -124,7 +124,7 @@ def userregister(token):
         # 画像アップロード処理 ここまで--------------------------------------------------
         # Userインスタンス作成
         user = User(
-            user_cord = form.user_cord.data,
+            user_code = form.user_code.data,
             username = form.username.data,
             email = email
         )
