@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+import datetime
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash, 
@@ -101,10 +101,20 @@ def register():
 @bp.route('/userregister/<uuid:token>', methods=['GET', 'POST'])
 def userregister(token):
     form = RegisterForm(request.form)
+    form.b_year.choices += [(i, i) for i in reversed(range(1900, datetime.date.today().year+1))]
+    form.b_month.choices += [(i, i) for i in range(1, 13)]
+    form.b_date.choices += [(i, i) for i in range(1, 32)]
     email = UserTempToken.get_email_by_token(token)
     if not email:
         return redirect(url_for('route.home'))
     if request.method=='POST' and form.validate():
+        # Userインスタンス作成
+        user = User(
+            user_code = form.user_code.data,
+            username = form.username.data,
+            email = email
+        )
+        user.password = form.password.data
         # 画像アップロード処理 ここから-------------------------------------------------
         imagename = ''
         image = request.files[form.picture_path.name]
@@ -115,20 +125,13 @@ def userregister(token):
                 ext = image.filename.rsplit('.', 1)[1]
                 # imagenameはユーザーID+現在の時間+.拡張子
                 imagename = str(user.User_id) + '_' + \
-                            str(int(datetime.now().timestamp())) + '.' + ext
+                            str(int(datetime.datetime.now().timestamp())) + '.' + ext
                 # ファイルの保存
                 image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
             else:
                 flash('画像のアップロードに失敗しました。')
                 return redirect(url_for('auth.userregister', token=token))
         # 画像アップロード処理 ここまで--------------------------------------------------
-        # Userインスタンス作成
-        user = User(
-            user_code = form.user_code.data,
-            username = form.username.data,
-            email = email
-        )
-        user.password = form.password.data
         # データベース登録処理
         with db.session.begin(subtransactions=True):
             #Userテーブルにレコードの挿入
@@ -140,7 +143,7 @@ def userregister(token):
             first_name = form.first_name.data,
             last_name_kana = form.last_name_kana.data,
             first_name_kana = form.first_name_kana.data,
-            birth = form.birth.data
+            birth = datetime.date(form.b_year.data, form.b_month.data, form.b_date.data)
         )
         address = Address(
             User_id = user.User_id,
