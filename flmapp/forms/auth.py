@@ -57,7 +57,9 @@ class RegisterForm(FlaskForm):
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
     last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
     first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ"})
-    birth = DateField('生年月日',format='%Y/%m/%d',render_kw={"placeholder":"例)1999/08/30"},validators=[DataRequired()])
+    b_year = SelectField('', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
+    b_month = SelectField('', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
+    b_date = SelectField('', choices=[(0,'--')], validators=[DataRequired()], coerce=int)
     zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456"})
     pref01 = SelectField('都道府県',choices=[('','未選択'),('北海道','北海道'),('青森県','青森県'),('岩手県','岩手県'),('宮城県','宮城県'),('秋田県','秋田県'),\
         ('山形県','山形県'),('福島県','福島県'),('茨城県','茨城県'),('栃木県','栃木県'),('群馬県','群馬県'),('埼玉県','埼玉県'),('千葉県','千葉県'),\
