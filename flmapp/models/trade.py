@@ -1,5 +1,6 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy import and_, or_, desc
 
 from datetime import datetime, timedelta
 
@@ -149,3 +150,20 @@ class Rating(db.Model):
 
     def create_new_rating(self):
         db.session.add(self)
+
+    @classmethod
+    def select_rate_by_user_id(cls, User_id):
+        """User_idのユーザーが評価されたレコードを抽出し、良いと悪いをカウントした値を返す"""
+        good_ratings = cls.query.filter(
+            and_(
+                cls.to_user_id == User_id,
+                cls.rating == Rating_enum(1)
+            )
+                ).all()
+        bad_ratings = cls.query.filter(
+            and_(
+                cls.to_user_id == User_id,
+                cls.rating == Rating_enum(2)
+            )
+                ).all()
+        return len(good_ratings),len(bad_ratings)

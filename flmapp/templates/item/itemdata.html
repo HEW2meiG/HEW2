@@ -21,6 +21,7 @@
     {{ item.consignor }}
     {{ item.schedule.name }}
     {{ item.remarks }}
+    {{ item.create_at.strftime('%Y/%m/%d %H:%M') }}
     {% if item.User_id == current_user.User_id %}
         <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">出品情報を編集する</a>
         <form method="POST" action="{{url_for('sell.sell_flg_update')}}">
@@ -37,8 +38,10 @@
             {{ form.Sell_id(value=item.Sell_id) }}
             {{ form.submit(value='削除') }}
         </form>
-    {% else %}
+    {% elif item.sell_flg and item.is_active and item.deal_status.value == 1 %}
         <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">購入画面に進む</a>
+    {% elif item.sell_flg and item.is_active and item.deal_status.value != 1 %}
+        <p>売り切れました</p>
     {% endif %}
 </div>
 {% endblock %}

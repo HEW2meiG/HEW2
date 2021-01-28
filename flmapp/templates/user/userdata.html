@@ -15,9 +15,14 @@
     {{ user.prof_comment }}
     {% include "follow.html" %}
     <p>
-        フォロワー：
+        Follow {{ follows_count }}
+    </p>
+    <p>
+        Follower
         <span id="{{ user.User_id }}-count" class="count">{{ followers_count(user.User_id) }}</span>
     </p>
+    <p>good:{{ good_ratings_count }}</p>
+    <p>bad:{{ bad_ratings_count }}</p>
 </div>
 <div id="login-required-modal" class="login-required-modal">
     <div class="modal-bg js-modal-close"></div>
