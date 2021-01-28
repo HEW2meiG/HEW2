@@ -98,11 +98,11 @@ class ForgotPasswordForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField(
-        'パスワード',
+        '新しいパスワード',
         validators=[DataRequired(), EqualTo('confirm_password', message='パスワードが一致しません')]
     )
     confirm_password = PasswordField(
-        'パスワード確認: ', validators=[DataRequired()]
+        '新しいパスワード確認: ', validators=[DataRequired()]
     )
     submit = SubmitField('パスワードを更新する')
     

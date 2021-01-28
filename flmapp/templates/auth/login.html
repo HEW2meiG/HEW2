@@ -4,7 +4,7 @@
 {% endblock %}
 {%block head %}
 <!-- ↓読み込むcssファイルをここに記述してください。 -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/auth/login.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}

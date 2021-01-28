@@ -1,0 +1,43 @@
+@charset "UTF-8";
+/*リセットの設定*/
+*{
+	margin: 0;
+	padding: 0;
+	outline: none;
+}
+/*グローバル設定*/
+html{
+	font-size: 62.5%;/*10px*/
+}
+body{
+	background-color: #FFF;
+	color : #333333;
+    font-family: "Helvetica Neue",
+                Arial,
+                "Hiragino Kaku Gothic ProN",
+                "Hiragino Sans",
+                Meiryo,
+                sans-serif;
+}
+h1{
+    margin: 0;
+}
+h2{
+	margin: 0;
+}
+p{
+	margin: 0;
+	font-size: 1.5rem;
+	line-height: 1.75;
+}
+a{
+	text-decoration: none;
+	display: inline-block;
+	transition: color 0.5s;
+}
+a:visited{
+	color : #333333;
+}
+ul{
+	list-style: none; 
+}

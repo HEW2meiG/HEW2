@@ -17,7 +17,7 @@ class SellForm(FlaskForm):
     key1 = StringField('本のキーワード1', validators=[DataRequired()])
     key2 = StringField('本のキーワード2', validators=[DataRequired()])
     key3 = StringField('本のキーワード3', validators=[DataRequired()])
-    sell_comment = TextAreaField('出品コメント', validators=[DataRequired()])
+    sell_comment = TextAreaField('出品する本のコメント', validators=[DataRequired()])
     price = IntegerField('販売価格', validators=[DataRequired(), NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
     item_picture_path = FileField('商品の画像を設定',validators=[FileRequired('画像を選択してください')])
     genre = SelectField('ジャンル', choices=[('','選択してください'), ('SF', 'SF'), ('政治', '政治'),\
@@ -81,8 +81,9 @@ class SellUpdateForm(FlaskForm):
     key1 = StringField('本のキーワード1', validators=[DataRequired()])
     key2 = StringField('本のキーワード2', validators=[DataRequired()])
     key3 = StringField('本のキーワード3', validators=[DataRequired()])
-    sell_comment = TextAreaField('出品コメント', validators=[DataRequired()])
+    sell_comment = TextAreaField('出品する本のコメント', validators=[DataRequired()])
     price = IntegerField('販売価格', validators=[DataRequired(), NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
+    item_picture_path = FileField('商品の画像を設定')
     genre = SelectField('ジャンル', choices=[('','選択してください'), ('SF', 'SF'), ('政治', '政治'),\
         ('恋愛', '恋愛'), ('青春', '青春'),  ('ミステリー', 'ミステリー'), ('イヤミス', 'イヤミス'),\
         ('歴史', '歴史'), ('時代', '時代'), ('物語(短編)', '物語(短編)'), ('物語(中編)', '物語(中編)'),\

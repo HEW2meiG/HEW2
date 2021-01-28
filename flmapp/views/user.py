@@ -13,6 +13,9 @@ from flmapp.models.user import (
 from flmapp.models.reaction import (
     UserConnect
 )
+from flmapp.models.trade import (
+    Rating
+)
 
 
 bp = Blueprint('user', __name__, url_prefix='/user')
@@ -35,4 +38,9 @@ def userdata(user_code):
         return redirect(url_for('route.home'))
     # ログイン中のユーザーがユーザーページのユーザーをフォローしているかの判定
     followed = UserConnect.followed_exists(user.User_id)
-    return render_template('user/userdata.html', user=user, followed=followed)
+    follows = UserConnect.select_follows_by_user_id(user.User_id)
+    good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
+    return render_template(
+        'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
+        good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count
+    )

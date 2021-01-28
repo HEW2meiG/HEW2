@@ -1,5 +1,7 @@
 import os
+import glob # 画像のリサイズ
 import datetime
+from PIL import Image # 画像のリサイズ
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash, 
@@ -10,6 +12,9 @@ from flask_login import (
 )
 from flmapp import db # SQLAlchemy
 
+from flmapp.utils.image_square import (
+    crop_max_square
+)
 from flmapp.models.user import (
     User, UserInfo, Address
 )
@@ -115,6 +120,11 @@ def userregister(token):
             email = email
         )
         user.password = form.password.data
+        # データベース登録処理
+        with db.session.begin(subtransactions=True):
+            #Userテーブルにレコードの挿入
+            User.create_new_user(user)
+        db.session.commit()
         # 画像アップロード処理 ここから-------------------------------------------------
         imagename = ''
         image = request.files[form.picture_path.name]
@@ -127,16 +137,16 @@ def userregister(token):
                 imagename = str(user.User_id) + '_' + \
                             str(int(datetime.datetime.now().timestamp())) + '.' + ext
                 # ファイルの保存
-                image.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
+                image.save(os.path.join(app.config["ORIGINAL_IMAGE_UPLOADS"], imagename))
+                im = Image.open(os.path.join(app.config["ORIGINAL_IMAGE_UPLOADS"], imagename))
+                # 最大サイズの正方形に切り出したあと、200に縮小
+                im_thumb = crop_max_square(im).resize((200, 200), Image.LANCZOS)
+                # ファイルの保存
+                im_thumb.save(os.path.join(app.config["IMAGE_UPLOADS"], imagename))
             else:
                 flash('画像のアップロードに失敗しました。')
                 return redirect(url_for('auth.userregister', token=token))
         # 画像アップロード処理 ここまで--------------------------------------------------
-        # データベース登録処理
-        with db.session.begin(subtransactions=True):
-            #Userテーブルにレコードの挿入
-            User.create_new_user(user)
-        db.session.commit()
         userinfo = UserInfo(
             User_id = user.User_id,
             last_name = form.last_name.data,

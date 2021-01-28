@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}古書邂逅{% endblock %}</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+        <!-- ↓読み込むcssファイルをここに記述してください。 -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sanitize.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kosho-flame.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common2.css')}}">
+        {%block head %}{% endblock%}
+    </head>
+    <body>
+        <div class="wrap">
+            <header>
+                <h1><img src="{{ url_for('static', filename='images/logo.png')}}" alt="ロゴ"></h1>
+                <nav>
+                    <ul>
+                        <li><a href="{{url_for('route.home')}}">
+                            ホーム
+                        </a></li>
+                        <li><a href="{{url_for('route.home')}}">
+                            検索
+                        </a></li>
+                        <!-- ログインしているとき -->
+                        {% if current_user.is_authenticated %}
+                            <li>
+                                <a href="{{url_for('mypage.mypagetop')}}">
+                                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+                                    マイページ
+                                </a>
+                            </li>
+                        <!-- ログインしていないとき -->
+                        {% else %}
+                            <li><a href="{{url_for('auth.login')}}">
+                                ログイン
+                            </a></li>
+                        {% endif %}
+                        <li><a href="{{url_for('route.home')}}">
+                            出品する
+                        </a></li>
+                    </ul>
+                </nav>
+            </header>
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div class="r-content"></div>
+        </div>
+    </body>
+</html>
