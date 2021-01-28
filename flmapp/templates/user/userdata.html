@@ -1,9 +1,8 @@
-{% extends "base.html" %}
+{% extends "base02.html" %}
 {% block title %}
 {{ user.username }}さん - {{ super() }}
 {% endblock %}
 {%block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
@@ -23,16 +22,6 @@
     </p>
     <p>good:{{ good_ratings_count }}</p>
     <p>bad:{{ bad_ratings_count }}</p>
-</div>
-<div id="login-required-modal" class="login-required-modal">
-    <div class="modal-bg js-modal-close"></div>
-    <div class="modal-content">
-        <p>ログインしてください</p>
-        <a class="navbar-brand" href="{{url_for('auth.login')}}">ログイン</a>
-        <p>アカウントをお持ちでないですか？</p>
-        <a class="navbar-brand" href="{{url_for('auth.register')}}">新規会員登録</a>
-        <a class="js-modal-close" href="">閉じる</a>
-    </div>
 </div>
 <script>
     // ここから ajaxでcsrf_tokenを使用するとき
