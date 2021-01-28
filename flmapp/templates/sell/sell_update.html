@@ -1,10 +1,10 @@
 {% from "_formhelpers.html" import render_field %}
 {% extends "base.html" %}
 {% block title %}
-出品画面 - {{ super() }}
+出品情報編集画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>出品</h2>
+<h1>出品</h1>
 <div class="row">
     <div class="col-lg-8 offset-lg-4">
         {% for message in get_flashed_messages() %}

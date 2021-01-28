@@ -18,9 +18,11 @@
     {{ item.item_state.name }}
     {{ item.postage.name }}
     {{ item.send_way.name }}
-    {{ item.deal_status.name }}
+    {{ item.consignor }}
+    {{ item.schedule.name }}
+    {{ item.remarks }}
     {% if item.User_id == current_user.User_id %}
-        <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">商品編集</a>
+        <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">出品情報を編集する</a>
         <form method="POST" action="{{url_for('sell.sell_flg_update')}}">
             {{ form.csrf_token }}
             {{ form.Sell_id(value=item.Sell_id) }}

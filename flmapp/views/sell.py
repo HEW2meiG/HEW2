@@ -31,9 +31,9 @@ def allowed_image(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].upper() in app.config["ALLOWED_IMAGE_EXTENSIONS"]
 #ここまで------------------------------------------------------------------
 
-def check_sell_update(func):
+def check_sell(func):
     """
-        出品者以外のユーザーが出品情報編集URLへ遷移した際
+        出品者以外のユーザーがURLへ遷移した際
         リダイレクトを行う
     """
     @wraps(func)
@@ -83,7 +83,7 @@ def sell_preview():
         return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform, imagename=imagename)
     return render_template('sell/sell.html', form=form)
 
-@bp.route('/sell_complete', methods=['GET', 'POST'])
+@bp.route('/sell_register', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
 def sell_register():
     form = SellForm(request.form)
@@ -113,13 +113,20 @@ def sell_register():
             # Sellテーブルにレコードの挿入
             sell.create_new_sell()
         db.session.commit()
-        return render_template('sell/sell_complete.html', item_id=sell.Sell_id)
+        return redirect(url_for('sell.sell_complete', item_id=sell.Sell_id))
     return redirect(url_for('route.home'))
+
+@bp.route('/sell_complete/<int:item_id>', methods=['GET', 'POST'])
+@login_required # ログインしていないと表示できないようにする
+@check_sell
+def sell_complete(item_id):
+    sell = Sell.select_sell_by_sell_id(item_id)
+    return render_template('sell/sell_complete.html', item=sell)
 
 # 商品更新
 @bp.route('/sell_update/<int:item_id>', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
-@check_sell_update
+@check_sell
 def sell_update(item_id):
     sell = Sell.select_sell_by_sell_id(item_id)
     if sell.remarks==None:

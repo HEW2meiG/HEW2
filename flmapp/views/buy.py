@@ -55,6 +55,34 @@ def check_buy(func):
     return decorated_function
 
 
+def check_buy_complete(func):
+    """
+        購入者以外のユーザー,
+        出品状態、有効フラグが無効だった場合,
+        取引状態が1の場合,
+        リダイレクトを行う
+    """
+    @wraps(func)
+    def decorated_function(*args, **kwargs):
+        sell_id = kwargs['item_id']
+        sell = Sell.select_sell_by_sell_id(sell_id)
+        buy = Buy.select_buy_by_sell_id(sell_id)
+        user_id = current_user.get_id()
+        if sell is None or buy is None:
+            return redirect(url_for('route.home'))
+        else:
+            if sell.User_id != user_id and buy.User_id != user_id:
+                return redirect(url_for('route.home'))
+            elif not sell.sell_flg:
+                return redirect(url_for('route.home'))
+            elif not sell.is_active:
+                return redirect(url_for('route.home'))
+            elif sell.deal_status == Deal_status['出品中']:
+                return redirect(url_for('route.home'))
+        return func(*args, **kwargs)
+    return decorated_function
+
+
 # コンテキストプロセッサ(template内で使用する関数)
 @bp.context_processor
 def shippingaddresses_processor():
@@ -106,8 +134,17 @@ def buy(item_id):
         session.pop('pay_way', None)
         session.pop('Credit_id', None)
         session.pop('ShippingAddress_id', None)
-        return render_template('buy/buy_complete.html', item=item, buy=buy)
+        return redirect(url_for('buy.buy_complete', item_id=item_id))
     return render_template('buy/buy.html', item=item, form=form)
+
+
+@bp.route('/buy_complete/<int:item_id>', methods=['GET', 'POST'])
+@login_required
+@check_buy_complete
+def buy_complete(item_id):
+    sell = Sell.select_sell_by_sell_id(item_id)
+    buy = Buy.select_buy_by_sell_id(item_id)
+    return render_template('buy/buy_complete.html', item=sell, buy=buy)
 
 
 @bp.route('/<int:item_id>/pay_way', methods=['GET', 'POST'])
