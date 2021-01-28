@@ -23,6 +23,9 @@
     {{ item.remarks }}
     {{ item.create_at.strftime('%Y/%m/%d %H:%M') }}
     {% if item.User_id == current_user.User_id %}
+        <p>商品の画像</p>
+        <span style="color: red;">*出品者のみ表示されます</span>
+        <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
         <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">出品情報を編集する</a>
         <form method="POST" action="{{url_for('sell.sell_flg_update')}}">
             {{ form.csrf_token }}

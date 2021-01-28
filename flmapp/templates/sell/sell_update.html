@@ -4,31 +4,41 @@
 出品情報編集画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>出品</h1>
-<div class="row">
-    <div class="col-lg-8 offset-lg-4">
-        {% for message in get_flashed_messages() %}
-        {{ message }}
-        {% endfor %}
-    </div>
-    <form method="POST">
-        {{ form.csrf_token }}
-        {{render_field(form.sell_title, value=sell.sell_title) }}
-        <h4>この本を構成する3つのキーワード</h4>
-        {{ render_field(form.key1, value=sell.key1) }}
-        {{ render_field(form.key2, value=sell.key2) }}
-        {{ render_field(form.key3, value=sell.key3) }}
-        {{ render_field(form.sell_comment) }}
-        <h4>商品の詳細</h4>
-        {{ render_field(form.genre) }}
-        {{ render_field(form.item_state) }}
-        {{ render_field(form.postage) }}
-        {{ render_field(form.send_way) }}
-        {{ render_field(form.consignor) }}
-        {{ render_field(form.schedule) }}
-        {{ render_field(form.remarks, value=sell.remarks) }}
-        {{ render_field(form.price, value=sell.price) }}
-        {{ form.submit() }}
-    </form>
-</div>
+<h1>出品情報編集</h1>
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<form method="POST" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{render_field(form.sell_title, value=sell.sell_title) }}
+    {{ form.item_picture_path.label }}<br>
+    <p>
+        商品の画像は購入者が受け取り確認時に公開されます。<br>
+        <span style="color: red;">*必ず出品する本をご自身で撮影した画像にしてください。</span>
+    </p>
+    {{ form.item_picture_path() }}
+    {% if form.item_picture_path.errors %}
+        <ul>
+            {% for error in form.item_picture_path.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <h4>この本を構成する3つのキーワード</h4>
+    {{ render_field(form.key1, value=sell.key1) }}
+    {{ render_field(form.key2, value=sell.key2) }}
+    {{ render_field(form.key3, value=sell.key3) }}
+    {{ render_field(form.sell_comment) }}
+    <h4>商品の詳細</h4>
+    {{ render_field(form.genre) }}
+    {{ render_field(form.item_state) }}
+    {{ render_field(form.postage) }}
+    {{ render_field(form.send_way) }}
+    {{ render_field(form.consignor) }}
+    {{ render_field(form.schedule) }}
+    {{ render_field(form.remarks, value=sell.remarks) }}
+    {{ render_field(form.price, value=sell.price) }}
+    {{ form.submit() }}
+</form>
+<a href="{{url_for('item.itemdata', item_id=sell.Sell_id)}}">戻る</a>
 {% endblock %}

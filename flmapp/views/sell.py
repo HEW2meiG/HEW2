@@ -1,6 +1,8 @@
 import shutil # ファイルの移動時使用
 import os
+import glob # 画像のリサイズ
 from datetime import datetime
+from PIL import Image
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash,
@@ -12,6 +14,9 @@ from flask_login import (
 from flmapp import db # SQLAlchemy
 from functools import wraps # カスタムデコレーターに使用
 
+from flmapp.utils.image_square import (
+    crop_max_square
+)
 from flmapp.models.user import (
     User
 )
@@ -75,7 +80,12 @@ def sell_preview():
                 imagename = str(current_user.User_id) + '_' + \
                             str(int(datetime.now().timestamp())) + '.' + ext
                 # ファイルの保存
-                image.save(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], imagename))
+                image.save(os.path.join(app.config["ORIGINAL_ITEM_IMAGE_UPLOADS"], imagename))
+                im = Image.open(os.path.join(app.config["ORIGINAL_ITEM_IMAGE_UPLOADS"], imagename))
+                # 最大サイズの正方形に切り出したあと、300に縮小
+                im_thumb = crop_max_square(im).resize((300, 300), Image.LANCZOS)
+                # ファイルの保存
+                im_thumb.save(os.path.join(app.config["ITEM_TEMP_IMAGE_UPLOADS"], imagename))
             else:
                 flash('画像のアップロードに失敗しました。')
                 return render_template('sell/sell.html', form=form)
@@ -143,8 +153,33 @@ def sell_update(item_id):
         remarks = str(sell.remarks)
     )
     if request.method == 'POST' and form.validate():
+        # 画像アップロード処理 ここから--------------------------
+        imagename = ''
+        image = request.files[form.item_picture_path.name]
+        # 画像ファイルがあった場合
+        if image:
+            # 画像アップロード処理用関数
+            if allowed_image(image.filename):
+                # ファイル名から拡張子を取り出す
+                ext = image.filename.rsplit('.', 1)[1]
+                # imagenameはユーザーID+現在の時間+.拡張子
+                imagename = str(current_user.User_id) + '_' + \
+                            str(int(datetime.now().timestamp())) + '.' + ext
+                # ファイルの保存
+                image.save(os.path.join(app.config["ORIGINAL_ITEM_IMAGE_UPLOADS"], imagename))
+                im = Image.open(os.path.join(app.config["ORIGINAL_ITEM_IMAGE_UPLOADS"], imagename))
+                # 最大サイズの正方形に切り出したあと、300に縮小
+                im_thumb = crop_max_square(im).resize((300, 300), Image.LANCZOS)
+                # ファイルの保存
+                im_thumb.save(os.path.join(app.config["ITEM_IMAGE_UPLOADS"], imagename))
+            else:
+                flash('画像のアップロードに失敗しました。')
+                return render_template('sell/sell.html', form=form)
+        # 画像アップロード処理 ここまで--------------------------
         # データベース処理
         with db.session.begin(subtransactions=True):
+            if imagename: # imagenameが設定されていれば(画像があれば)更新する
+                sell.item_picture_path = imagename
             sell.sell_title = str(form.sell_title.data)
             sell.key1 = str(form.key1.data)
             sell.key2 = str(form.key2.data)

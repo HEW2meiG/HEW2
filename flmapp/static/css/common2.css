@@ -1,0 +1,39 @@
+/* base02 */
+.wrap{
+    display: flex;
+    justify-content: space-between;
+}
+header{
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-grow: 1;
+    background-color: seagreen;
+}
+.container{
+    flex-basis: 700px;
+    background-color: aqua;
+}
+.r-content{
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    flex-basis: 30%;
+    background-color: blueviolet;
+}
+/* ナビゲーション */
+header h1 img{
+    width: 230px;
+}
+.u-icon{
+    border-radius: 50%;
+    width: 85px;
+}
+
+/* li a.active {
+	
+}
+li a:hover:not(.active) {
+	color: #ffffff;
+	background-color: #1b2538;
+} */
