@@ -338,16 +338,16 @@ table {
  * 3. Remove the margin in Firefox and Safari.
  */
 
-button,
+/* button,
 input,
 select,
 textarea {
-	background-color: transparent; /* 1 */
-	border-style: none; /* 1 */
-	color: inherit; /* 1 */
-	font-size: 1em; /* 1 */
-	margin: 0; /* 3 */
-}
+	background-color: transparent;
+	border-style: none;
+	color: inherit;
+	font-size: 1em;
+	margin: 0;
+} */
 
 /**
  * Correct the overflow in IE.

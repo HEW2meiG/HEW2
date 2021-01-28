@@ -10,45 +10,90 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kosho-flame.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common2.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
         {%block head %}{% endblock%}
     </head>
     <body>
         <div class="wrap">
             <header>
-                <h1><img src="{{ url_for('static', filename='images/logo.png')}}" alt="ロゴ"></h1>
-                <nav>
-                    <ul>
-                        <li><a href="{{url_for('route.home')}}">
-                            ホーム
-                        </a></li>
-                        <li><a href="{{url_for('route.home')}}">
-                            検索
-                        </a></li>
-                        <!-- ログインしているとき -->
-                        {% if current_user.is_authenticated %}
-                            <li>
-                                <a href="{{url_for('mypage.mypagetop')}}">
-                                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
-                                    マイページ
-                                </a>
-                            </li>
-                        <!-- ログインしていないとき -->
-                        {% else %}
-                            <li><a href="{{url_for('auth.login')}}">
-                                ログイン
+                <div class="h-wrap">
+                    <h1><img src="{{ url_for('static', filename='images/logo.png')}}" alt="ロゴ"></h1>
+                    <nav>
+                        <ul>
+                            <li><a href="{{url_for('route.home')}}">
+                                <i class="fas fa-home"></i>
+                                ホーム
                             </a></li>
-                        {% endif %}
-                        <li><a href="{{url_for('route.home')}}">
-                            出品する
-                        </a></li>
-                    </ul>
-                </nav>
+                            <li><a href="{{url_for('route.home')}}">
+                                <i class="fas fa-search"></i>
+                                検索
+                            </a></li>
+                            <!-- ログインしているとき -->
+                            {% if current_user.is_authenticated %}
+                                <li>
+                                    <input type="checkbox" id="check1" class="accordion-hidden">
+                                    <label for="check1" class="accordion-open">
+                                        <img class="u-icon" src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+                                        マイページ
+                                        <i class="fas fa-caret-down"></i>
+                                    </label>
+                                    <label for="check1" class="accordion-close">
+                                        <a class="mp-a" href="{{url_for('mypage.mypagetop')}}">
+                                            マイページトップ
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('mypage.profile')}}">
+                                            プロフィール情報
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('mypage.identification')}}">
+                                            本人情報
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('mypage.shippingaddress')}}">
+                                            配送先住所
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('mypage.pay_way')}}">
+                                            支払い方法
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('mypage.mail_password')}}">
+                                            メール・パスワード
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('history.sell_history')}}">
+                                            出品した本
+                                        </a><br>
+                                        <a class="mp-a" href="{{url_for('mypage.logout')}}">
+                                            ログアウト
+                                        </a>
+                                    </label>
+                                </li>
+                            <!-- ログインしていないとき -->
+                            {% else %}
+                                <li><a href="{{url_for('auth.login')}}">
+                                    ログイン
+                                </a></li>
+                            {% endif %}
+                            <li><a href="{{url_for('route.home')}}">
+                                <i class="fas fa-book-open"></i>
+                                出品する
+                            </a></li>
+                        </ul>
+                    </nav>
+                </div>
             </header>
             <div class="container">
                 {% block content %}
                 {% endblock %}
             </div>
             <div class="r-content"></div>
+            <div id="login-required-modal" class="login-required-modal">
+                <div class="modal-bg js-modal-close"></div>
+                <div class="modal-content">
+                    <p>ログインしてください</p>
+                    <a class="navbar-brand" href="{{url_for('auth.login')}}">ログイン</a>
+                    <p>アカウントをお持ちでないですか？</p>
+                    <a class="navbar-brand" href="{{url_for('auth.register')}}">新規会員登録</a>
+                    <a class="js-modal-close" href="">閉じる</a>
+                </div>
+            </div>
         </div>
     </body>
 </html>

@@ -8,32 +8,79 @@ header{
     top: 0;
     height: 100vh;
     flex-grow: 1;
-    background-color: seagreen;
+    background-color: #FFF;
+    padding: 80px;
+    border-right: solid 1.5px #dedbd5;
 }
 .container{
     flex-basis: 700px;
-    background-color: aqua;
+    background-color: #fff3e0;
 }
 .r-content{
     position: sticky;
     top: 0;
     height: 100vh;
     flex-basis: 30%;
-    background-color: blueviolet;
+    background-color: #FFF;
+    border-left: solid 1.5px #dedbd5;
 }
 /* ナビゲーション */
+.h-wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 header h1 img{
     width: 230px;
 }
-.u-icon{
-    border-radius: 50%;
-    width: 85px;
+.h-wrap nav ul li{
+    text-align: center;
+    margin: 40px 0;
 }
-
-/* li a.active {
+.h-wrap nav ul li:not(.mp-a){
+    font-size: 2.0rem;
+    font-weight: bold;
+}
+.u-icon{
+    width: 85px;
+    border-radius: 50%;
+    border: 2px solid #ececec;
+}
+/* .h-wrap nav ul li a.active {
 	
 }
-li a:hover:not(.active) {
-	color: #ffffff;
-	background-color: #1b2538;
+.h-wrap nav ul li a:hover:not(.active) {
+
 } */
+/* マイページアコーディオン */
+/* チェックボックスを非表示にする */
+.accordion-hidden{
+    display: none;
+}
+.accordion-open {
+    display: block;
+    cursor: pointer;
+    font-size: 2.0rem;
+    font-weight: bold;
+}
+/* Answer部分は最初は表示しない */
+.accordion-close {
+    display: block;
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+    opacity: 0;
+    transition: 0.5s;/* 表示速度の設定 */
+}
+/* チェックボックスにチェックが入ったらAnswer部分を表示 */
+.accordion-hidden:checked + .accordion-open + .accordion-close {
+    height: auto;
+    opacity: 1;
+    padding: 10px;
+    font-weight: 700;
+}
+.accordion-close a{
+    margin: 5px 0;
+    font-size: 1.0rem;
+    font-weight: bold;
+}
