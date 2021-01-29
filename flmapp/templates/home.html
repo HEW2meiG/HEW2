@@ -4,11 +4,19 @@
 {% endblock %}
 {%block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/item.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
     {{ message }}
 {% endfor %}
+<div class="home-tab">
+    <a href="{{url_for('route.home')}}">NEW</a>
+    <a href="{{url_for('route.home')}}">HIT</a>
+    {% if current_user.is_authenticated %}
+        <a href="{{url_for('route.home')}}">TIMELINE</a>
+    {% endif %}
+</div>
 {% for item in items %}
     <article class="item-wrap">
         <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
@@ -26,9 +34,11 @@
                 </div>
                 <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
             </div>
-            {% include "like.html" %}
-            <p>{{ item.price }}</p>
-            <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
+            <p><span class="i-price">¥{{ item.price }}</span></p>
+            <div class="i-fotter">
+                {% include "like.html" %}
+                <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
+            </div>
         </a>
     </article>
 {% endfor %}
@@ -45,6 +55,11 @@
     // ここまで ajaxでcsrf_tokenを使用するとき
     // ここから いいね処理
     $(document).ready(function(event){
+        // ここから カレントページ取得
+        if(location.pathname != "/") {
+            $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
+        } else $('.home-tab a:eq(0)').addClass('current');
+        // ここまで カレントページ取得
         var winScrollTop;
         $(document).on('click', '#like', function(event){
             event.preventDefault();

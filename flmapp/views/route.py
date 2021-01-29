@@ -35,7 +35,7 @@ def likes_count_processor():
 
 @bp.route('/')
 def home():
-    """ホーム"""
+    """ホーム(新着順)"""
     # セッションの破棄
     session.pop('pay_way', None)
     session.pop('Credit_id', None)

@@ -1,45 +1,25 @@
-.item-wrap{
+/* タブ */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
+.home-tab{
+    text-align: center;
+    margin: 10px;
+    border-radius: 7px;
+    border: solid 2px  #0f2396;
     background-color: #ffffff;
-    margin: 5px;
-    padding: 30px;
-}
-.item-wrap p{
-    font-size: 1.5rem;
-}
-.u-box{
     display: flex;
-    align-items: flex-start;
+    justify-content: space-around;
 }
-.u-box p{
-    margin-top: 11px;
-    margin-left: 5px;
+.home-tab a{
+    font-family: 'Raleway', sans-serif;
+    font-size: 3.0rem;
+    flex-grow: 1;
+    padding: 20px;
 }
-.u-name{
-    font-weight: bold;
+.current{
+    color: #ffffff;
+    background-color: #0f2396;
+    border-radius: 5px;
 }
-.u-code{
-    color: #7b7b7b;
-}
-.u-box .u-icon{
-    width: 60px;
-}
-.i-content-area{
-    margin-top: -23px;
-    margin-left: 70px;
-}
-.i-key{
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-.i-key p{
-    margin-bottom: 5px;
-}
-.i-key i{
-    margin-right: 5px;
-}
-.i-key .fa-key{
-    color: #C8A063;
-}
-.i-comm p{
-    margin: 20px 0px;
+.current:visited{
+    color: #ffffff;
 }

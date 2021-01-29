@@ -47,12 +47,12 @@ header h1 img{
     border-radius: 50%;
     border: 2px solid #ececec;
 }
-/* .h-wrap nav ul li a.active {
-	
+.active{
+    color: #e54747;
 }
-.h-wrap nav ul li a:hover:not(.active) {
-
-} */
+.active:visited{
+    color: #e54747;
+}
 /* マイページアコーディオン */
 /* チェックボックスを非表示にする */
 .accordion-hidden{

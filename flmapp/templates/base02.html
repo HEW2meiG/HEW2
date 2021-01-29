@@ -39,7 +39,7 @@
                                         <i class="fas fa-caret-down"></i>
                                     </label>
                                     <label for="check1" class="accordion-close">
-                                        <a class="mp-a" href="{{url_for('mypage.mypagetop')}}">
+                                        <a id="mypage-top" class="mp-a" href="{{url_for('mypage.mypagetop')}}">
                                             マイページトップ
                                         </a><br>
                                         <a class="mp-a" href="{{url_for('mypage.profile')}}">
@@ -100,3 +100,17 @@
         </div>
     </body>
 </html>
+<script>
+    // カレント表示
+    $(document).ready(function() {
+        if(location.pathname != "/" && location.pathname.indexOf('/mypage/') == -1) {
+            $('nav li a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
+        }else if(location.pathname == "/mypage/"){
+            $('#mypage-top').addClass('active');
+        }else if(location.pathname.match("/mypage/history")) {
+            $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '/' + location.pathname.split("/")[3] + '"]').addClass('active');
+        }else if(location.pathname.match("/mypage/")) {
+            $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '"]').addClass('active');
+        }else $('nav li a:eq(0)').addClass('active');
+    });
+</script>
