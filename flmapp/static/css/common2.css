@@ -8,6 +8,7 @@ header{
     top: 0;
     height: 100vh;
     flex-grow: 1;
+    flex-shrink: 5;
     background-color: #FFF;
     padding: 80px;
     border-right: solid 1.5px #dedbd5;
@@ -31,7 +32,7 @@ header{
     align-items: center;
 }
 header h1 img{
-    width: 230px;
+    width: 130px;
 }
 .h-wrap nav ul li{
     text-align: center;
