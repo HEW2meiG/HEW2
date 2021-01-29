@@ -27,6 +27,7 @@
                 <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
             </div>
             {% include "like.html" %}
+            <p>{{ item.price }}</p>
             <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
         </a>
     </article>

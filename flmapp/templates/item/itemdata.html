@@ -23,24 +23,30 @@
     {{ item.remarks }}
     {{ item.create_at.strftime('%Y/%m/%d %H:%M') }}
     {% if item.User_id == current_user.User_id %}
-        <p>商品の画像</p>
-        <span style="color: red;">*出品者のみ表示されます</span>
-        <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-        <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">出品情報を編集する</a>
-        <form method="POST" action="{{url_for('sell.sell_flg_update')}}">
-            {{ form.csrf_token }}
-            {{ form.Sell_id(value=item.Sell_id) }}
-            {% if item.sell_flg %}
-                {{ form.submit(value='出品を一時停止する') }}
-            {% else %}
-                {{ form.submit(value='出品を再開する') }}
-            {% endif %}
-        </form>
-        <form method="POST" action="{{url_for('sell.sell_delete')}}">
-            {{ form.csrf_token }}
-            {{ form.Sell_id(value=item.Sell_id) }}
-            {{ form.submit(value='削除') }}
-        </form>
+        {% if item.deal_status.value == 1 %}
+            <p>商品の画像</p>
+            <span style="color: red;">*出品者のみ表示されます</span>
+            <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
+            <a href="{{url_for('sell.sell_update', item_id=item.Sell_id)}}">出品情報を編集する</a>
+            <form method="POST" action="{{url_for('sell.sell_flg_update')}}">
+                {{ form.csrf_token }}
+                {{ form.Sell_id(value=item.Sell_id) }}
+                {% if item.sell_flg %}
+                    {{ form.submit(value='出品を一時停止する') }}
+                {% else %}
+                    {{ form.submit(value='出品を再開する') }}
+                {% endif %}
+            </form>
+            <form method="POST" action="{{url_for('sell.sell_delete')}}">
+                {{ form.csrf_token }}
+                {{ form.Sell_id(value=item.Sell_id) }}
+                {{ form.submit(value='削除') }}
+            </form>
+        {% elif item.deal_status.value == 2 %}
+            <a href="{{url_for('transaction.transaction', item_id=item.Sell_id)}}">取引画面をみる</a>
+        {% elif item.deal_status.value == 3 %}
+            <p>取引が完了しています</p>
+        {% endif %}
     {% elif item.sell_flg and item.is_active and item.deal_status.value == 1 %}
         <a href="{{url_for('buy.buy', item_id=item.Sell_id)}}">購入画面に進む</a>
     {% elif item.sell_flg and item.is_active and item.deal_status.value != 1 %}

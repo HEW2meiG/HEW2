@@ -1,5 +1,6 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_, desc
 
 from datetime import datetime, timedelta
@@ -85,6 +86,20 @@ class Sell(db.Model):
     def select_sell_by_deal_status(cls, User_id, deal_status):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
+
+
+    @classmethod
+    def sell_join_buy_deal_status(cls, User_id, deal_status):
+        """
+        Buy(購入)レコードとSell(商品)レコードを結合し、
+        BuyのUser_idとSellのdeal_statusが引数と一致するものを
+        絞り込み、Sell(商品)レコードを返す
+        """
+        buy = aliased(Buy)
+        return cls.query.filter(
+            cls.deal_status==Deal_status(deal_status)
+        ).outerjoin(buy, buy.User_id==User_id).all()
+
 
     @classmethod
     def delete_sell(cls, Sell_id):
