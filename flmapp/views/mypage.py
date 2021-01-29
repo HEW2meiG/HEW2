@@ -84,6 +84,8 @@ def profile():
     if request.method == 'POST' and form.validate():
         # ログイン中のユーザーIDによってユーザーを取得
         user = User.select_user_by_id(current_user.get_id())
+        #ユーザーコードの重複チェック--------------------------
+        
         # 画像アップロード処理 ここから--------------------------
         imagename = ''
         image = request.files[form.picture_path.name]
@@ -109,6 +111,7 @@ def profile():
         # データベース処理
         with db.session.begin(subtransactions=True):
             user.username = form.username.data
+            user.user_code = form.usercode.data
             user.prof_comment = form.prof_comment.data
             if imagename: # imagenameが設定されていれば(画像があれば)更新する
                 user.picture_path = imagename

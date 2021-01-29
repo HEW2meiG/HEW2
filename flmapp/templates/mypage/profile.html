@@ -20,6 +20,7 @@
         <form method="POST" enctype="multipart/form-data">
             {{form.csrf_token}}
             {{render_field(form.username, value=current_user.username)}}
+            {{render_field(form.usercode, value=current_user.user_code)}}
             {{render_field(form.picture_path)}}
             {{render_field(form.prof_comment)}}
             {{form.submit()}}
