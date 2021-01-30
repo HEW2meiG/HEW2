@@ -15,6 +15,9 @@ from flmapp.models.user import (
 from flmapp.models.trade import (
     Sell
 )
+from flmapp.models.reaction import (
+    BrowsingHistory
+)
 from flmapp.forms.sell import (
     SellUpdateFlgAndDeleteForm
 )
@@ -32,4 +35,12 @@ def itemdata(item_id):
     if item is None:
         return redirect(url_for('route.home'))
     form = SellUpdateFlgAndDeleteForm(request.form)
+    # 閲覧履歴登録処理
+    browsinghistory = BrowsingHistory(
+        Sell_id = item_id,
+        User_id = current_user.User_id
+    )
+    with db.session.begin(subtransactions=True):
+        BrowsingHistory.create_new_browsinghistory(browsinghistory)
+    db.session.commit()
     return render_template('item/itemdata.html', item=item, form=form)

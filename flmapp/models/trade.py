@@ -106,6 +106,15 @@ class Sell(db.Model):
         """出品情報の削除"""
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
+    @classmethod
+    def select_sales(cls, User_id):
+        """売り上げ金を合計して返す"""
+        return cls.query.filter(
+            cls.User_id==current_user.User_id,
+            cls.deal_status==Deal_status(3)
+        ).with_entities(func.sum(Sell.price)).first()
+    
+
 
 class Buy(db.Model):
     """購入情報テーブル"""

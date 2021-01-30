@@ -30,7 +30,7 @@
 </div>
  <!-- textareaフィールドのvalue属性にあたる部分
  <textarea>プロフィールコメント</textarea> -->
-{% if current_user.prof_comment != 'None' %}
+{% if current_user.prof_comment != None %}
     <script>
         var textarea = document.getElementById('prof_comment');
         textarea.innerHTML = "{{ current_user.prof_comment }}";

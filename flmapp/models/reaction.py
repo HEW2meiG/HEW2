@@ -173,3 +173,20 @@ class BrowsingHistory(db.Model):
 
     def create_new_browsinghistory(self):
         db.session.add(self)
+
+    @classmethod
+    def b_history_join_sell(cls, Sell, User_id):
+        """
+        BrowsingHistoryとSellを結合し,
+        閲覧したUser_idと引数のUser_id
+        が一致したSellレコードを新着順に3件取り出す
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id == User_id
+        ).outerjoin(
+            sell,
+            sell.User_id != User_id
+        ).distinct(sell.Sell_id).with_entities(
+            sell
+        ).order_by(desc(cls.create_at)).limit(3).all()
