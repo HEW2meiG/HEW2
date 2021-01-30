@@ -11,7 +11,7 @@ from flmapp.models.user import (
     User
 )
 from flmapp.models.trade import (
-    Sell
+    Sell, Buy
 )
 from flmapp.models.reaction import (
     Likes, UserConnect
@@ -55,7 +55,7 @@ def sell_completed():
 def buy_in_progress():
     """購入取引中履歴"""
     user_id = current_user.get_id()
-    items = Sell.sell_join_buy_deal_status(user_id, 2)
+    items = Buy.buy_join_sell_deal_status(user_id, 2)
     return render_template('history/buy_history.html', items=items)
 
 
@@ -64,5 +64,5 @@ def buy_in_progress():
 def buy_completed():
     """購入取引済み履歴"""
     user_id = current_user.get_id()
-    items = Sell.sell_join_buy_deal_status(user_id, 3)
+    items = Buy.buy_join_sell_deal_status(user_id, 3)
     return render_template('history/buy_history.html', items=items)

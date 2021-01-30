@@ -5,8 +5,13 @@ from sqlalchemy import and_, or_, desc
 
 from datetime import datetime, timedelta
 
+from flask_login import (
+    current_user
+)
+
 from enum import Enum
 from flmapp.models.enum_conf import EnumType
+
 
 # 出品情報テーブルのEnum型を定義
 Genre = Enum("Genre", [("SF", 1), ("政治", 2), ("恋愛", 3), ("青春", 4), ("ミステリー", 5), \
@@ -87,19 +92,14 @@ class Sell(db.Model):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
 
-
     @classmethod
-    def sell_join_buy_deal_status(cls, User_id, deal_status):
+    def select_new_sell(cls):
         """
-        Buy(購入)レコードとSell(商品)レコードを結合し、
-        BuyのUser_idとSellのdeal_statusが引数と一致するものを
-        絞り込み、Sell(商品)レコードを返す
+        出品状態、有効フラグが有効の商品を新着順に取り出す
         """
-        buy = aliased(Buy)
-        return cls.query.filter(
-            cls.deal_status==Deal_status(deal_status)
-        ).outerjoin(buy, buy.User_id==User_id).all()
-
+        return cls.query.filter_by(
+            sell_flg = True, is_active = True
+        ).order_by(desc(cls.create_at)).all()
 
     @classmethod
     def delete_sell(cls, Sell_id):
@@ -136,6 +136,19 @@ class Buy(db.Model):
     def select_buy_by_sell_id(cls, Sell_id):
         """Sell_id(item_id)によってBuy(購入情報)レコードを得る"""
         return cls.query.filter_by(Sell_id=Sell_id).first()
+
+    @classmethod
+    def buy_join_sell_deal_status(cls, User_id, deal_status):
+        """
+        Buy(購入)とSell(商品)を結合し、
+        BuyのUser_idとSellのdeal_statusが引数と一致するものを
+        絞り込む
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id==User_id
+        ).outerjoin(sell, sell.deal_status==Deal_status(deal_status)
+        ).with_entities(sell).all()
 
 
 # 相互評価情報テーブルのEnum型を定義

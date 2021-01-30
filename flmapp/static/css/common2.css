@@ -47,12 +47,19 @@ header h1 img{
     border-radius: 50%;
     border: 2px solid #ececec;
 }
-/* .h-wrap nav ul li a.active {
-	
+.accordion-open:hover{
+    transition: color 0.5s;
+    color: #e54747;
 }
-.h-wrap nav ul li a:hover:not(.active) {
-
-} */
+nav a:hover{
+    color: #e54747;
+}
+.active{
+    color: #e54747;
+}
+.active:visited{
+    color: #e54747;
+}
 /* マイページアコーディオン */
 /* チェックボックスを非表示にする */
 .accordion-hidden{
@@ -63,6 +70,7 @@ header h1 img{
     cursor: pointer;
     font-size: 2.0rem;
     font-weight: bold;
+    transition: color 0.5s;
 }
 /* Answer部分は最初は表示しない */
 .accordion-close {

@@ -1,5 +1,6 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_, desc
 from flask_login import UserMixin, current_user
 
@@ -56,6 +57,22 @@ class Likes(db.Model):
                 cls.User_id == current_user.get_id()
             )
         ).delete()
+
+    @classmethod
+    def likes_join_sell(cls, Sell, User_id):
+        """
+        LikesとSellを結合し,
+        いいねしたUser_idと引数のUser_id
+        が一致したSellレコードを新着順に取り出す
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id == User_id
+        ).outerjoin(
+            sell
+        ).with_entities(
+            sell
+        ).order_by(desc(cls.create_at)).all()
 
 
 class UserConnect(db.Model):
@@ -114,6 +131,28 @@ class UserConnect(db.Model):
                         cls.from_user_id == current_user.get_id()
                     )
                 ).delete()
+
+    @classmethod
+    def select_timeline_sell(cls, Sell):
+        """
+        SellとUserConnectを結合し
+        ログインしているユーザー以外かつ
+        フォローしているユーザーが出品しているかつ
+        出品状態、有効フラグが有効の商品を新着順に取り出す
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.from_user_id == current_user.User_id
+        ).outerjoin(
+            sell,
+            and_(
+                sell.sell_flg == True, 
+                sell.is_active == True,
+                sell.User_id != current_user.User_id
+            )
+        ).with_entities(
+            sell
+        ).order_by(desc(cls.create_at)).all()
 
 
 class BrowsingHistory(db.Model):

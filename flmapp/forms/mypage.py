@@ -23,7 +23,7 @@ class ProfileForm(FlaskForm):
     submit = SubmitField('変更する')
 
     def validate_usercode(self,field):
-        if User.select_user_by_user_code(field.data):
+        if current_user.user_code != field.data and User.select_user_by_user_code(field.data):
             raise ValidationError('ユーザーコードはすでに使用されています。')
 
 
