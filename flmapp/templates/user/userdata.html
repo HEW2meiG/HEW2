@@ -23,6 +23,33 @@
     <p>good:{{ good_ratings_count }}</p>
     <p>bad:{{ bad_ratings_count }}</p>
 </div>
+<!-- ここから　出品投稿 -->
+{% for item in items %}
+    <article class="item-wrap">
+        <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+            <!-- {{ item.deal_status.name }} -->
+            <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
+                <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+                <p class="u-name">{{ item.user.username }}</p>
+                <p class="u-code">{{ item.user.user_code }}</p>
+            </a></object>
+            <div class="i-content-area">
+                <div class="i-key">
+                    <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
+                    <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
+                    <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+                </div>
+                <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
+            </div>
+            <p><span class="i-price">¥{{ item.price }}</span></p>
+            <div class="i-fotter">
+                {% include "like.html" %}
+                <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
+            </div>
+        </a>
+    </article>
+{% endfor %}
+<!-- ここまで　出品投稿 -->
 <script>
     // ここから ajaxでcsrf_tokenを使用するとき
     var csrf_token = "{{ csrf_token() }}";
@@ -34,8 +61,8 @@
         }
     });
     // ここまで ajaxでcsrf_tokenを使用するとき
-    // ここから フォロー処理
     $(document).ready(function(event){
+        // ここから フォロー処理
         var winScrollTop;
         $(document).on('click', '#follow', function(event){
             event.preventDefault();
@@ -65,6 +92,36 @@
                 }
             });
         });
+        // ここまで フォロー処理
+        // ここから いいね処理
+        var winScrollTop;
+        $(document).on('click', '#like', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('ajax.like_ajax') }}",
+                data: {'sell_id': $(this).attr('name')},
+                dataType: 'json',
+                success: function(data){
+                    if(data['not_authenticated']){
+                        //スクロール位置を取得
+                        winScrollTop = $(window).scrollTop();
+                        login_required_modal_open();
+                    }else{
+                        selector = document.getElementsByName(data['item_id']);
+                        if(data['liked']){
+                            $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
+                        }
+                        else {
+                            $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
+                        }
+                        selector2 = document.getElementsByName(data['item_id'] + "-count");
+                        $(selector2).text(data['count']);
+                    }
+                }
+            });
+        });
+        // ここまで いいね処理
         function login_required_modal_open(){
             $('#login-required-modal').fadeIn();
             return false;
@@ -75,6 +132,5 @@
             return false;
         });
     });
-    // ここまで フォロー処理
 </script>
 {% endblock %}

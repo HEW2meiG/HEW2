@@ -11,9 +11,9 @@
 }
 .home-tab a{
     font-family: 'Raleway', sans-serif;
-    font-size: 3.0rem;
+    font-size: 1.6rem;
     flex-grow: 1;
-    padding: 20px;
+    padding: 8px;
 }
 .current{
     color: #ffffff;

@@ -12,6 +12,7 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common2.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css')}}">
         {%block head %}{% endblock%}
     </head>
     <body>
@@ -21,7 +22,7 @@
                     <h1><img src="{{ url_for('static', filename='images/logo.png')}}" alt="ロゴ"></h1>
                     <nav>
                         <ul>
-                            <li><a href="{{url_for('route.home')}}">
+                            <li><a id="home" href="{{url_for('route.home')}}">
                                 <i class="fas fa-home"></i>
                                 ホーム
                             </a></li>
@@ -103,7 +104,9 @@
 <script>
     // カレント表示
     $(document).ready(function() {
-        if(location.pathname != "/" && location.pathname.indexOf('/mypage/') == -1) {
+        if(location.pathname == "/timeline" || location.pathname == "/hit") {
+            $('#home').addClass('active');
+        }else if(location.pathname != "/" && location.pathname.indexOf('/mypage/') == -1) {
             $('nav li a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
         }else if(location.pathname == "/mypage/"){
             $('#mypage-top').addClass('active');
@@ -111,6 +114,6 @@
             $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '/' + location.pathname.split("/")[3] + '"]').addClass('active');
         }else if(location.pathname.match("/mypage/")) {
             $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '"]').addClass('active');
-        }else $('nav li a:eq(0)').addClass('active');
+        }else{ $('#home').addClass('active');}
     });
 </script>

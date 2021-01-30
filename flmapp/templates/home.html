@@ -4,7 +4,6 @@
 {% endblock %}
 {%block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/item.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
@@ -14,9 +13,10 @@
     <a href="{{url_for('route.home')}}">NEW</a>
     <a href="{{url_for('route.home')}}">HIT</a>
     {% if current_user.is_authenticated %}
-        <a href="{{url_for('route.home')}}">TIMELINE</a>
+        <a href="{{url_for('route.timeline')}}">TIMELINE</a>
     {% endif %}
 </div>
+<!-- ここから　出品投稿 -->
 {% for item in items %}
     <article class="item-wrap">
         <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
@@ -42,6 +42,7 @@
         </a>
     </article>
 {% endfor %}
+<!-- ここまで　出品投稿 -->
 <script>
     // ここから ajaxでcsrf_tokenを使用するとき
     var csrf_token = "{{ csrf_token() }}";
@@ -57,7 +58,7 @@
     $(document).ready(function(event){
         // ここから カレントページ取得
         if(location.pathname != "/") {
-            $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
+            $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('current');
         } else $('.home-tab a:eq(0)').addClass('current');
         // ここまで カレントページ取得
         var winScrollTop;

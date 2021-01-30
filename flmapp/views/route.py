@@ -10,11 +10,11 @@ from flmapp import db
 from flmapp.models.user import (
     User
 )
-from flmapp.models.trade import (
-    Sell
-)
 from flmapp.models.reaction import (
     Likes, UserConnect
+)
+from flmapp.models.trade import (
+    Sell
 )
 from flmapp.models.message import(
     PostMessage, DealMessage
@@ -40,8 +40,28 @@ def home():
     session.pop('pay_way', None)
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
-    # 出品状態、有効フラグが有効の商品を取り出す
-    items = Sell.query.filter_by(sell_flg = True, is_active = True).all()
+    # 出品状態、有効フラグが有効の商品を新着順に取り出す
+    items = Sell.select_new_sell()
+    # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
+    liked_list = []
+    for item in items:
+        liked = Likes.liked_exists(item.Sell_id)
+        if liked:
+            liked_list.append(item.Sell_id)
+    return render_template(
+        'home.html',
+        items=items,
+        liked_list=liked_list
+    )
+
+@bp.route('/timeline')
+def timeline():
+    """ホーム(タイムライン)"""
+    # セッションの破棄
+    session.pop('pay_way', None)
+    session.pop('Credit_id', None)
+    session.pop('ShippingAddress_id', None)
+    items = UserConnect.select_timeline_sell(Sell)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
