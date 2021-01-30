@@ -52,6 +52,10 @@
         <p><span class="p-comm">{{ user.prof_comment|default('', true) }}</span></p>
     </div>
 </div>
+<div class="user-i-tab">
+    <a id="sell-tab" href="{{url_for('user.userdata', user_code=user.user_code)}}">出品</a>
+    <a id="likes-tab" href="{{url_for('user.userdata_likes', user_code=user.user_code)}}">いいね</a>
+</div>
 <!-- ここから　出品投稿 -->
 {% for item in items %}
     <article class="item-wrap">
@@ -91,6 +95,11 @@
     });
     // ここまで ajaxでcsrf_tokenを使用するとき
     $(document).ready(function(event){
+        // ここから カレントページ取得
+        if(location.pathname.split("/")[4] == "likes") {
+            $('#likes-tab').addClass('current');
+        } else $('#sell-tab').addClass('current');
+        // ここまで カレントページ取得
         // ここから フォロー処理
         var winScrollTop;
         $(document).on('click', '#follow', function(event){

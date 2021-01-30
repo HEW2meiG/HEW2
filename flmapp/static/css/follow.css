@@ -6,6 +6,11 @@
     border-radius: 20px;
     padding: 8px 40px;
     font-weight: bold;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.follow-wrap button:hover{
+    opacity: 0.5;
 }
 .unfollow-btn{
     color: #797878;

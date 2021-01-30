@@ -7,7 +7,7 @@
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
-    {{ message }}
+    <p>{{ message }}</p>
 {% endfor %}
 <div class="home-tab">
     <a href="{{url_for('route.home')}}">NEW</a>
@@ -56,7 +56,6 @@
     // ここまで ajaxでcsrf_tokenを使用するとき
     // ここから いいね処理
     $(document).ready(function(event){
-        // ここから カレントページ取得
         if(location.pathname != "/") {
             $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('current');
         } else $('.home-tab a:eq(0)').addClass('current');

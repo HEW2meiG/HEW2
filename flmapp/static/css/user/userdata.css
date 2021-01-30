@@ -1,3 +1,4 @@
+/* ユーザーページヘッダー部分 */
 .u-header{
     display: flex;
     padding: 25px;
@@ -37,4 +38,34 @@
 }
 .p-comm{
     font-weight: normal;
+}
+/* タブ */
+.user-i-tab{
+    text-align: center;
+    margin: 10px;
+    border-radius: 7px;
+    border: solid 2px  #0f2396;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+}
+.user-i-tab a{
+    transition: 0.5s;
+}
+.user-i-tab a:hover{
+    background-color: #0f239670;
+}
+.user-i-tab a{
+    font-weight: bold;
+    font-size: 1.6rem;
+    flex-grow: 1;
+    padding: 8px;
+}
+.current{
+    color: #ffffff;
+    background-color: #0f2396;
+    border-radius: 5px;
+}
+.current:visited{
+    color: #ffffff;
 }
