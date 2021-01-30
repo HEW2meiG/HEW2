@@ -1,0 +1,19 @@
+.follow-wrap button{
+    /* ボタン要素リセット */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+         appearance: none;
+    border-radius: 20px;
+    padding: 8px 40px;
+    font-weight: bold;
+}
+.unfollow-btn{
+    color: #797878;
+    background: #fff;
+    border: 2px solid #cecdcd;
+}
+.follow-btn{
+    color: #ffffff;
+    background: #0f2396;
+    border: 2px solid #0f2396;
+}
