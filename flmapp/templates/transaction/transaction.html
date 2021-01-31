@@ -1,118 +1,81 @@
 {% from "_formhelpers.html" import render_field %}
-{% extends "base02.html" %}
+{% extends "base03.html" %}
 {%block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/message.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/transaction/transaction.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/transaction/notice.css')}}">
 {% endblock%}
 {% block title %}
 取引画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-{% for message in get_flashed_messages() %}
-    {{ message }}
-{% endfor %}
-<h2>取引画面</h2>
-{% include "transaction/notice.html" %}
-<h3>取引情報</h3>
-<table>
-    <tr>
-        <th>商品</th>
-        <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-            {{ item.key1 }}
-            {{ item.key2 }}
-            {{ item.key3 }}
-            {{ item.price }}
-            {{ item.sell_comment }}
-        </a></td>
-    </tr>
-    <tr>
-        <th>送料</th>
-        <td>{{ item.postage.name }}</td>
-    </tr>
-    <tr>
-        <th>購入日時</th>
-        <td>{{ buy.create_at.strftime("%Y/%m/%d %H:%M") }}</td>
-    </tr>
-    <tr>
-        <th>商品ID</th>
-        <td>{{ '%08d' % item.Sell_id }}</td>
-    </tr>
-    <tr>
-        <th>お届け先</th>
-        <td>
-            <p>
-                {{ shippingaddress.zip_code }}<br>
-                {{ shippingaddress.prefecture }}
-                {{ shippingaddress.address1 }}
-                {{ shippingaddress.address2 }}<br>
-                {{ shippingaddress.address3 }}
-            </p>
-            <p>
-                {{ shippingaddress.last_name }}
-                {{ shippingaddress.first_name }}
-                様
-            </p>
-        </td>
-    </tr>
-</table>
-<h3>出品者情報</h3>
-<img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-{{ item.user.username }}
-<h3>取引メッセージ</h3>
-{% if messages | length >= 5 %}
-    <div id="load_message_button" class="col-12">
-        <button class="col12 bth bth-light btn-outline-primary" onclick="load_old_messages();">メッセージを読み込む</button>
-    </div>
-{% endif %}
-{% for message in messages|reverse %}
-    {% if message.from_user_id == current_user.User_id %}
-        <!-- 自分側 -->
-        <div class="msg-box">
-            <div id="self-message-tag-{{ message.DealMessage_id }}">
-            {% if message.is_checked %}
-                <p>既読</p>
-            {% endif %}
-            </div>
-            <div class="speech-bubble-self">
-                <!-- 改行部分を区切ってforループする -->
-                {% for splitted_message in message.message|replace_newline %}
-                    <p>{{ splitted_message|urlize }}</p>
-                {% endfor %}
-            </div>
-            <div class="msger-wrap">
-                <img src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
-                <p>{{ current_user.username }}</p>
-            </div>
+<div class="m-wrap">
+    <div class="t-wrap">
+        <div class="titile">
+            <h2>取引メッセージ</h2>
         </div>
-    {% else %}
-        <!-- 相手側 -->
-        <div class="msg-box">
-            <div class="msger-wrap">
-                <img src="{{url_for('static', filename='user_image/' + dest_user.picture_path)}}">
-                <p>{{ dest_user.username }}</p>
-            </div>
-            <div class="speech-bubble-dest">
-                <!-- 改行部分を区切ってforループする -->
-                {% for splitted_message in message.message|replace_newline %}
-                    <p>{{ splitted_message|urlize }}</p>
-                {% endfor %}
-            </div>
+    </div>
+    {% if messages | length >= 5 %}
+        <div id="load_message_button" class="load-msg-a">
+            <button class="load-msg-b" onclick="load_old_messages();">メッセージを読み込む</button>
         </div>
     {% endif %}
-{% endfor %}
-<!-- ↓message-formの上にajaxで取得されるメッセージが入ります -->
-<div id="message-form"></div>
-<form method="POST">
-    {{ messageform.csrf_token }}
-    {{ render_field(messageform.message, cols="50", rows="5") }}
-    {{ messageform.submit() }}
-</form>
+    <div class="msg-content">
+        {% for message in messages|reverse %}
+            {% if message.from_user_id == current_user.User_id %}
+                <!-- 自分側 -->
+                <div class="msg-box self-box">
+                    <div id="self-message-tag-{{ message.DealMessage_id }}">
+                    {% if message.is_checked %}
+                        <p>既読</p>
+                    {% endif %}
+                        <p>{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
+                    </div>
+                    <div class="speech-bubble-self">
+                        <!-- 改行部分を区切ってforループする -->
+                        {% for splitted_message in message.message|replace_newline %}
+                            <p>{{ splitted_message|urlize }}</p>
+                        {% endfor %}
+                    </div>
+                    <div class="msger-wrap">
+                        <img class="u-icon" src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+                        <p>{{ current_user.username }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <!-- 相手側 -->
+                <div class="msg-box dest-box">
+                    <div class="msger-wrap">
+                        <p>{{ dest_user.username }}</p>
+                        <img class="u-icon" src="{{url_for('static', filename='user_image/' + dest_user.picture_path)}}">
+                    </div>
+                    <div class="speech-bubble-dest">
+                        <!-- 改行部分を区切ってforループする -->
+                        {% for splitted_message in message.message|replace_newline %}
+                            <p>{{ splitted_message|urlize }}</p>
+                        {% endfor %}
+                    </div>
+                    <p>{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <!-- ↓message-formの上にajaxで取得されるメッセージが入ります -->
+        <div id="message-form"></div>
+    </div>
+    <div class="message-area">
+        <form method="POST">
+            {{ messageform.csrf_token }}
+            <div class="msg-wrap">
+                {{ messageform.message() }}
+                {{ messageform.submit() }}
+            </div>
+        </form>
+    </div>
+</div>
 <script>
     $(function(){
         // 1秒間隔でget_new_messagesを実行
         timer = setInterval("get_new_messages()", 1000);
-        // 初期表示で画面の一番下に行く
-        var scroll = (document.scrollingElement || document.body);
-        scroll.scrollTop = scroll.scrollHeight;
     });
     dest_user_id = "{{ dest_user.User_id }}";
     sell_id = "{{ item.Sell_id }}";
@@ -146,4 +109,71 @@
         });
     }
 </script>
+{% endblock %}
+{% block content2 %}
+<div class="t-wrap">
+    <div class="titile">
+        <h2>取引通知</h2>
+    </div>
+    <div class="notice-wrap">
+        {% for message in get_flashed_messages() %}
+            <p class="flash">{{ message }}</p>
+        {% endfor %}
+        {% include "transaction/notice.html" %}
+    </div>
+    <table>
+        <tr><th colspan="2"><h3>取引情報</h3></th></tr>
+        <tr>
+            <th>出品者</th>
+            <td>
+                <a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
+                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+                    <p class="u-name">{{ item.user.username }}</p>
+                    <p class="u-code">{{ item.user.user_code }}</p>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>商品</th>
+            <td>
+                <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+                    <i class="fas fa-key"></i>{{ item.key1 }}<br>
+                    <i class="fas fa-key"></i>{{ item.key2 }}<br>
+                    <i class="fas fa-key"></i>{{ item.key3 }}<br>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <th>価格</th>
+            <td>
+                {{ item.price }}<br>
+            </td>
+        </tr>
+        <tr>
+            <th>送料</th>
+            <td>{{ item.postage.name }}</td>
+        </tr>
+        <tr>
+            <th>購入日時</th>
+            <td>{{ buy.create_at.strftime("%Y/%m/%d %H:%M") }}</td>
+        </tr>
+        <tr>
+            <th>商品ID</th>
+            <td>{{ '%08d' % item.Sell_id }}</td>
+        </tr>
+        <tr>
+            <th>お届け先</th>
+            <td>
+                〒{{ shippingaddress.zip_code }}<br>
+                {{ shippingaddress.prefecture }}
+                {{ shippingaddress.address1 }}
+                {{ shippingaddress.address2 }}<br>
+                {{ shippingaddress.address3 }}<br>
+                {{ shippingaddress.last_name }}
+                {{ shippingaddress.first_name }}
+                様
+            </td>
+        </tr>
+    </table>
+</div>
 {% endblock %}

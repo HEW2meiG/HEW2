@@ -1,0 +1,43 @@
+.notice-wrap{
+    background-color: #ffffff;
+    padding: 15px;
+    margin: 20px 0;
+}
+.notice-wrap h4{
+    font-size: 1.7rem;
+    line-height: 3.3rem;
+    color: #e54747;
+}
+.notice-wrap p{
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+.notice-wrap label{
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+.notice-f{
+    margin-right: 10px;
+}
+#rating input{
+    margin-right: 6px;
+}
+.ra-msg {
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    max-height: 170px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+    outline: none;
+    line-height: 1.6;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+.ra-sbm{
+    width: 100%;
+    text-align: center;
+}
