@@ -7,8 +7,8 @@
             <form method=POST action="{{ url_for('transaction.notice_rating', item_id=item.Sell_id) }}">
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='has_sent') }}
-                {{ noticeform.notice_flg.label('商品を発送しました') }}{{ noticeform.notice_flg() }} <br>
-                {{ noticeform.submit(value='発送通知を送る') }}
+                {{ noticeform.notice_flg(class="notice-f") }}{{ noticeform.notice_flg.label('商品を発送しました') }}<br>
+                <div class="ra-sbm">{{ noticeform.submit(value='発送通知を送る') }}</div>
             </form>
         {% elif item.has_sent == True and item.has_got == False %}
             <h4>購入者の受け取りをお待ちください。</h4>
@@ -20,8 +20,8 @@
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='seller_rating') }}
                 {{ noticeform.rating() }}<br>
-                {{ noticeform.rating_message() }}<br>
-                {{ noticeform.submit(value='購入者を評価して取引を完了する') }}
+                {{ noticeform.rating_message(class="ra-msg") }}<br>
+                <div class="ra-sbm">{{ noticeform.submit(value='購入者を評価して取引を完了する') }}</div>
             </form>
         {% endif %}
     {% endif %}
@@ -36,10 +36,10 @@
             <form method=POST action="{{ url_for('transaction.notice_rating', item_id=item.Sell_id) }}" >
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='has_got') }}
-                {{ noticeform.notice_flg.label('商品を受け取りました') }}{{ noticeform.notice_flg() }}<br>
+                {{ noticeform.notice_flg(class="notice-f") }}{{ noticeform.notice_flg.label('商品を受け取りました') }}<br>
                 {{ noticeform.rating() }}<br>
-                {{ noticeform.rating_message() }}<br>
-                {{ noticeform.submit(value='受け取り確認と評価を送る') }}
+                {{ noticeform.rating_message(class="ra-msg") }}<br>
+                <div class="ra-sbm">{{ noticeform.submit(value='受け取り確認と評価を送る') }}</div>
             </form>
         {% elif item.has_sent == item.has_got == True %}
             <h4>出品者の評価をお待ちください。</h4>

@@ -13,16 +13,4 @@
 <h3>
     <a class="mp-a" href="{{url_for('history.buy_completed')}}">過去の取引</a>
 </h3>
-{% for item in items %}
-    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}"></a>
-        {% if item.deal_status.value == 3 %}
-            <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-        {% endif%}
-        {{ item.key1 }}
-        {{ item.key2 }}
-        {{ item.key3 }}
-        {{ item.sell_comment }}
-        {{ item.price }}
-    </a>
-{% endfor %}
 {% endblock %}

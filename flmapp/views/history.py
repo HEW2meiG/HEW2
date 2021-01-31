@@ -56,6 +56,8 @@ def buy_in_progress():
     """購入取引中履歴"""
     user_id = current_user.get_id()
     items = Buy.buy_join_sell_deal_status(user_id, 2)
+    if items == [None]:
+        return render_template('history/buy_history_none.html', items=items)
     return render_template('history/buy_history.html', items=items)
 
 
@@ -65,4 +67,7 @@ def buy_completed():
     """購入取引済み履歴"""
     user_id = current_user.get_id()
     items = Buy.buy_join_sell_deal_status(user_id, 3)
+    if items == [None]:
+        return render_template('history/buy_history_none.html', items=items)
     return render_template('history/buy_history.html', items=items)
+    

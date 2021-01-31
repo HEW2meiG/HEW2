@@ -93,3 +93,10 @@ nav a:hover{
     font-size: 1.0rem;
     font-weight: bold;
 }
+/* フラッシュメッセージ */
+.flash{
+    color: #e54747;
+    font-weight: bold;
+    font-size: 1.8rem;
+    padding: 10px 0;
+}

@@ -16,7 +16,7 @@ from flmapp.models.token import MailResetToken
 
 class LoginForm(FlaskForm):
     email = StringField(
-        'メールアドレス',render_kw={"placeholder":"koshokaikou@mail.com"}, validators=[DataRequired('入力してください。'), Email('@ぬけてんで。')]
+        'メールアドレス',render_kw={"placeholder":"koshokaikou@mail.com"}, validators=[DataRequired('入力してください。'), Email('メールアドレスが間違っています。')]
     )
     password = PasswordField('パスワード', validators=[DataRequired('入力してください。')])
     captcha = StringField('画像に表示されている文字を入力してください。')

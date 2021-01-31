@@ -49,8 +49,8 @@ def userdata(user_code):
     followed = UserConnect.followed_exists(user.User_id)
     follows = UserConnect.select_follows_by_user_id(user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
-    # ユーザーがいいねした商品
-    items = Likes.likes_join_sell(Sell, user.User_id)
+    # ユーザーが出品した商品
+    items = Sell.select_sell_by_user_id(user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -60,7 +60,7 @@ def userdata(user_code):
     return render_template(
         'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list
+        items=items, liked_list=liked_list, post_c=len(items)
     )
 
 @bp.route('/userdata/<string:user_code>/likes', methods=['GET', 'POST'])
@@ -72,6 +72,8 @@ def userdata_likes(user_code):
     followed = UserConnect.followed_exists(user.User_id)
     follows = UserConnect.select_follows_by_user_id(user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
+    # ユーザーが出品した商品
+    sell_items = Sell.select_sell_by_user_id(user.User_id)
     # ユーザーがいいねした商品
     items = Likes.likes_join_sell(Sell, user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
@@ -83,5 +85,5 @@ def userdata_likes(user_code):
     return render_template(
         'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list
+        items=items, liked_list=liked_list, post_c=len(sell_items)
     )

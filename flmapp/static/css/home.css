@@ -15,6 +15,12 @@
     flex-grow: 1;
     padding: 8px;
 }
+.home-tab a{
+    transition: 0.5s;
+}
+.home-tab a:hover{
+    background-color: #0f239670;
+}
 .current{
     color: #ffffff;
     background-color: #0f2396;

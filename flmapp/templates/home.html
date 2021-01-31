@@ -7,11 +7,11 @@
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
-    {{ message }}
+    <p class="error-msg">{{ message }}</p>
 {% endfor %}
 <div class="home-tab">
     <a href="{{url_for('route.home')}}">NEW</a>
-    <a href="{{url_for('route.home')}}">HIT</a>
+    <a href="{{url_for('route.hit')}}">HIT</a>
     {% if current_user.is_authenticated %}
         <a href="{{url_for('route.timeline')}}">TIMELINE</a>
     {% endif %}
@@ -20,17 +20,23 @@
 {% for item in items %}
     <article class="item-wrap">
         <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-            <!-- {{ item.deal_status.name }} -->
             <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
                 <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
                 <p class="u-name">{{ item.user.username }}</p>
                 <p class="u-code">{{ item.user.user_code }}</p>
             </a></object>
             <div class="i-content-area">
-                <div class="i-key">
-                    <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
-                    <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
-                    <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+                <div class="k-s-box">
+                    <div class="i-key">
+                        <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
+                        <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
+                        <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+                    </div>
+                    {% if item.deal_status.value == 2 or item.deal_status.value == 3 %}
+                        <div class="sold">
+                            <p>SOLD OUT!</p>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
             </div>
@@ -56,7 +62,6 @@
     // ここまで ajaxでcsrf_tokenを使用するとき
     // ここから いいね処理
     $(document).ready(function(event){
-        // ここから カレントページ取得
         if(location.pathname != "/") {
             $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('current');
         } else $('.home-tab a:eq(0)').addClass('current');

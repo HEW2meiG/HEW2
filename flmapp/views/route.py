@@ -11,7 +11,7 @@ from flmapp.models.user import (
     User
 )
 from flmapp.models.reaction import (
-    Likes, UserConnect
+    Likes, UserConnect, BrowsingHistory
 )
 from flmapp.models.trade import (
     Sell
@@ -62,6 +62,27 @@ def timeline():
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
     items = UserConnect.select_timeline_sell(Sell)
+    # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
+    liked_list = []
+    for item in items:
+        liked = Likes.liked_exists(item.Sell_id)
+        if liked:
+            liked_list.append(item.Sell_id)
+    return render_template(
+        'home.html',
+        items=items,
+        liked_list=liked_list
+    )
+
+
+@bp.route('/hit')
+def hit():
+    """ホーム(ヒット)"""
+    # セッションの破棄
+    session.pop('pay_way', None)
+    session.pop('Credit_id', None)
+    session.pop('ShippingAddress_id', None)
+    items = BrowsingHistory.select_hit_sell(Sell)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:

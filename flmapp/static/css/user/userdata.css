@@ -1,0 +1,71 @@
+/* ユーザーページヘッダー部分 */
+.u-header{
+    display: flex;
+    padding: 25px;
+    margin: 2px;
+    background-color: #ffffff;
+}
+.u-header p:not(.u-code){
+    font-weight: bold;
+}
+.u-header .u-icon{
+    width: 155px;
+}
+.u-header .u-name{
+    font-size: 2.0rem;
+}
+.h-box{
+    margin-top: 10px;
+    margin-left: 20px;
+}
+.h-box .u-code{
+    margin-top: -8px;
+}
+.h-area-01{
+    display: flex;
+    margin-bottom: 10px;
+}
+.h-area-01 p{
+    margin-right: 20px;
+}
+.h-area-02{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.h-area-02 p{
+    margin-right: 20px;
+}
+.p-comm{
+    font-weight: normal;
+}
+/* タブ */
+.user-i-tab{
+    text-align: center;
+    margin: 10px;
+    border-radius: 7px;
+    border: solid 2px  #0f2396;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+}
+.user-i-tab a{
+    transition: 0.5s;
+}
+.user-i-tab a:hover{
+    background-color: #0f239670;
+}
+.user-i-tab a{
+    font-weight: bold;
+    font-size: 1.6rem;
+    flex-grow: 1;
+    padding: 8px;
+}
+.current{
+    color: #ffffff;
+    background-color: #0f2396;
+    border-radius: 5px;
+}
+.current:visited{
+    color: #ffffff;
+}
