@@ -11,7 +11,7 @@
 {% endfor %}
 <div class="home-tab">
     <a href="{{url_for('route.home')}}">NEW</a>
-    <a href="{{url_for('route.home')}}">HIT</a>
+    <a href="{{url_for('route.hit')}}">HIT</a>
     {% if current_user.is_authenticated %}
         <a href="{{url_for('route.timeline')}}">TIMELINE</a>
     {% endif %}

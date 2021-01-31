@@ -4,7 +4,7 @@ from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_, desc
 from flask_login import UserMixin, current_user
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 class Likes(db.Model):
@@ -186,7 +186,38 @@ class BrowsingHistory(db.Model):
             cls.User_id == User_id
         ).outerjoin(
             sell,
-            sell.User_id != User_id
+            and_(
+                sell.User_id != User_id,
+                sell.sell_flg == True, 
+                sell.is_active == True
+            )
         ).distinct(sell.Sell_id).with_entities(
             sell
         ).order_by(desc(cls.create_at)).limit(3).all()
+
+
+    @classmethod
+    def select_hit_sell(cls, Sell):
+        """
+        SellとBrowsingHistoryを結合し
+        出品状態、有効フラグが有効の商品を
+        今日の日付で閲覧数が多い順に取り出す
+        """
+        sell = aliased(Sell)
+        now = datetime.now()
+        return cls.query.filter(
+            cls.create_at > now - timedelta(days=1)
+        ).outerjoin(
+            sell,
+            and_(
+                sell.Sell_id == cls.Sell_id,
+                sell.sell_flg == True, 
+                sell.is_active == True
+            )
+        ).with_entities(
+            sell
+        ).order_by(
+            desc(func.count())
+        ).group_by(
+            cls.Sell_id
+        ).all()
