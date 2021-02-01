@@ -32,7 +32,14 @@
             <p>出品者からの発送通知をお待ちください。</p>
         {% elif item.has_sent == True and item.has_got == False %}
             <h4>受け取り評価をしてください。</h4>
-            <p>商品が発送されました。商品が到着したら、出品者の評価をしてください。</p>  
+            <p>商品が発送されました。商品が到着したら、出品者の評価をしてください。</p>
+            <p><span class="kotira">こちらの本が届きます</span></p>
+            <input type="checkbox" id="label1" class="cssacc">
+            <label for="label1" class="click-box">クリックして表示</label>
+            <div class="accshow">
+                <p><span class="kotira">本のタイトル：{{ item.sell_title }}</span></p>
+                <img class="b-img" src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
+            </div>
             <form method=POST action="{{ url_for('transaction.notice_rating', item_id=item.Sell_id) }}" >
                 {{ noticeform.csrf_token }}
                 {{ noticeform.notice_condition(value='has_got') }}
