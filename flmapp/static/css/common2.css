@@ -2,26 +2,30 @@
 .wrap{
     display: flex;
     justify-content: space-between;
+    overflow: visible;
 }
 header{
     position: sticky;
     top: 0;
-    height: 100vh;
     flex-grow: 1;
     flex-shrink: 5;
+    min-height: 100vh;
+    height: 100%;
     background-color: #FFF;
     padding: 80px;
     border-right: solid 1.5px #dedbd5;
 }
 .container{
+    min-height: 100vh;
     flex-basis: 700px;
     background-color: #fff3e0;
 }
 .r-content{
     position: sticky;
     top: 0;
-    height: 100vh;
     flex-basis: 30%;
+    min-height: 100vh;
+    height: 100%;
     background-color: #FFF;
     border-left: solid 1.5px #dedbd5;
 }
@@ -89,8 +93,8 @@ nav a:hover{
     font-weight: 700;
 }
 .accordion-close a{
-    margin: 5px 0;
-    font-size: 1.0rem;
+    margin: 15px 0;
+    font-size: 1.6rem;
     font-weight: bold;
 }
 /* フラッシュメッセージ */
