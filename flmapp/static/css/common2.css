@@ -2,25 +2,30 @@
 .wrap{
     display: flex;
     justify-content: space-between;
+    overflow: visible;
 }
 header{
     position: sticky;
     top: 0;
-    height: 100vh;
     flex-grow: 1;
+    flex-shrink: 5;
+    min-height: 100vh;
+    height: 100%;
     background-color: #FFF;
     padding: 80px;
     border-right: solid 1.5px #dedbd5;
 }
 .container{
+    min-height: 100vh;
     flex-basis: 700px;
     background-color: #fff3e0;
 }
 .r-content{
     position: sticky;
     top: 0;
-    height: 100vh;
     flex-basis: 30%;
+    min-height: 100vh;
+    height: 100%;
     background-color: #FFF;
     border-left: solid 1.5px #dedbd5;
 }
@@ -31,7 +36,7 @@ header{
     align-items: center;
 }
 header h1 img{
-    width: 230px;
+    width: 130px;
 }
 .h-wrap nav ul li{
     text-align: center;
@@ -46,12 +51,19 @@ header h1 img{
     border-radius: 50%;
     border: 2px solid #ececec;
 }
-/* .h-wrap nav ul li a.active {
-	
+.accordion-open:hover{
+    transition: color 0.5s;
+    color: #e54747;
 }
-.h-wrap nav ul li a:hover:not(.active) {
-
-} */
+nav a:hover{
+    color: #e54747;
+}
+.active{
+    color: #e54747;
+}
+.active:visited{
+    color: #e54747;
+}
 /* マイページアコーディオン */
 /* チェックボックスを非表示にする */
 .accordion-hidden{
@@ -62,6 +74,7 @@ header h1 img{
     cursor: pointer;
     font-size: 2.0rem;
     font-weight: bold;
+    transition: color 0.5s;
 }
 /* Answer部分は最初は表示しない */
 .accordion-close {
@@ -80,7 +93,14 @@ header h1 img{
     font-weight: 700;
 }
 .accordion-close a{
-    margin: 5px 0;
-    font-size: 1.0rem;
+    margin: 15px 0;
+    font-size: 1.6rem;
     font-weight: bold;
+}
+/* フラッシュメッセージ */
+.flash{
+    color: #e54747;
+    font-weight: bold;
+    font-size: 1.8rem;
+    padding: 10px 0;
 }

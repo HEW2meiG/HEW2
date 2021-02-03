@@ -1,0 +1,98 @@
+.notice-wrap{
+    background-color: #ffffff;
+    padding: 15px;
+    margin: 20px 0;
+}
+.notice-wrap h4{
+    font-size: 1.7rem;
+    line-height: 3.3rem;
+    color: #e54747;
+}
+.notice-wrap p{
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+.notice-wrap label:not(.click-box){
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+.notice-f{
+    margin-right: 10px;
+}
+#rating input{
+    margin-right: 6px;
+}
+.ra-msg {
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    max-height: 170px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+    outline: none;
+    line-height: 1.6;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+.ra-sbm{
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+}
+.kotira{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+/* アコーディオン */
+.click-box{
+    width: 350px;
+    padding: 10px;
+    background-color: #b5b5b5;
+    margin: 20px auto;
+    text-align: center;
+    cursor :pointer;
+    display: block;
+    font-size: 1.5rem;
+    color: #ffffff;
+    font-weight: bold;
+    display: block;
+    cursor :pointer;
+    transition: 0.5s;
+}
+.click-box:hover{
+    opacity: 0.5;
+}
+.click-box:before {
+    content: '\f054';
+    font-family: "Font Awesome 5 Free";
+    padding-right: 8px;
+}
+.cssacc:checked + .click-box:before {
+    content: '\f078';
+}
+.cssacc{
+    display: none;
+}
+.accshow {
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: 0.8s;
+}
+/*クリックで中身表示*/
+.cssacc:checked + label + .accshow{
+    text-align: center;
+    width: 350px;
+    margin: 20px auto;
+    height: auto;
+    padding: 20px;
+    background: #fff3e0;
+    opacity: 1;
+}
+.b-img{
+    width: 250px;
+}

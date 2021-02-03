@@ -3,46 +3,154 @@
 {% block title %}
 出品画面 - {{ super() }}
 {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sell/sell.css')}}">
+{% endblock %}
 {% block content %}
 <h1>出品情報入力</h1>
 {% for message in get_flashed_messages() %}
     {{ message }}
 {% endfor %}
 <form method="POST" enctype="multipart/form-data" action="{{url_for('sell.sell_preview')}}">
-    {{ form.csrf_token }}
-    {{render_field(form.sell_title, value=form.sell_title.data) }}
-    {{ form.item_picture_path.label }}<br>
-    <p>
-        商品の画像は購入者が受け取り確認時に公開されます。<br>
-        <span style="color: red;">*必ず出品する本をご自身で撮影した画像にしてください。<span></span>
-    </p>
-    {{ form.item_picture_path() }}
-    {% if form.item_picture_path.errors %}
-        <ul>
-            {% for error in form.item_picture_path.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <h4>この本を構成する3つのキーワード</h4>
-    {{ render_field(form.key1, value=form.key1.data) }}
-    {{ render_field(form.key2, value=form.key2.data) }}
-    {{ render_field(form.key3, value=form.key3.data) }}
-    {{ render_field(form.sell_comment, value=form.sell_comment.data) }}
-    <h4>商品の詳細</h4>
-    {{ render_field(form.genre, value=form.genre.data) }}
-    {{ render_field(form.item_state, value=form.item_state.data) }}
-    {{ render_field(form.postage, value=form.postage.data) }}
-    {{ render_field(form.send_way, value=form.send_way.data) }}
-    {{ render_field(form.consignor, value=form.consignor.data) }}
-    {{ render_field(form.schedule, value=form.schedule.data) }}
-    {{ render_field(form.remarks, value=form.remarks.data) }}
-    {% if form.price.data %}
-        {{ render_field(form.price, value=form.price.data) }}<p>円</p>
-    {% else %}
-        {{ render_field(form.price) }}<p>円</p>
-    {% endif %}
-    {{ form.submit() }}
+    <div class="kosho-form-300">
+        {{ form.csrf_token }}
+        {{render_field(form.sell_title, value=form.sell_title.data) }}
+        <div id="iconbox">
+            {{ form.item_picture_path.label }}
+            <p>
+                商品の画像は購入者が受け取り確認時に公開されます。<br>
+                <span style="color: red;">*必ず出品する本をご自身で撮影した画像にしてください。<span></span>
+            </p>
+            {% if form.item_picture_path.errors %}
+                    <ul>
+                        {% for error in form.item_picture_path.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+            {{ form.item_picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
+            <p>
+                    <div class="trim">
+                        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height:200px;">
+                    </div>
+            </p>
+        </div>
+        <h4>この本を構成する3つのキーワード</h4>
+        {{ render_field(form.key1, value=form.key1.data) }}
+        {{ render_field(form.key2, value=form.key2.data) }}
+        {{ render_field(form.key3, value=form.key3.data) }}
+        {{ render_field(form.sell_comment, value=form.sell_comment.data) }}
+        <h4>商品の詳細</h4>
+        {{ render_field(form.genre, value=form.genre.data) }}
+        {{ render_field(form.item_state, value=form.item_state.data) }}
+        {{ render_field(form.postage, value=form.postage.data) }}
+        {{ render_field(form.send_way, value=form.send_way.data) }}
+        {{ render_field(form.consignor, value=form.consignor.data) }}
+        {{ render_field(form.schedule, value=form.schedule.data) }}
+        {{ render_field(form.remarks, value=form.remarks.data) }}
+        {% if form.price.data %}
+
+            <div class="mg-tb-1">
+                {{ form.price.label }}<span class="req">必須</span><br>
+            </div>
+            \{{ form.price(value=form.price.data) }}
+
+        {% else %}
+
+        <div class="mg-tb-2 kosho-form-200">
+            <div class="mg-tb-1">
+                {{ form.price.label }}<span class="req">必須</span><br>
+            </div>
+            \{{ form.price() }}
+        </div>
+
+        {% endif %}
+        <div class="mg-t-5">
+          {{ form.submit() }}
+        </div>
+
+    </div>
 </form>
-<a href="{{url_for('route.home')}}">ホームへ戻る</a>
+<div class="mg-tb-3">
+    <a href="{{url_for('route.home')}}" class="back-home">ホームへ戻る</a>
+</div>
+
+<script>
+// 動的生年月日フォーム
+$(function() {
+    // 現在の年月日を取得
+    var time = new Date();
+    var year = time.getFullYear();
+    var month = time.getMonth() + 1;
+    var date = time.getDate();
+
+    // 選択された年月日を取得
+    var selected_year = document.getElementById("year").value;
+    var selected_month = document.getElementById("month").value;
+
+    // 月(変更)：選択された年に合わせて、適した月の値を選択肢にセットする
+    $('#year').change(function() {
+        selected_year = $('#year').val();
+
+        // 現在の年が選択された場合、月の選択肢は 1~現在の月 に設定
+        // それ以外の場合、1~12 に設定
+        var last_month = 12;
+        if (selected_year == year) {
+            last_month = month;
+        }
+        $('#month').children('option').remove();
+        $('#month').append('<option value="' + 0 + '">--</option>');
+        for (var n = 1; n <= last_month; n++) {
+            $('#month').append('<option value="' + n + '">' + n + '</option>');
+        }
+    });
+
+    // 日(変更)：選択された年・月に合わせて、適した日の値を選択肢にセットする
+    $('#year,#month').change(function() {
+        selected_year = $('#year').val();
+        selected_month = $('#month').val();
+
+        // 現在の年・月が選択された場合、日の選択肢は 1~現在の日付 に設定
+        // それ以外の場合、各月ごとの最終日を判定し、1~最終日 に設定
+        if (selected_year == year && selected_month == month ) {
+            var last_date = date;
+        }else{
+            // 2月：日の選択肢は1~28日に設定
+            // ※ ただし、閏年の場合は29日に設定
+            if (selected_month == 2) {
+                if((Math.floor(selected_year%4 == 0)) && (Math.floor(selected_year%100 != 0)) || (Math.floor(selected_year%400 == 0))){
+                    last_date = 29;
+                }else{
+                    last_date = 28;
+                }
+
+            // 4, 6, 9, 11月：日の選択肢は1~30日に設定
+            }else if(selected_month == 4 || selected_month == 6 || selected_month == 9 || selected_month == 11 ){
+                last_date = 30;
+
+            // 1, 3, 5, 7, 8, 10, 12月：日の選択肢は1~31日に設定
+            }else{
+                last_date = 31;
+            }
+        }
+
+        $('#date').children('option').remove();
+        $('#date').append('<option value="' + 0 + '">--</option>');
+        for (var m = 1; m <= last_date; m++) {
+            $('#date').append('<option value="' + m + '">' + m + '</option>');
+        }
+    });
+
+});
+
+    function previewImage(obj)
+    {
+        var fileReader = new FileReader();
+        fileReader.onload = (function() {
+            document.getElementById('preview').src = fileReader.result;
+        });
+        fileReader.readAsDataURL(obj.files[0]);
+    }
+
+</script>
 {% endblock %}

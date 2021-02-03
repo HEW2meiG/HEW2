@@ -1,0 +1,9 @@
+/* base03 */
+.r-content{
+    position: relative;
+    flex-basis: 30%;
+    height: 100%;
+    min-height: 100vh;
+    background-color: #FFF;
+    border-left: solid 1.5px #dedbd5;
+}

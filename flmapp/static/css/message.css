@@ -1,15 +1,24 @@
-/* 
-メッセージ機能の吹き出しcssです。
-後から変えてください。 
-css参考URL:https://projects.verou.me/bubbly/
-*/
-.speech-bubble-dest {
-	position: relative;
-	background: #ffa39e;
-	padding: 20px;
-	border-radius: .4em;
+.msger-wrap p{
+	font-weight: bold;
 }
-
+.msger-wrap .u-icon{
+	width: 50px;
+}
+.msg-content{
+	margin-bottom: 160px;
+}
+.msger-wrap{
+	display: flex;
+	align-items: center;
+}
+.speech-bubble-dest {
+	min-width: 200px;
+	position: relative;
+	background: #ffffff;
+	border-radius: 20px;
+	padding: 10px;
+	margin-right: 10px;
+}
 .speech-bubble-dest:after {
 	content: '';
 	position: absolute;
@@ -17,34 +26,51 @@ css参考URL:https://projects.verou.me/bubbly/
 	top: 50%;
 	width: 0;
 	height: 0;
-	border: 20px solid transparent;
-	border-right-color: #ffa39e;
+	border: 21px solid transparent;
+	border-right-color: #ffffff;
 	border-left: 0;
-	margin-top: -20px;
-	margin-left: -20px;
+	border-top: 0;
+	margin-top: -10.5px;
+	margin-left: -21px;
 }
-
-.speech-bubble-self {
+.speech-bubble-self{
+	min-width: 200px;
 	position: relative;
-	background: #9ed5ff;
-	padding: 20px;
-	border-radius: .4em;
+	background: #ffffff;
+	border-radius: 20px;
+	padding: 10px;
+	margin-left: 10px;
 }
-
-.speech-bubble-self:after {
+.speech-bubble-self::after{
 	content: '';
 	position: absolute;
 	right: 0;
 	top: 50%;
 	width: 0;
 	height: 0;
-	border: 20px solid transparent;
-	border-left-color: #9ed5ff;
+	border: 21px solid transparent;
+	border-left-color: #ffffff;
 	border-right: 0;
-	margin-top: -20px;
-	margin-right: -20px;
+	border-top: 0;
+	margin-top: -10.5px;
+	margin-right: -21px;
 }
-
 .msg-box{
 	display: flex;
+	margin: 17px;
+}
+.self-box{
+	justify-content: flex-end;
+}
+.self-box .u-icon{
+	margin-right: 10px;
+}
+.self-box .msger-wrap{
+	margin-left: 30px;
+}
+.dest-box .u-icon{
+	margin-left: 10px;
+}
+.dest-box .msger-wrap{
+	margin-right: 30px;
 }

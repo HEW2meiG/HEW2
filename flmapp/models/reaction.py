@@ -1,9 +1,10 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_, desc
 from flask_login import UserMixin, current_user
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 class Likes(db.Model):
@@ -56,6 +57,22 @@ class Likes(db.Model):
                 cls.User_id == current_user.get_id()
             )
         ).delete()
+
+    @classmethod
+    def likes_join_sell(cls, Sell, User_id):
+        """
+        LikesとSellを結合し,
+        いいねしたUser_idと引数のUser_id
+        が一致したSellレコードを新着順に取り出す
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id == User_id
+        ).outerjoin(
+            sell
+        ).with_entities(
+            sell
+        ).order_by(desc(cls.create_at)).all()
 
 
 class UserConnect(db.Model):
@@ -115,6 +132,28 @@ class UserConnect(db.Model):
                     )
                 ).delete()
 
+    @classmethod
+    def select_timeline_sell(cls, Sell):
+        """
+        SellとUserConnectを結合し
+        ログインしているユーザー以外かつ
+        フォローしているユーザーが出品しているかつ
+        出品状態、有効フラグが有効の商品を新着順に取り出す
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.from_user_id == current_user.User_id
+        ).outerjoin(
+            sell,
+            and_(
+                sell.sell_flg == True, 
+                sell.is_active == True,
+                sell.User_id != current_user.User_id
+            )
+        ).with_entities(
+            sell
+        ).order_by(desc(cls.create_at)).all()
+
 
 class BrowsingHistory(db.Model):
     """閲覧履歴テーブル"""
@@ -134,3 +173,51 @@ class BrowsingHistory(db.Model):
 
     def create_new_browsinghistory(self):
         db.session.add(self)
+
+    @classmethod
+    def b_history_join_sell(cls, Sell, User_id):
+        """
+        BrowsingHistoryとSellを結合し,
+        閲覧したUser_idと引数のUser_id
+        が一致したSellレコードを新着順に3件取り出す
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id == User_id
+        ).outerjoin(
+            sell,
+            and_(
+                sell.User_id != User_id,
+                sell.sell_flg == True, 
+                sell.is_active == True
+            )
+        ).distinct(sell.Sell_id).with_entities(
+            sell
+        ).order_by(desc(cls.create_at)).limit(3).all()
+
+
+    @classmethod
+    def select_hit_sell(cls, Sell):
+        """
+        SellとBrowsingHistoryを結合し
+        出品状態、有効フラグが有効の商品を
+        今日の日付で閲覧数が多い順に取り出す
+        """
+        sell = aliased(Sell)
+        now = datetime.now()
+        return cls.query.filter(
+            cls.create_at > now - timedelta(days=1)
+        ).outerjoin(
+            sell,
+            and_(
+                sell.Sell_id == cls.Sell_id,
+                sell.sell_flg == True, 
+                sell.is_active == True
+            )
+        ).with_entities(
+            sell
+        ).order_by(
+            desc(func.count())
+        ).group_by(
+            cls.Sell_id
+        ).all()

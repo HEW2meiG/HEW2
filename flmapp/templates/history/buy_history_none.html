@@ -1,0 +1,16 @@
+{% extends "base02.html" %}
+{% block title %}
+    購入履歴画面 - {{ super() }}
+{% endblock %}
+{% block content %}
+{% for message in get_flashed_messages() %}
+    {{ message }}
+{% endfor %}
+<h2>購入した本</h2>
+<h3>
+    <a class="mp-a" href="{{url_for('history.buy_in_progress')}}">取引中</a>
+</h3>
+<h3>
+    <a class="mp-a" href="{{url_for('history.buy_completed')}}">過去の取引</a>
+</h3>
+{% endblock %}

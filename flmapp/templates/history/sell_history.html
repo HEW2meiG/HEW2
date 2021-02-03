@@ -1,4 +1,3 @@
-{% from "_formhelpers.html" import render_field %}
 {% extends "base02.html" %}
 {% block title %}
     出品履歴画面 - {{ super() }}
@@ -7,34 +6,33 @@
 {% for message in get_flashed_messages() %}
     {{ message }}
 {% endfor %}
-<div class="row">
-    <div class="col-lg-4 offset-lg-2">
-        <h2>出品中の本</h2>
-        <a href="{{url_for('sell.sell')}}">出品する</a>
-        <table>
-            {% for item in items %}
-            <tr>
-                <td>
-                    {% if item.picture_path %}
-                    <img src="{{url_for('static', filename='user_image/' + item.picture_path)}}">
-                    {% endif %}
-                    {{ item.username }}
-                </td>
-                <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-                    {% if item.sell_flg %}
-                        {{ item.deal_status.name }}
-                    {% else %}
-                        公開停止中
-                    {% endif%}
-                    <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-                    {{ item.key1 }}
-                    {{ item.key2 }}
-                    {{ item.key3 }}
-                    {{ item.sell_comment }}
-                </a></td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-</div>
+<h2>出品した本</h2>
+<h3>
+    <a class="mp-a" href="{{url_for('history.sell_on_display')}}">出品中</a>
+</h3>
+<h3>
+    <a class="mp-a" href="{{url_for('history.sell_in_progress')}}">取引中</a>
+</h3>
+<h3>
+    <a class="mp-a" href="{{url_for('history.sell_completed')}}">売却済み</a>
+</h3>
+{% for item in items %}
+    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+        {% if item.deal_status.value == 1 and not item.sell_flg %}
+            公開停止中
+        {% endif%}
+        <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
+        {{ item.key1 }}
+        {{ item.key2 }}
+        {{ item.key3 }}
+        {{ item.sell_comment }}
+        {{ item.price }}
+    </a>
+{% endfor %}
+{% if prev_url %}
+    <a href="{{ prev_url }}">前へ</a>
+{% endif %}
+{% if next_url %}
+    <a href="{{ next_url }}">次へ</a>
+{% endif %}
 {% endblock %}

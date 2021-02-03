@@ -1,11 +1,17 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy.orm import aliased
 from sqlalchemy import and_, or_, desc
 
 from datetime import datetime, timedelta
 
+from flask_login import (
+    current_user
+)
+
 from enum import Enum
 from flmapp.models.enum_conf import EnumType
+
 
 # 出品情報テーブルのEnum型を定義
 Genre = Enum("Genre", [("SF", 1), ("政治", 2), ("恋愛", 3), ("青春", 4), ("ミステリー", 5), \
@@ -82,9 +88,19 @@ class Sell(db.Model):
         return cls.query.filter(cls.User_id==User_id).all()
 
     @classmethod
-    def select_sell_by_deal_status(cls, User_id, deal_status):
+    def select_sell_by_deal_status(cls, User_id, deal_status, page=1):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
-        return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
+        return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)
+            ).paginate(page, 1, False)
+
+    @classmethod
+    def select_new_sell(cls):
+        """
+        出品状態、有効フラグが有効の商品を新着順に取り出す
+        """
+        return cls.query.filter_by(
+            sell_flg = True, is_active = True
+        ).order_by(desc(cls.create_at)).all()
 
     @classmethod
     def delete_sell(cls, Sell_id):
@@ -100,7 +116,15 @@ class Sell(db.Model):
             cls.key3.like(f'%{word}%'),
             cls.sell_comment.like(f'%{word}%'),
             ),).all()
-            
+ 
+    @classmethod
+    def select_sales(cls, User_id):
+        """売り上げ金を合計して返す"""
+        return cls.query.filter(
+            cls.User_id==current_user.User_id,
+            cls.deal_status==Deal_status(3)
+        ).with_entities(func.sum(Sell.price)).first()
+
 
 class Buy(db.Model):
     """購入情報テーブル"""
@@ -131,6 +155,19 @@ class Buy(db.Model):
     def select_buy_by_sell_id(cls, Sell_id):
         """Sell_id(item_id)によってBuy(購入情報)レコードを得る"""
         return cls.query.filter_by(Sell_id=Sell_id).first()
+
+    @classmethod
+    def buy_join_sell_deal_status(cls, User_id, deal_status):
+        """
+        Buy(購入)とSell(商品)を結合し、
+        BuyのUser_idとSellのdeal_statusが引数と一致するものを
+        絞り込む
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id==User_id
+        ).outerjoin(sell, sell.deal_status==Deal_status(deal_status)
+        ).with_entities(sell).all()
 
 
 # 相互評価情報テーブルのEnum型を定義

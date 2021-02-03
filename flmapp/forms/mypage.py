@@ -17,9 +17,14 @@ from flmapp.models.token import MailResetToken
 class ProfileForm(FlaskForm):
     """プロフィール設定ページフォーム"""
     username = StringField('名前:')
+    usercode = StringField('ユーザーコード:')
     picture_path = FileField('アイコン画像を変更')
     prof_comment = TextAreaField('自己紹介:')
     submit = SubmitField('変更する')
+
+    def validate_usercode(self,field):
+        if current_user.user_code != field.data and User.select_user_by_user_code(field.data):
+            raise ValidationError('ユーザーコードはすでに使用されています。')
 
 
 class ChangePasswordForm(FlaskForm):

@@ -1,0 +1,89 @@
+.t-wrap{
+    padding: 30px;
+}
+.titile{
+    padding: 10px;
+    background-color: #ceb591;
+    border-radius: 10px;
+    text-align: center;
+}
+/* 取引情報 */
+.t-wrap table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+.t-wrap table th, .t-wrap td{
+    padding: 15px 10px;
+}
+.t-wrap table tr{
+    border-bottom: solid 1px #eee;
+}
+.t-wrap table th{
+    width: 150px;
+}
+.t-wrap .fa-key{
+    color: #C8A063;
+    margin-right: 5px;
+}
+/* チャット */
+.message-area{
+    position: fixed;
+    background-color: #ffffff;
+    width: 700px;
+    bottom: 0;
+    padding: 30px 20px 60px;
+}
+.msg-wrap{
+    display: flex;
+    align-items: center;
+}
+.message-area textarea{
+    display: inline-block;
+    vertical-align: top;
+    width: 90%;
+    max-height: 170px;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+    outline: none;
+    line-height: 1.6;
+    resize: vertical;
+}
+.message-area #submit {
+    height: 50px;
+    width: 50px;
+    display: inline-block;
+    border-radius: 50%;
+    font-size: 12pt;
+    text-align: center;
+    cursor: pointer;
+    padding: 12px 6px;
+    background: #e54747;
+    color: #ffffff;
+    line-height: 1em;
+    transition: .3s;
+}
+.message-area #submit:hover {
+    color         : #000066;
+    background    : #ffffff;
+}
+/* メッセージを読み込むボタン */
+.load-msg-a{
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.load-msg-b{
+    width: 300px;
+    height: 40px;
+    margin: 0 20px;
+    line-height: 40px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    transition: .2s;
+    background-color: #b9b9b9;
+}

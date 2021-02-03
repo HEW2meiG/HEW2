@@ -4,6 +4,7 @@
 新規会員登録画面 - {{ super() }}
 {% endblock %}
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/register.css')}}">
 <!-- 郵便番号から住所自動入力 -->
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 {% endblock %}
@@ -13,34 +14,72 @@
 {% endfor %}
 <h1>新規会員登録</h1>
 <form method="POST" enctype="multipart/form-data">
+
     {{ form.csrf_token }}
+
     <h3>パスワード登録</h3>
-    {{ render_field(form.password) }}
-    {{ render_field(form.confirm_password) }}
-    <h3>プロフィール情報登録</h3>
-    {{ render_field(form.picture_path) }}
-    {{ render_field(form.username) }}
-    {{ render_field(form.user_code) }}
+    <div class="kosho-form-300">
+        {{ render_field(form.password) }}
+        {{ render_field(form.confirm_password) }}
+
+        <h3>プロフィール情報登録</h3>
+
+        <div id="iconbox">
+            {{ form.picture_path.label }}<br>
+            {{ form.picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
+            <p>
+                    <div class="trim">
+                        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height:150px;">
+                    </div>
+            </p>
+        </div>
+
+        {{ render_field(form.username) }}
+        {{ render_field(form.user_code) }}
+    </div>
+
     <h3>本人情報登録</h3>
-    <p>お名前(全角)</p>
-    {{ render_field(form.last_name) }}
-    {{ render_field(form.first_name) }}
-    <p>お名前カナ(全角)</p>
-    {{ render_field(form.last_name_kana) }}
-    {{ render_field(form.first_name_kana) }}
-    <p>生年月日</p>
-    {{ render_field(form.b_year, id="year") }}
-    {{ render_field(form.b_month, id="month") }}
-    {{ render_field(form.b_date, id="date") }}
-    <h3>住所登録</h3>
-    {{ render_field(form.zip01, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
-    {{ render_field(form.pref01) }}
-    {{ render_field(form.addr01) }}
-    {{ render_field(form.addr02) }}
-    {{ render_field(form.addr03) }}
-    {{ captcha() }}
-    {{ render_field(form.captcha) }}
-    {{ form.submit() }}
+    <div class="kosho-form-140">
+        <div class="mg-tb-1">
+            {{ form.last_name.label }}<span class="req">必須</span><br>
+        </div>
+        {{ form.last_name() }}
+        {{ form.first_name() }}
+    </div>
+
+    <div class="mg-tb-2 kosho-form-140">
+        <div class="mg-tb-1">
+            {{ form.last_name_kana.label }}<span class="req">必須</span><br>
+        </div>
+        {{ form.last_name_kana() }}
+        {{ form.first_name_kana() }}
+    </div>
+
+    <div class="mg-tb-2">
+        <div class="mg-tb-1">
+            {{ form.b_year.label }}<span class="req">必須</span><br>
+        </div>
+        {{ form.b_year(id="year",class="kosho-select-year") }}年
+        {{ form.b_month(id="month",class="kosho-select-day") }}月
+        {{ form.b_date(id="date",class="kosho-select-day") }}日
+    </div>
+
+        <div class="kosho-form-300">
+
+        <h3>住所登録</h3>
+        {{ render_field(form.zip01, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
+        {{ render_field(form.pref01) }}
+
+        {{ render_field(form.addr01) }}
+
+        {{ render_field(form.addr02) }}
+
+        {{ render_field(form.addr03) }}
+
+        {{ captcha() }}
+        {{ render_field(form.captcha) }}
+        {{ form.submit(class="mg-5") }}
+    </div>
 </form>
 <script>
 // 動的生年月日フォーム
@@ -109,5 +148,15 @@ $(function() {
     });
 
 });
+
+    function previewImage(obj)
+    {
+        var fileReader = new FileReader();
+        fileReader.onload = (function() {
+            document.getElementById('preview').src = fileReader.result;
+        });
+        fileReader.readAsDataURL(obj.files[0]);
+    }
+
 </script>
 {% endblock %}

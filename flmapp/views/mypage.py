@@ -21,6 +21,12 @@ from flmapp.models.user import (
 from flmapp.models.token import (
     PasswordResetToken, MailResetToken
 )
+from flmapp.models.reaction import (
+    UserConnect, Likes, BrowsingHistory
+)
+from flmapp.models.trade import (
+    Rating, Sell
+)
 from flmapp.forms.mypage import (
    ProfileForm, ChangePasswordForm, IdentificationForm, ShippingAddressForm,
    ShippingAddressRegisterForm, ShippingAddressEditForm, HiddenShippingAddressDeleteForm,
@@ -52,7 +58,6 @@ def shippingaddresses_processor():
         return shippingaddress
     return dict(search_shippingaddress=search_shippingaddress)
 
-
 # コンテキストプロセッサ(template内で使用する関数)
 @bp.context_processor
 def credit_processor():
@@ -62,6 +67,23 @@ def credit_processor():
         return credit
     return dict(search_credit=search_credit)
 
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def likes_count_processor():
+    def likes_count(sell_id):
+        """いいねの数をカウントして返す"""
+        all_likes = Likes.select_likes_by_sell_id(sell_id)
+        return len(all_likes)
+    return dict(likes_count=likes_count)
+
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def followers_count_processor():
+    def followers_count(user_id):
+        """フォロワーの数をカウントして返す"""
+        all_followers = UserConnect.select_followers_by_user_id(user_id)
+        return len(all_followers)
+    return dict(followers_count=followers_count)
 
 # カスタムテンプレートフィルター
 @bp.app_template_filter('credit_num_format')
@@ -71,10 +93,52 @@ def credit_num_format(value):
 
 
 @bp.route('/')
-@login_required # login_requiredを追加するとログインしていないとアクセスができないようになる
+@login_required
 def mypagetop():
-    return render_template('mypage/mypage.html')
+    # ログイン中のユーザーがユーザーページのユーザーをフォローしているかの判定
+    followed = UserConnect.followed_exists(current_user.User_id)
+    follows = UserConnect.select_follows_by_user_id(current_user.User_id)
+    good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(current_user.User_id)
+    # ユーザーが出品した商品
+    items = Sell.select_sell_by_user_id(current_user.User_id)
+    # 最近見た本
+    b_items = BrowsingHistory.b_history_join_sell(Sell,current_user.User_id)
+    # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
+    liked_list = []
+    for item in items:
+        liked = Likes.liked_exists(item.Sell_id)
+        if liked:
+            liked_list.append(item.Sell_id)
+    return render_template(
+        'mypage/mypage.html', followed=followed, follows_count=len(follows),
+        good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
+        items=items, liked_list=liked_list, post_c=len(items), b_items=b_items
+    )
 
+@bp.route('/likes')
+@login_required
+def mypage_likes():
+    # ログイン中のユーザーがユーザーページのユーザーをフォローしているかの判定
+    followed = UserConnect.followed_exists(current_user.User_id)
+    follows = UserConnect.select_follows_by_user_id(current_user.User_id)
+    good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(current_user.User_id)
+    # ユーザーが出品した商品
+    sell_items = Sell.select_sell_by_user_id(current_user.User_id)
+    # ユーザーがいいねした商品
+    items = Likes.likes_join_sell(Sell, current_user.User_id)
+    # 最近見た本
+    b_items = BrowsingHistory.b_history_join_sell(Sell,current_user.User_id)
+    # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
+    liked_list = []
+    for item in items:
+        liked = Likes.liked_exists(item.Sell_id)
+        if liked:
+            liked_list.append(item.Sell_id)
+    return render_template(
+        'mypage/mypage.html', followed=followed, follows_count=len(follows),
+        good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
+        items=items, liked_list=liked_list, post_c=len(sell_items), b_items=b_items
+    )
 
 # プロフィール設定
 @bp.route('/profile', methods=['GET', 'POST'])
@@ -84,6 +148,8 @@ def profile():
     if request.method == 'POST' and form.validate():
         # ログイン中のユーザーIDによってユーザーを取得
         user = User.select_user_by_id(current_user.get_id())
+        #ユーザーコードの重複チェック--------------------------
+        
         # 画像アップロード処理 ここから--------------------------
         imagename = ''
         image = request.files[form.picture_path.name]
@@ -109,6 +175,7 @@ def profile():
         # データベース処理
         with db.session.begin(subtransactions=True):
             user.username = form.username.data
+            user.user_code = form.usercode.data
             user.prof_comment = form.prof_comment.data
             if imagename: # imagenameが設定されていれば(画像があれば)更新する
                 user.picture_path = imagename

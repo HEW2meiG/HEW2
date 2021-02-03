@@ -1,0 +1,38 @@
+/* 詳細テーブル */
+.t-wrap{
+    margin: 0 2px;
+}
+.t-wrap table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    margin: 0 auto;
+}
+.t-wrap table th, .t-wrap td{
+    padding: 15px 10px;
+}
+.t-wrap table tr{
+    border-bottom: solid 1px #eee;
+}
+.t-wrap table th{
+    width: 200px;
+    font-size: 1.3rem;
+}
+.t-wrap table td{
+    font-size: 1.3rem;
+}
+/* 出品者だった場合 */
+.keikoku{
+    color: red;
+    font-weight: normal;
+    margin-left: 10px;
+}
+.inf-wrap{
+    padding: 30px;
+}
+.inf-wrap h2{
+    line-height: 3.8rem;
+}
+.inf-wrap img{
+    width: 200px;
+}

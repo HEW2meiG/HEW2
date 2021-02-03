@@ -1,0 +1,33 @@
+.lf_name .req{
+    display: none;
+}
+
+  #iconbox{
+    width: 300px;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: tan;
+    padding-bottom: 20px;
+    
+}
+
+.trim {
+    width: 150px;
+    height: 150px;
+    margin: 20px auto 0 auto;
+    border-radius: 150px;
+    border: 1px solid black;
+    overflow: hidden;
+    position: relative;
+    background-color: white;
+  }
+  .trim img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+

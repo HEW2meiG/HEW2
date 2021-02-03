@@ -9,11 +9,13 @@ from wtforms import ValidationError
 from flask_login import current_user
 from flask import flash
 
+from flmapp.utils.button import ButtonField
+
 
 class DealMessageForm(FlaskForm):
     """取引メッセージフォーム"""
-    message = TextAreaField()
-    submit = SubmitField('送信')
+    message = TextAreaField(render_kw={"placeholder":"メッセージを送る"})
+    submit = ButtonField('<i class="fas fa-paper-plane"></i>')
 
 
 class NoticeRatingForm(FlaskForm):

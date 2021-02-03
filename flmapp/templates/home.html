@@ -3,42 +3,52 @@
 ホーム - {{ super() }}
 {% endblock %}
 {%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
-    {{ message }}
+    <p class="error-msg">{{ message }}</p>
 {% endfor %}
-<div>
-    <!-- ここから あとで消します -->
+<div class="home-tab">
+    <a href="{{url_for('route.home')}}">NEW</a>
+    <a href="{{url_for('route.hit')}}">HIT</a>
     {% if current_user.is_authenticated %}
-        <p>ようこそ{{ current_user.username }}さん</p>
-    {% else %}
-        <p>ログイン or 登録をしてください</p>
+        <a href="{{url_for('route.timeline')}}">TIMELINE</a>
     {% endif %}
-    <!-- ここまで あとで消します -->
-    <a href="{{url_for('sell.sell')}}">出品する</a>
-    <table>
-        {% for item in items %}
-        <tr>
-            <td><a href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
-                <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-                {{ item.user.username }}
-            </a></td>
-            <td><a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-                {{ item.deal_status.name }}
-                {{ item.key1 }}
-                {{ item.key2 }}
-                {{ item.key3 }}
-                {{ item.sell_comment }}
-                {{ item.create_at.strftime('%Y/%m/%d %H:%M') }}
-            </a></td>
-            <td>
-                {% include "like.html" %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
 </div>
+<!-- ここから　出品投稿 -->
+{% for item in items %}
+    <article class="item-wrap">
+        <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+            <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
+                <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+                <p class="u-name">{{ item.user.username }}</p>
+                <p class="u-code">{{ item.user.user_code }}</p>
+            </a></object>
+            <div class="i-content-area">
+                <div class="k-s-box">
+                    <div class="i-key">
+                        <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
+                        <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
+                        <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+                    </div>
+                    {% if item.deal_status.value == 2 or item.deal_status.value == 3 %}
+                        <div class="sold">
+                            <p>SOLD OUT!</p>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
+            </div>
+            <p><span class="i-price">¥{{ item.price }}</span></p>
+            <div class="i-fotter">
+                {% include "like.html" %}
+                <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
+            </div>
+        </a>
+    </article>
+{% endfor %}
+<!-- ここまで　出品投稿 -->
 <script>
     // ここから ajaxでcsrf_tokenを使用するとき
     var csrf_token = "{{ csrf_token() }}";
@@ -52,6 +62,10 @@
     // ここまで ajaxでcsrf_tokenを使用するとき
     // ここから いいね処理
     $(document).ready(function(event){
+        if(location.pathname != "/") {
+            $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('current');
+        } else $('.home-tab a:eq(0)').addClass('current');
+        // ここまで カレントページ取得
         var winScrollTop;
         $(document).on('click', '#like', function(event){
             event.preventDefault();
