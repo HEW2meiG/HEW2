@@ -10,6 +10,39 @@ div.kosho-form-300 input:focus{
     outline: none;
 }
 
+div.kosho-form-300 textarea{
+    width: 300px;
+    height: 200px;
+}
+div.kosho-form-300 textarea:focus{
+    outline: none;
+}
+
+
+
+div.kosho-form-300 select{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-300 select:focus{
+    outline: none;
+}
+
+
+div.kosho-form-200 input{
+    width: 200px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-140 input:focus{
+    outline: none;
+}
+
 div.kosho-form-140 input{
     width: 140px;
     height: 30px;
@@ -53,6 +86,18 @@ div.kosho-form-140 input:focus{
 #pref01{
     outline: none;
 }
+
+
+a.back-home {
+    text-decoration: none;
+    color: #8b4513;
+    font-weight: bold;
+}
+a.back-home:hover{
+    border-bottom: solid 1px #d9a077;
+    color: #d9a077;
+}
+
 
 
 
