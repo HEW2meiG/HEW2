@@ -91,6 +91,16 @@ class Sell(db.Model):
         """出品情報の削除"""
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
+    @classmethod
+    def search_by_word(cls, word):
+        """出品情報の検索"""
+        return cls.query.filter(or_(
+            cls.key1.like(f'%{word}%'),
+            cls.key2.like(f'%{word}%'),
+            cls.key3.like(f'%{word}%'),
+            cls.sell_comment.like(f'%{word}%'),
+            ),).all()
+            
 
 class Buy(db.Model):
     """購入情報テーブル"""
