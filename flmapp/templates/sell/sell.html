@@ -21,6 +21,13 @@
                 商品の画像は購入者が受け取り確認時に公開されます。<br>
                 <span style="color: red;">*必ず出品する本をご自身で撮影した画像にしてください。<span></span>
             </p>
+            {% if form.item_picture_path.errors %}
+                    <ul>
+                        {% for error in form.item_picture_path.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
             {{ form.item_picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
             <p>
                     <div class="trim">
@@ -28,13 +35,6 @@
                     </div>
             </p>
         </div>
-        {% if form.item_picture_path.errors %}
-            <ul>
-                {% for error in form.item_picture_path.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
         <h4>この本を構成する3つのキーワード</h4>
         {{ render_field(form.key1, value=form.key1.data) }}
         {{ render_field(form.key2, value=form.key2.data) }}
@@ -49,28 +49,25 @@
         {{ render_field(form.schedule, value=form.schedule.data) }}
         {{ render_field(form.remarks, value=form.remarks.data) }}
         {% if form.price.data %}
-            <!-- {{ render_field(form.price, value=form.price.data) }} -->
 
             <div class="mg-tb-1">
                 {{ form.price.label }}<span class="req">必須</span><br>
             </div>
             \{{ form.price(value=form.price.data) }}
-            
-
 
         {% else %}
 
         <div class="mg-tb-2 kosho-form-200">
-            <!-- {{ render_field(form.price) }} -->
             <div class="mg-tb-1">
                 {{ form.price.label }}<span class="req">必須</span><br>
             </div>
             \{{ form.price() }}
         </div>
 
-
         {% endif %}
-        {{ form.submit(class="mg-t-5") }}
+        <div class="mg-t-5">
+          {{ form.submit() }}
+        </div>
 
     </div>
 </form>

@@ -31,11 +31,3 @@
     transform: translate(-50%, -50%);
   }
 
-  ul{
-    width: 300px;
-    margin: 20px auto;
-    padding: 10px;
-    border-radius: 10px;
-    color: white;
-    background-color: #ff5959;
-  }

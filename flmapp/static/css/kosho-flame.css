@@ -76,6 +76,10 @@ div.kosho-form-140 input:focus{
     outline: none;
 }
 
+input, select, textarea{
+    font-family: 'Courier New', Courier, monospace;
+}
+
 #pref01{
     width: 100px;
     height: 30px;
