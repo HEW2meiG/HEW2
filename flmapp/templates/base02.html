@@ -87,7 +87,16 @@
                 {% block content %}
                 {% endblock %}
             </div>
-            <div class="r-content"></div>
+            <div class="r-content">
+                {% for r_item in r_item_list %}
+                    {{ r_item.user.username }}
+                    {{ r_item.key1 }}
+                    {{ r_item.key2 }}
+                    {{ r_item.key3 }}
+                {% endfor %}
+                {% block content2 %}
+                {% endblock %}
+            </div>
             <div id="login-required-modal" class="login-required-modal">
                 <div class="modal-bg js-modal-close"></div>
                 <div class="modal-content">

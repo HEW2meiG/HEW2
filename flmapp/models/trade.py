@@ -88,6 +88,11 @@ class Sell(db.Model):
         return cls.query.filter(cls.User_id==User_id).all()
 
     @classmethod
+    def select_all_sell_by_deal_status(cls, deal_status):
+        """deal_statusによってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.deal_status==Deal_status(deal_status)).all()
+
+    @classmethod
     def select_sell_by_deal_status(cls, User_id, deal_status):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
