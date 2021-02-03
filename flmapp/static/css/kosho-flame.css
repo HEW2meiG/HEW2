@@ -10,6 +10,51 @@ div.kosho-form-300 input:focus{
     outline: none;
 }
 
+div.kosho-form-140 input{
+    width: 140px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-140 input:focus{
+    outline: none;
+}
+
+.kosho-select-year{
+    width: 70px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+.kosho-select-year{
+    outline: none;
+}
+
+.kosho-select-day{
+    width: 50px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+.kosho-select-day{
+    outline: none;
+}
+
+
+
+/* 必須 */
+.req{
+    background-color: red;
+    color: white;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
 /* 古書邂逅ボタン */
 .kosho-button-300{
     width: 300px;
@@ -129,6 +174,22 @@ button:focus{
 }
 .mg-b-5{
     margin-bottom: 50px;
+}
+
+.mg-r-1{
+    margin-right: 10px;
+}
+.mg-r-2{
+    margin-right: 20px;
+}
+.mg-r-3{
+    margin-right: 30px;
+}
+.mg-r-4{
+    margin-right: 40px;
+}
+.mg-r-5{
+    margin-right: 50px;
 }
 
 .mg-rl-1{
@@ -295,4 +356,12 @@ button:focus{
 }
 .posi-fix{
     position: fixed;
+}
+
+/* float設定 */
+.fl-lf{
+    float: left;
+}
+.fl-rg{
+    float: right;
 }

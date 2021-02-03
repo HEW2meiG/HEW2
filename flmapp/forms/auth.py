@@ -48,16 +48,16 @@ class RegisterForm(FlaskForm):
         validators=[DataRequired('入力してください。'), EqualTo('confirm_password', message='パスワードが一致しません')]
     )
     confirm_password = PasswordField(
-        'パスワード確認: ', validators=[DataRequired('入力してください。')]
+        'パスワード確認', validators=[DataRequired('入力してください。')]
     )
     picture_path = FileField('アイコン画像を設定')
     username = StringField('ユーザーネーム', validators=[DataRequired()],render_kw={"placeholder":"例)ポチ"})
     user_code = StringField('ユーザーコード', validators=[DataRequired()],render_kw={"placeholder":"pochi0830"})
-    last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
+    last_name = StringField('お名前(全角)',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
-    last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
+    last_name_kana = StringField('お名前カナ(全角)',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
     first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ"})
-    b_year = SelectField('', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
+    b_year = SelectField('生年月日', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
     b_month = SelectField('', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
     b_date = SelectField('', choices=[(0,'--')], validators=[DataRequired()], coerce=int)
     zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456"})
