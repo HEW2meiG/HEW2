@@ -2,24 +2,73 @@
 {% block title %}
 出品情報確認画面 - {{ super() }}
 {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sell/sell_preview.css')}}">
+{% endblock %}
 {% block content %}
 <h1>出品情報確認</h1>
-{{ form.sell_title.data }}
-{{ form.key1.data }}
-{{ form.key2.data }}
-{{ form.key3.data }}
-{{ form.sell_comment.data }}
-{{ form.price.data }}<p>円</p>
+<p>
+    <span class="sell-info">本のタイトル</span>:{{ form.sell_title.data }}
+</p>
+
+<div class="keyword-area">
+    <p class="mg-tb-1">
+        <span class="sell-info">本のキーワード1</span>:{{ form.key1.data }}
+    </p>
+
+    <p class="mg-tb-1">
+        <span class="sell-info">本のキーワード2</span>:{{ form.key2.data }}
+    </p>
+
+    <p class="mg-tb-1">
+        <span class="sell-info">本の本のキーワード3</span>:{{ form.key3.data }}
+    </p>
+</div>
+
+<div class="comment-area">
+    <span class="sell-info">出品する本のコメント</span><br>
+    {{ form.sell_comment.data }}
+</div>
+
+<div class="price-area">
+    <p class="mg-tb-1">
+        <span class="sell-info">販売価格</span>:\{{ form.price.data }}
+    </p>
+</div>
+
 {% if imagename %}
-    <img src="{{url_for('static', filename='item_temp_image/' + imagename)}}">
+<div class="center-margin">
+    <img src="{{url_for('static', filename='item_temp_image/' + imagename)}}" class="book-photo">
+</div>
 {% endif %}
-{{ form.genre.data }}
-{{ form.item_state.data }}
-{{ form.postage.data }}
-{{ form.send_way.data }}
-{{ form.consignor.data }}
-{{ form.schedule.data }}
-{{ form.remarks.data }}
+
+<p class="mg-tb-1">
+    <span class="sell-info">ジャンル</span>:{{ form.genre.data }}
+</p>
+
+<p class="mg-tb-1">
+    <span class="sell-info">商品の状態</span>:{{ form.item_state.data }}
+</p>
+
+<p class="mg-tb-1">
+    <span class="sell-info">配送料の負担</span>:{{ form.postage.data }}
+</p>
+
+<p class="mg-tb-1">
+    <span class="sell-info">配送の方法</span>:{{ form.send_way.data }}
+</p>
+
+<p class="mg-tb-1">
+    <span class="sell-info">配送元地域</span>:{{ form.consignor.data }}
+</p>
+
+<p class="mg-tb-1">
+    <span class="sell-info">発送日の目安</span>:{{ form.schedule.data }}
+</p>
+
+<p class="mg-tb-1">
+    <span class="sell-info">備考</span>:{{ form.remarks.data }}
+</p>
 
 <form method="POST" action="{{url_for('sell.sell_register')}}">
     {{ hiddenform.csrf_token }}
@@ -37,7 +86,10 @@
     {{ hiddenform.consignor(value=form.consignor.data) }}
     {{ hiddenform.schedule(value=form.schedule.data) }}
     {{ hiddenform.remarks(value=form.remarks.data) }}
-    {{ hiddenform.submit(value='出品する') }}
+
+
+    {{ hiddenform.submit(class="mg-tb-5",value='出品する') }}
+
 </form>
 
 <form method="POST" action="{{url_for('sell.sell')}}">
@@ -56,7 +108,11 @@
     {{ hiddenform.consignor(value=form.consignor.data) }}
     {{ hiddenform.schedule(value=form.schedule.data) }}
     {{ hiddenform.remarks(value=form.remarks.data) }}
-    {{ hiddenform.submit(value='出品画面に戻る') }}
+
+
+    {{ hiddenform.submit(id="sell-back",class="mg-tb-5",value='出品画面に戻る') }}
+
+
 </form>
 
 {% endblock %}
