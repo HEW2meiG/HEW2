@@ -101,9 +101,10 @@ class Sell(db.Model):
         return cls.query.filter(cls.User_id!=User_id, cls.deal_status==Deal_status(deal_status)).all()
 
     @classmethod
-    def select_sell_by_deal_status(cls, User_id, deal_status):
+    def select_sell_by_deal_status(cls, User_id, deal_status, page=1):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
-        return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)).all()
+        return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)
+            ).paginate(page, 1, False)
 
     @classmethod
     def select_new_sell(cls):
@@ -120,13 +121,22 @@ class Sell(db.Model):
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
     @classmethod
+    def search_by_word(cls, word):
+        """出品情報の検索"""
+        return cls.query.filter(or_(
+            cls.key1.like(f'%{word}%'),
+            cls.key2.like(f'%{word}%'),
+            cls.key3.like(f'%{word}%'),
+            cls.sell_comment.like(f'%{word}%'),
+            ),).all()
+ 
+    @classmethod
     def select_sales(cls, User_id):
         """売り上げ金を合計して返す"""
         return cls.query.filter(
             cls.User_id==current_user.User_id,
             cls.deal_status==Deal_status(3)
         ).with_entities(func.sum(Sell.price)).first()
-    
 
 
 class Buy(db.Model):

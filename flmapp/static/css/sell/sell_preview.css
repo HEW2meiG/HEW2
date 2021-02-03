@@ -1,0 +1,23 @@
+.sell-info{
+    font-weight: bold;
+}
+
+img.book-photo{
+    padding: 10px;
+    border: solid 3px #8b4513;
+}
+
+#sell-back{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    transition: .2s;
+    background-color: #a73836;
+}
+#sell-back:hover{
+    transition: .7s;
+    background-color: #662222;
+}

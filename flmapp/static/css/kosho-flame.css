@@ -10,6 +10,111 @@ div.kosho-form-300 input:focus{
     outline: none;
 }
 
+div.kosho-form-300 textarea{
+    width: 300px;
+    height: 200px;
+}
+div.kosho-form-300 textarea:focus{
+    outline: none;
+}
+
+
+
+div.kosho-form-300 select{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-300 select:focus{
+    outline: none;
+}
+
+
+div.kosho-form-200 input{
+    width: 200px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-140 input:focus{
+    outline: none;
+}
+
+div.kosho-form-140 input{
+    width: 140px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-140 input:focus{
+    outline: none;
+}
+
+.kosho-select-year{
+    width: 70px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+.kosho-select-year{
+    outline: none;
+}
+
+.kosho-select-day{
+    width: 50px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+.kosho-select-day{
+    outline: none;
+}
+
+input, select, textarea{
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#pref01{
+    width: 100px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+#pref01{
+    outline: none;
+}
+
+
+a.back-home {
+    text-decoration: none;
+    color: #8b4513;
+    font-weight: bold;
+}
+a.back-home:hover{
+    border-bottom: solid 1px #d9a077;
+    color: #d9a077;
+}
+
+
+
+
+/* 必須 */
+.req{
+    background-color: red;
+    color: white;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+
 /* 古書邂逅ボタン */
 .kosho-button-300{
     width: 300px;
@@ -28,7 +133,6 @@ div.kosho-form-300 input:focus{
 #submit{
     width: 300px;
     height: 40px;
-    margin: 0 20px;
     line-height: 40px;
     border: none;
     border-radius: 10px;
@@ -83,6 +187,18 @@ button:focus{
 .mg-5{
     margin: 50px;
 }
+.mg-6{
+    margin: 60px;
+}
+.mg-7{
+    margin: 70px;
+}
+.mg-8{
+    margin: 80px;
+}
+.mg-9{
+    margin: 90px;
+}
 
 .mg-t-1{
     margin-top: 10px;
@@ -129,6 +245,22 @@ button:focus{
 }
 .mg-b-5{
     margin-bottom: 50px;
+}
+
+.mg-r-1{
+    margin-right: 10px;
+}
+.mg-r-2{
+    margin-right: 20px;
+}
+.mg-r-3{
+    margin-right: 30px;
+}
+.mg-r-4{
+    margin-right: 40px;
+}
+.mg-r-5{
+    margin-right: 50px;
 }
 
 .mg-rl-1{
@@ -295,4 +427,12 @@ button:focus{
 }
 .posi-fix{
     position: fixed;
+}
+
+/* float設定 */
+.fl-lf{
+    float: left;
+}
+.fl-rg{
+    float: right;
 }

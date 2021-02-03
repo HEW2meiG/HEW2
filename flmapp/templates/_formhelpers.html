@@ -1,15 +1,17 @@
 {% macro render_field(field) %}
-<dt>
-    {{ field.label }}{% if field.flags.required %}必須{% endif %}
-    <dd>
-        {{ field(**kwargs) | safe }}
-        {% if field.errors %}
-            <ul class="errors">
-                {% for error in field.errors %}
-                <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </dd>
-</dt>
+<div class="mg-tb-3">
+    <dt class="mg-tb-1">
+        {{ field.label }}{% if field.flags.required %}<span class="req">必須</span>{% endif %}
+        <dd>
+            {{ field(**kwargs) | safe }}
+            {% if field.errors %}
+                <ul class="errors">
+                    {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </dd>
+    </dt>
+</div>
 {% endmacro %}

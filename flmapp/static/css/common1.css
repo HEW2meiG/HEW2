@@ -48,10 +48,6 @@ dd{
     margin: 0;
 }
 
-ul{
-    padding: 0;
-}
-
 li{
     list-style: none;
 }
@@ -70,3 +66,19 @@ footer{
         width: 800px;
         margin: 0;
     }
+
+h1{
+    font-size: 22px;
+    margin: 0;
+    padding: 50px 0;
+    color: #8b4513;
+}
+
+ul{
+    width: 300px;
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    background-color: #ff5959;
+}

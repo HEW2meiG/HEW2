@@ -29,4 +29,10 @@
         {{ item.price }}
     </a>
 {% endfor %}
+{% if prev_url %}
+    <a href="{{ prev_url }}">前へ</a>
+{% endif %}
+{% if next_url %}
+    <a href="{{ next_url }}">次へ</a>
+{% endif %}
 {% endblock %}
