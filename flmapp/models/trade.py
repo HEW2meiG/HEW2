@@ -149,8 +149,8 @@ class Buy(db.Model):
     User_id = db.Column(db.Integer, db.ForeignKey('User.User_id'), nullable=False)
     Sell_id = db.Column(db.Integer, db.ForeignKey('Sell.Sell_id'), nullable=False)
     pay_way = db.Column(db.Integer, nullable=False)
-    Credit_id = db.Column(db.Integer, db.ForeignKey('Credit.Credit_id'), nullable=False)
-    ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('ShippingAddress.ShippingAddress_id'), nullable=False)
+    Credit_id = db.Column(db.Integer, db.ForeignKey('BuyCredit.BuyCredit_id'), nullable=False)
+    ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('BuyShippingAddress.BuyShippingAddress_id'), nullable=False)
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
@@ -227,3 +227,71 @@ class Rating(db.Model):
             )
                 ).all()
         return len(good_ratings),len(bad_ratings)
+
+
+class BuyShippingAddress(db.Model):
+    """購入配送先住所情報テーブル"""
+
+    __tablename__ = 'BuyShippingAddress'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
+
+    BuyShippingAddress_id = db.Column(db.Integer, primary_key=True)
+    last_name = db.Column(db.String(255), nullable=False)
+    first_name = db.Column(db.String(255), nullable=False)
+    last_name_kana = db.Column(db.String(255), nullable=False)
+    first_name_kana = db.Column(db.String(255), nullable=False)
+    zip_code = db.Column(db.Integer, nullable=False)
+    prefecture = db.Column(db.String(64), nullable=False)
+    address1 = db.Column(db.String(255), nullable=False)
+    address2 = db.Column(db.String(255), nullable=False)
+    address3 = db.Column(db.String(255))
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+   
+    def __init__(self, last_name, first_name, last_name_kana, first_name_kana, zip_code, prefecture, address1, address2, address3):
+        self.last_name = last_name
+        self.first_name = first_name
+        self.last_name_kana = last_name_kana
+        self.first_name_kana = first_name_kana
+        self.zip_code = zip_code
+        self.prefecture = prefecture
+        self.address1 = address1
+        self.address2 = address2
+        self.address3 = address3
+
+    def create_new_shippingaddress(self):
+        db.session.add(self)
+
+
+class BuyCredit(db.Model):
+    """購入クレジット情報テーブル"""
+
+    __tablename__ = 'BuyCredit'
+    __table_args__ = (CheckConstraint('update_at >= create_at'),)
+    
+    BuyCredit_id = db.Column(db.Integer, primary_key=True)
+    credit_name = db.Column(db.String(255), nullable=False) 
+    credit_num = db.Column(db.Integer, nullable=False)
+    expire = db.Column(db.Date, nullable=False)
+    security_code_hash = db.Column(db.String(255), nullable=False)
+    create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+
+    def __init__(self, credit_name, credit_num, expire):
+        self.credit_name = credit_name
+        self.credit_num = credit_num
+        self.expire = expire
+
+    def create_new_credit(self):
+        db.session.add(self)
+
+    # Custom property getter
+    @property
+    def security_code(self):
+        raise AttributeError('セキュリティコードは読み取り可能な属性ではありません。')
+
+    # Custom property setter
+    @security_code.setter
+    def security_code(self, security_code):
+        # generate_password_hash()：ハッシュ値が生成される
+        self.security_code_hash = generate_password_hash(security_code)
