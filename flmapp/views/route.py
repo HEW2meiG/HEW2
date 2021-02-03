@@ -71,9 +71,10 @@ def recommend2():
     """ランダムレコメンド"""
     # データ整形
     prefs={}
-    items = Sell.select_all_sell_by_deal_status(1)
+    items = Sell.select_not_user_sell_by_deal_status(current_user.User_id,1)
     r_item_list = []
-    r_item_list = random.sample(items, 2)
+    #! あとから変える
+    r_item_list = random.sample(items, 1)
     return r_item_list
 
 

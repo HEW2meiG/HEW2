@@ -23,11 +23,15 @@ header{
 .r-content{
     position: sticky;
     top: 0;
-    flex-basis: 30%;
+    flex-basis: 500px;
     min-height: 100vh;
     height: 100%;
+    padding: 10px;
     background-color: #FFF;
     border-left: solid 1.5px #dedbd5;
+}
+.r-wrap{
+    
 }
 /* ナビゲーション */
 .h-wrap{
@@ -103,4 +107,74 @@ nav a:hover{
     font-weight: bold;
     font-size: 1.8rem;
     padding: 10px 0;
+}
+/* レコメンド */
+.r_item-wrap{
+    width: 450px;
+    background-color: #ffffff;
+    margin: 2px;
+    padding: 30px;
+}
+.r_item-wrap p{
+    font-size: 1.5rem;
+}
+.r_item-wrap .u-box{
+    display: flex;
+    align-items: flex-start;
+}
+.r_item-wrap .u-box p{
+    margin-top: 11px;
+    margin-left: 5px;
+}
+.r_item-wrap .u-name{
+    font-weight: bold;
+}
+.r_item-wrap .u-code{
+    color: #7b7b7b;
+}
+.r_item-wrap .u-box .u-icon{
+    width: 60px;
+}
+.r_item-wrap .i-content-area{
+    margin-top: -23px;
+    margin-left: 70px;
+}
+.r_item-wrap .i-key{
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.r_item-wrap .i-key p{
+    margin-bottom: 5px;
+}
+.r_item-wrap .i-key i{
+    margin-right: 5px;
+}
+.r_item-wrap .i-key .fa-key{
+    color: #C8A063;
+}
+.r_item-wrap .i-comm{
+    margin: 10px 0px;
+}
+.r_item-wrap .i-price{
+    margin-left: 70px;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+.r_item-wrap .i-fotter{
+    width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.r_item-wrap .like-wrap button i{
+    margin-left: 49px;;
+}
+.r_item-wrap .i-fotter p{
+    color: #808080;
+}
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
+.r_item-wrap .k-s-box{
+    display: flex;
+    justify-content: space-between;
 }
