@@ -44,6 +44,24 @@ class Likes(db.Model):
             return False
 
     @classmethod
+    def liked_exists_user_id(cls, User_id, Sell_id):
+        """
+        Sell_idとユーザーIDが一致するいいねレコードを抽出し、
+        レコードが存在すればTrue、
+        存在しなければFalseを返す
+        """
+        record = cls.query.filter(
+                    and_(
+                        cls.Sell_id == Sell_id,
+                        cls.User_id == User_id
+                    )
+                ).first()
+        if record:
+            return True
+        else:
+            return False
+
+    @classmethod
     def select_likes_by_sell_id(cls, Sell_id):
         """Sell_idと一致する複数いいねレコードを抽出"""
         return cls.query.filter_by(Sell_id=Sell_id).all()
@@ -221,3 +239,22 @@ class BrowsingHistory(db.Model):
         ).group_by(
             cls.Sell_id
         ).all()
+
+    @classmethod
+    def b_history_exists(cls, User_id, Sell_id):
+        """
+        User_idとSell_idが一致するレコードが存在していれば
+        (ユーザーが商品を閲覧していれば)
+        True,
+        存在していなければFalseを返す
+        """
+        record = cls.query.filter(
+                    and_(
+                        cls.User_id == User_id,
+                        cls.Sell_id == Sell_id
+                    )
+                ).first()
+        if record:
+            return True
+        else:
+            return False

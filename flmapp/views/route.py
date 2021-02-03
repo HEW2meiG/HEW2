@@ -7,6 +7,10 @@ from flask_login import (
 )
 from flmapp import db
 
+import random # レコメンド
+from flmapp.utils.recommendations import (
+    getRecommendations
+)# レコメンド
 from flmapp.models.user import (
     User
 )
@@ -33,6 +37,47 @@ def likes_count_processor():
     return dict(likes_count=likes_count)
 
 
+def recommend():
+    """協調フィルタリングユーザーベースレコメンド"""
+    # データ整形
+    prefs={}
+    items = Sell.select_all_sell_by_deal_status(1)
+    users = User.query.all()
+    for item in items:
+        itemid = item.Sell_id
+        for user in users:
+            userid = user.User_id
+            prefs.setdefault(userid,{})
+            rating = 0
+            b_history = BrowsingHistory.b_history_exists(userid, itemid)
+            if b_history:
+                rating += 1
+            liked = Likes.liked_exists_user_id(userid, itemid)
+            if liked:
+                rating += 2
+            prefs[userid][itemid] = rating
+    # 類似度計算
+    recommends = getRecommendations(prefs,current_user.User_id)
+    r_item_list = []
+    if recommends is not None:
+        for recommend in recommends:
+            recommend_id = int(recommend)
+            r_item_list.append(Sell.select_sell_by_sell_id(recommend_id))
+    elif recommends is None:
+        r_item_list = recommend2()
+    return r_item_list
+
+def recommend2():
+    """ランダムレコメンド"""
+    # データ整形
+    prefs={}
+    items = Sell.select_not_user_sell_by_deal_status(current_user.User_id,1)
+    r_item_list = []
+    #! あとから変える
+    r_item_list = random.sample(items, 1)
+    return r_item_list
+
+
 @bp.route('/')
 def home():
     """ホーム(新着順)"""
@@ -42,6 +87,12 @@ def home():
     session.pop('ShippingAddress_id', None)
     # 出品状態、有効フラグが有効の商品を新着順に取り出す
     items = Sell.select_new_sell()
+    # レコメンドリスト
+    r_item_list = []
+    if current_user.is_authenticated:
+        r_item_list = recommend()
+    else:
+        r_item_list = recommend2()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -51,10 +102,12 @@ def home():
     return render_template(
         'home.html',
         items=items,
-        liked_list=liked_list
+        liked_list=liked_list,
+        r_item_list=r_item_list
     )
 
 @bp.route('/timeline')
+@login_required
 def timeline():
     """ホーム(タイムライン)"""
     # セッションの破棄
@@ -62,6 +115,9 @@ def timeline():
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
     items = UserConnect.select_timeline_sell(Sell)
+    # レコメンドリスト
+    r_item_list = []
+    r_item_list = recommend()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -71,7 +127,8 @@ def timeline():
     return render_template(
         'home.html',
         items=items,
-        liked_list=liked_list
+        liked_list=liked_list,
+        r_item_list=r_item_list
     )
 
 
@@ -83,6 +140,12 @@ def hit():
     session.pop('Credit_id', None)
     session.pop('ShippingAddress_id', None)
     items = BrowsingHistory.select_hit_sell(Sell)
+    # レコメンドリスト
+    r_item_list = []
+    if current_user.is_authenticated:
+        r_item_list = recommend()
+    else:
+        r_item_list = recommend2()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -92,7 +155,8 @@ def hit():
     return render_template(
         'home.html',
         items=items,
-        liked_list=liked_list
+        liked_list=liked_list,
+        r_item_list=r_item_list
     )
 
 
