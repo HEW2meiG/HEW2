@@ -141,6 +141,13 @@ class UserConnect(db.Model):
         return cls.query.filter_by(from_user_id=User_id).all()
 
     @classmethod
+    def select_follows_user_id_by_user_id(cls, User_id):
+        """from_user_idがUser_idと一致するto_user_idのみを抽出"""
+        return cls.query.filter_by(
+            from_user_id=User_id
+            ).with_entities(cls.to_user_id).all()
+
+    @classmethod
     def delete_follow(cls, User_id):
         """フォローレコードの削除"""
         return cls.query.filter(

@@ -97,8 +97,8 @@ nav a:hover{
     font-weight: 700;
 }
 .accordion-close a{
-    margin: 15px 0;
-    font-size: 1.6rem;
+    margin: 5px 0;
+    font-size: 0.6rem;
     font-weight: bold;
 }
 /* フラッシュメッセージ */

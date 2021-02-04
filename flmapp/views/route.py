@@ -9,7 +9,7 @@ from flmapp import db
 
 import random # レコメンド
 from flmapp.utils.recommendations import (
-    getRecommendations
+    getRecommendations, topMatches
 )# レコメンド
 from flmapp.models.user import (
     User
@@ -44,8 +44,10 @@ def recommend():
     users = User.query.all()
     items = Sell.query.all()
     on_display = Sell.select_all_sell_by_deal_status(1)
+    followed = UserConnect.select_follows_user_id_by_user_id(current_user.User_id)
     # 一次元タプルに変換
     on_display = sum(on_display, ())
+    followed = sum(followed, ())
     for user in users:
         userid = user.User_id
         prefs.setdefault(userid,{})
@@ -63,29 +65,26 @@ def recommend():
                 if liked:
                     rating += 2
             prefs[userid][itemid] = rating
-    # 類似度計算
+    # 商品レコメンド
     recommends = getRecommendations(prefs,current_user.User_id,on_display)
-    print(recommends)
+    # ユーザーレコメンド
+    u_recommends = topMatches(prefs,current_user.User_id, followed)
+    print(u_recommends)
     r_item_list = []
     if recommends is not None:
         for recommend in recommends:
             recommend_id = int(recommend)
             r_item_list.append(Sell.select_sell_by_sell_id(recommend_id))
     elif recommends is None:
-        r_item_list = recommend2()
-    return r_item_list
-
-def recommend2():
-    """ランダムレコメンド"""
-    # データ整形
-    prefs={}
-    if current_user.is_authenticated:
-        items = Sell.select_not_user_sell_by_deal_status(current_user.User_id,1)
-    else:
-        items = Sell.select_all_sell_by_deal_status(1)
-    r_item_list = []
-    r_item_list = random.sample(items, 3)
-    return r_item_list
+        r_item_list = []
+    r_user_list = []
+    if u_recommends is not None:
+        for u_recommend in u_recommends:
+            u_recommend_id = int(u_recommend)
+            r_user_list.append(User.select_user_by_id(u_recommend_id))
+    elif u_recommends is None:
+        r_user_list = []
+    return r_item_list,r_user_list
 
 
 @bp.route('/')
@@ -99,10 +98,9 @@ def home():
     items = Sell.select_new_sell()
     # レコメンドリスト
     r_item_list = []
+    r_user_list = []
     if current_user.is_authenticated:
-        r_item_list = recommend()
-    else:
-        r_item_list = recommend2()
+        r_item_list,r_user_list = recommend()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -113,7 +111,8 @@ def home():
         'home.html',
         items=items,
         liked_list=liked_list,
-        r_item_list=r_item_list
+        r_item_list=r_item_list,
+        r_user_list=r_user_list
     )
 
 @bp.route('/timeline')
@@ -127,7 +126,8 @@ def timeline():
     items = UserConnect.select_timeline_sell(Sell)
     # レコメンドリスト
     r_item_list = []
-    r_item_list = recommend()
+    r_user_list = []
+    r_item_list,r_user_list = recommend()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -138,7 +138,8 @@ def timeline():
         'home.html',
         items=items,
         liked_list=liked_list,
-        r_item_list=r_item_list
+        r_item_list=r_item_list,
+        r_user_list=r_user_list
     )
 
 
@@ -152,10 +153,9 @@ def hit():
     items = BrowsingHistory.select_hit_sell(Sell)
     # レコメンドリスト
     r_item_list = []
+    r_user_list = []
     if current_user.is_authenticated:
-        r_item_list = recommend()
-    else:
-        r_item_list = recommend2()
+        r_item_list,r_user_list = recommend()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -166,7 +166,8 @@ def hit():
         'home.html',
         items=items,
         liked_list=liked_list,
-        r_item_list=r_item_list
+        r_item_list=r_item_list,
+        r_user_list=r_user_list
     )
 
 

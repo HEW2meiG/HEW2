@@ -106,3 +106,42 @@
     // ここまで いいね処理
 </script>
 {% endblock %}
+{% block content2 %}
+{% if not r_item_list %}
+    <p>購入履歴・閲覧履歴・いいねによりあなたのおすすめの本を探します</p>
+{% else %}
+    <h2>おすすめの本</h2>
+    {% for item in r_item_list %}
+        <article class="r_item-wrap">
+            <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+                <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
+                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+                    <p class="u-name">{{ item.user.username }}</p>
+                    <p class="u-code">{{ item.user.user_code }}</p>
+                </a></object>
+                <div class="i-content-area">
+                    <div class="k-s-box">
+                        <div class="i-key">
+                            <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
+                            <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
+                            <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="i-fotter">
+                    {% include "like.html" %}
+                    <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
+                </div>
+            </a>
+        </article>
+    {% endfor %}
+    <h2>おすすめのユーザー</h2>
+    {% for user in r_user_list %}
+        <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
+            <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+            <p class="u-name">{{ user.username }}</p>
+            <p class="u-code">{{ user.user_code }}</p>
+        </a>
+    {% endfor %}
+{% endif %}
+{% endblock %}

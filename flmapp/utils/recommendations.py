@@ -54,13 +54,17 @@ def sim_pearson(prefs,p1,p2):
 
 # ディクショナリprefsからpersonにもっともマッチするものたちを返す
 # 結果の数と類似性関数はオプションのパラメータ
-def topMatches(prefs,person,n=5,similarity=sim_pearson):
+def topMatches(prefs,person,followed,similarity=sim_pearson):
     scores=[(similarity(prefs,person,other),other)
-            for other in prefs if other!=person]
+            for other in prefs if other!=person and other not in followed]
     # 高スコアがリストの最初に来るように並び替える
     scores.sort()
     scores.reverse()
-    return scores[0:n]
+    u_recommend_id = np.array(scores)
+    if len(u_recommend_id)>0:
+        return u_recommend_id[0:3, 1]
+    else:
+        return None
 
 # person以外のユーザーの評点の重み付き平均を行い、pesonへの推薦を算出する
 def getRecommendations(prefs,person,on_display,similarity=sim_pearson):
