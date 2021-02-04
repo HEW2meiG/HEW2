@@ -19,19 +19,17 @@
     <p>代金引換</p>
 {% elif buy.pay_way==2 %}
     <p>クレジットカード</p>
-    {% set credit = search_credit(buy.Credit_id) %}
-    <p>{{ credit.credit_name }}</p>
-    <p>{{ credit.credit_num | credit_num_format }}</p>
-    <p>{{ credit.expire.strftime('%m/%y') }}</p>
+    <p>{{ buy.credit.credit_name }}</p>
+    <p>{{ buy.credit.credit_num | credit_num_format }}</p>
+    <p>{{ buy.credit.expire.strftime('%m/%y') }}</p>
 {% endif %}
 <h3>配送先</h3>
-{% set shippingaddress = search_shippingaddress(buy.ShippingAddress_id) %}
-<p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
-<p>{{ shippingaddress.zip_code }}</p>
-<p>{{ shippingaddress.prefecture }}</p>
-<p>{{ shippingaddress.address1 }}</p>
-<p>{{ shippingaddress.address2 }}</p>
-<p>{{ shippingaddress.address3 }}</p>
+<p>{{ buy.s_address.last_name }}{{ buy.s_address.first_name }}</p>
+<p>{{ buy.s_address.zip_code }}</p>
+<p>{{ buy.s_address.prefecture }}</p>
+<p>{{ buy.s_address.address1 }}</p>
+<p>{{ buy.s_address.address2 }}</p>
+<p>{{ buy.s_address.address3 }}</p>
 <a href="{{url_for('transaction.transaction', item_id=item.Sell_id)}}">取引画面をみる</a>
 <a href="{{url_for('route.home')}}">ホームへ戻る</a>
 {% endblock %}

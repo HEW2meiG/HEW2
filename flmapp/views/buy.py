@@ -14,7 +14,7 @@ from flmapp.models.user import (
     User, ShippingAddress, Credit
 )
 from flmapp.models.trade import (
-    Sell, Buy, Deal_status
+    Sell, Buy, Deal_status, BuyShippingAddress, BuyCredit
 )
 from flmapp.forms.buy import (
    HiddenBuyForm, PayWayForm, ShippingAddressForm,
@@ -119,12 +119,41 @@ def buy(item_id):
     item = Sell.select_sell_by_sell_id(item_id)
     if request.method=='POST' and form.validate():
         user_id = current_user.get_id()
+        s_address = ShippingAddress.search_shippingaddress(form.ShippingAddress_id.data)
+        if form.pay_way.data == '2':
+            credit = Credit.search_credit(form.Credit_id.data)
+            buycredit = BuyCredit(
+                credit_name = credit.credit_name,
+                credit_num = credit.credit_num,
+                expire = credit.expire,
+                security_code_hash = credit.security_code_hash
+            )
+            with db.session.begin(subtransactions=True):
+                buycredit.create_new_buycredit()
+            db.session.commit()
+        buyshippingaddress = BuyShippingAddress(
+            last_name = s_address.last_name,
+            first_name = s_address.first_name,
+            last_name_kana = s_address.last_name_kana,
+            first_name_kana = s_address.first_name_kana,
+            zip_code = s_address.zip_code,
+            prefecture = s_address.prefecture,
+            address1 = s_address.address1,
+            address2 = s_address.address2,
+            address3 = s_address.address3
+        )
+        with db.session.begin(subtransactions=True):
+            buyshippingaddress.create_new_buyshippingaddress()
+        db.session.commit()
+        creditid = ""
+        if form.pay_way.data == '2':
+            creditid = buycredit.BuyCredit_id
         buy = Buy(
             User_id = user_id,
             Sell_id = item_id,
             pay_way = form.pay_way.data,
-            Credit_id = form.Credit_id.data,
-            ShippingAddress_id = form.ShippingAddress_id.data
+            Credit_id = creditid,
+            ShippingAddress_id = buyshippingaddress.BuyShippingAddress_id
         )
         with db.session.begin(subtransactions=True):
             buy.create_new_buy()

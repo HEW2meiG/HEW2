@@ -162,15 +162,25 @@
             <td>{{ '%08d' % item.Sell_id }}</td>
         </tr>
         <tr>
+            <th>支払い方法</th>
+            <td>
+            {% if buy.pay_way==1 %}
+                代金引換
+            {% elif buy.pay_way==2 %}
+                クレジットカード
+            {% endif %}
+            </td>
+        </tr>
+        <tr>
             <th>お届け先</th>
             <td>
-                〒{{ shippingaddress.zip_code }}<br>
-                {{ shippingaddress.prefecture }}
-                {{ shippingaddress.address1 }}
-                {{ shippingaddress.address2 }}<br>
-                {{ shippingaddress.address3 }}<br>
-                {{ shippingaddress.last_name }}
-                {{ shippingaddress.first_name }}
+                〒{{ buy.s_address.zip_code }}<br>
+                {{ buy.s_address.prefecture }}
+                {{ buy.s_address.address1 }}
+                {{ buy.s_address.address2 }}<br>
+                {{ buy.s_address.address3 }}<br>
+                {{ buy.s_address.last_name }}
+                {{ buy.s_address.first_name }}
                 様
             </td>
         </tr>
