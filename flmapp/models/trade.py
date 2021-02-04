@@ -153,6 +153,9 @@ class Buy(db.Model):
     ShippingAddress_id = db.Column(db.Integer, db.ForeignKey('BuyShippingAddress.BuyShippingAddress_id'), nullable=False)
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
+    # Buyテーブルからデータを取得時にBuyShippingAddressテーブルとBuyCreditも取得
+    s_address = db.relationship('BuyShippingAddress', backref='buy', lazy='joined', uselist=False)
+    credit = db.relationship('BuyCredit', backref='buy', lazy='joined', uselist=False)
 
     def __init__(self, User_id, Sell_id, pay_way, Credit_id, ShippingAddress_id):
         self.User_id = User_id
@@ -259,7 +262,7 @@ class BuyShippingAddress(db.Model):
         self.address2 = address2
         self.address3 = address3
 
-    def create_new_shippingaddress(self):
+    def create_new_buyshippingaddress(self):
         db.session.add(self)
 
 
@@ -277,21 +280,11 @@ class BuyCredit(db.Model):
     create_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
     update_at = db.Column(db.DateTime, default=datetime.now, nullable=False)
 
-    def __init__(self, credit_name, credit_num, expire):
+    def __init__(self, credit_name, credit_num, expire, security_code_hash ):
         self.credit_name = credit_name
         self.credit_num = credit_num
         self.expire = expire
+        self.security_code_hash = security_code_hash
 
-    def create_new_credit(self):
+    def create_new_buycredit(self):
         db.session.add(self)
-
-    # Custom property getter
-    @property
-    def security_code(self):
-        raise AttributeError('セキュリティコードは読み取り可能な属性ではありません。')
-
-    # Custom property setter
-    @security_code.setter
-    def security_code(self, security_code):
-        # generate_password_hash()：ハッシュ値が生成される
-        self.security_code_hash = generate_password_hash(security_code)

@@ -27,6 +27,13 @@ from flmapp.utils.message_format import make_deal_message_format, make_old_deal_
 bp = Blueprint('transaction', __name__, url_prefix='/transaction')
 
 
+# カスタムテンプレートフィルター
+@bp.app_template_filter('credit_num_format')
+def credit_num_format(value):
+    """クレジットカード番号下4ケタ表示フィルター"""
+    return '*'*12 + str(value)[-4:]
+
+
 def check_transaction(func):
     """
         出品者と購入者以外のユーザー,
