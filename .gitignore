@@ -1,8 +1,8 @@
 __pycache__
-data.sqlite
+# data.sqlite
 .DS_Store
-flmapp/static/user_image/
-flmapp/static/original_user_image/
-flmapp/static/item_image/
-flmapp/static/original_item_image/
-flmapp/static/item_temp_image/
+# flmapp/static/user_image/
+# flmapp/static/original_user_image/
+# flmapp/static/item_image/
+# flmapp/static/original_item_image/
+# flmapp/static/item_temp_image/
