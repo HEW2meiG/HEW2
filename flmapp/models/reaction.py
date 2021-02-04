@@ -164,6 +164,7 @@ class UserConnect(db.Model):
         ).outerjoin(
             sell,
             and_(
+                sell.User_id == cls.to_user_id,
                 sell.sell_flg == True, 
                 sell.is_active == True,
                 sell.User_id != current_user.User_id
