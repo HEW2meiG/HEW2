@@ -18,7 +18,7 @@ from flmapp.models.reaction import (
     Likes, UserConnect, BrowsingHistory
 )
 from flmapp.models.trade import (
-    Sell
+    Sell, Buy
 )
 from flmapp.models.message import(
     PostMessage, DealMessage
@@ -41,23 +41,31 @@ def recommend():
     """協調フィルタリングユーザーベースレコメンド"""
     # データ整形
     prefs={}
-    items = Sell.select_all_sell_by_deal_status(1)
     users = User.query.all()
-    for item in items:
-        itemid = item.Sell_id
-        for user in users:
-            userid = user.User_id
-            prefs.setdefault(userid,{})
+    items = Sell.query.all()
+    on_display = Sell.select_all_sell_by_deal_status(1)
+    # 一次元タプルに変換
+    on_display = sum(on_display, ())
+    for user in users:
+        userid = user.User_id
+        prefs.setdefault(userid,{})
+        for item in items:
+            itemid = item.Sell_id
             rating = 0
-            b_history = BrowsingHistory.b_history_exists(userid, itemid)
-            if b_history:
-                rating += 1
-            liked = Likes.liked_exists_user_id(userid, itemid)
-            if liked:
-                rating += 2
+            bought = Buy.buy_exists_user_id(userid, itemid)
+            if bought:
+                rating += 3
+            else:
+                b_history = BrowsingHistory.b_history_exists(userid, itemid)
+                if b_history:
+                    rating += 1
+                liked = Likes.liked_exists_user_id(userid, itemid)
+                if liked:
+                    rating += 2
             prefs[userid][itemid] = rating
     # 類似度計算
-    recommends = getRecommendations(prefs,current_user.User_id)
+    recommends = getRecommendations(prefs,current_user.User_id,on_display)
+    print(recommends)
     r_item_list = []
     if recommends is not None:
         for recommend in recommends:
@@ -76,8 +84,7 @@ def recommend2():
     else:
         items = Sell.select_all_sell_by_deal_status(1)
     r_item_list = []
-    #! あとから変える
-    r_item_list = random.sample(items, 0)
+    r_item_list = random.sample(items, 3)
     return r_item_list
 
 

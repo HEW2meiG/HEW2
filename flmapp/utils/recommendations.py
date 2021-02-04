@@ -63,7 +63,7 @@ def topMatches(prefs,person,n=5,similarity=sim_pearson):
     return scores[0:n]
 
 # person以外のユーザーの評点の重み付き平均を行い、pesonへの推薦を算出する
-def getRecommendations(prefs,person,similarity=sim_pearson,n=3):
+def getRecommendations(prefs,person,on_display,similarity=sim_pearson):
     totals={}
     simSums={}
     for other in prefs:
@@ -75,14 +75,16 @@ def getRecommendations(prefs,person,similarity=sim_pearson,n=3):
         if sim<=0: continue
 
         for item in prefs[other]:
-            # まだ見ていない映画の得点のみを算出
+            # まだ見ていない商品の得点のみを算出
             if item not in prefs[person] or prefs[person][item]==0:
-                # 類似度*スコア
-                totals.setdefault(item,0)
-                totals[item]+=prefs[other][item]*sim
-                # 類似度を合計
-                simSums.setdefault(item,0)
-                simSums[item]+=sim
+                # 出品中の商品の特典のみを算出
+                if item in on_display:
+                    # 類似度*スコア
+                    totals.setdefault(item,0)
+                    totals[item]+=prefs[other][item]*sim
+                    # 類似度を合計
+                    simSums.setdefault(item,0)
+                    simSums[item]+=sim
         
         #正規化したリストを作る
         rankings=[(total/simSums[item],item) for item,total in totals.items()]
@@ -91,4 +93,7 @@ def getRecommendations(prefs,person,similarity=sim_pearson,n=3):
         rankings.sort()
         rankings.reverse()
         recommend_id = np.array(rankings)
-        return recommend_id[0:n, 1]
+        if len(recommend_id)>0:
+            return recommend_id[0:3, 1]
+        else:
+            return None
