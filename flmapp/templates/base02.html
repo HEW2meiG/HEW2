@@ -89,33 +89,6 @@
             </div>
             <div class="r-content">
                 <div class="r-wrap">
-                    <!-- ここから　レコメンド -->
-                    {% for item in r_item_list %}
-                        <article class="r_item-wrap">
-                            <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-                                <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
-                                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-                                    <p class="u-name">{{ item.user.username }}</p>
-                                    <p class="u-code">{{ item.user.user_code }}</p>
-                                </a></object>
-                                <div class="i-content-area">
-                                    <div class="k-s-box">
-                                        <div class="i-key">
-                                            <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
-                                            <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
-                                            <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p><span class="i-price">¥{{ item.price }}</span></p>
-                                <div class="i-fotter">
-                                    {% include "like.html" %}
-                                    <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
-                                </div>
-                            </a>
-                        </article>
-                    {% endfor %}
-                    <!-- ここまで　レコメンド -->
                     {% block content2 %}
                     {% endblock %}
                 </div>
