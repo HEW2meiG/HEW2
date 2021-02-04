@@ -90,7 +90,9 @@ class Sell(db.Model):
     @classmethod
     def select_all_sell_by_deal_status(cls, deal_status):
         """deal_statusによってSell(商品)レコードを得る"""
-        return cls.query.filter(cls.deal_status==Deal_status(deal_status)).all()
+        return cls.query.filter(
+            cls.deal_status==Deal_status(deal_status)
+            ).with_entities(cls.Sell_id).all()
 
     @classmethod
     def select_not_user_sell_by_deal_status(cls, User_id, deal_status):
@@ -184,6 +186,25 @@ class Buy(db.Model):
             cls.User_id==User_id
         ).outerjoin(sell, sell.deal_status==Deal_status(deal_status)
         ).with_entities(sell).all()
+
+    
+    @classmethod
+    def buy_exists_user_id(cls, User_id, Sell_id):
+        """
+        Sell_idとユーザーIDが一致する購入情報レコードを抽出し、
+        レコードが存在すればTrue、
+        存在しなければFalseを返す
+        """
+        record = cls.query.filter(
+                    and_(
+                        cls.Sell_id == Sell_id,
+                        cls.User_id == User_id
+                    )
+                ).first()
+        if record:
+            return True
+        else:
+            return False
 
 
 # 相互評価情報テーブルのEnum型を定義
