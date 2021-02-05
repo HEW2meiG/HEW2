@@ -106,7 +106,8 @@ class Sell(db.Model):
     def select_sell_by_deal_status(cls, User_id, deal_status, page=1):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)
-            ).paginate(page, 1, False)
+            ).paginate(page, 2, False)
+        # paginate(表示するページ,1ページに表示する数,エラーを出力するかどうか)
 
     @classmethod
     def select_new_sell(cls):
