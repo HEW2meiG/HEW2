@@ -130,6 +130,24 @@ a.back-home:hover{
     background-color: #662222;
 }
 
+.kosho-button2-300{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    transition: .2s;
+    background-color: #0f2396;
+}
+.kosho-button2-300:hover{
+    transition: .7s;
+    background-color:#0e0e42;
+}
+.kosho-button2-300:focus{
+    outline: none;
+}
+
 #submit{
     width: 300px;
     height: 40px;

@@ -3,6 +3,9 @@
 {% block title %}
 出品情報編集画面 - {{ super() }}
 {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sell/sell_complete.css')}}">
+{% endblock %}
 {% block content %}
 <h1>出品情報編集</h1>
 {% for message in get_flashed_messages() %}
