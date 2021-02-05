@@ -1,5 +1,7 @@
 /* base02 */
 .wrap{
+    width: 1200px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
     overflow: visible;
@@ -7,31 +9,30 @@
 header{
     position: sticky;
     top: 0;
-    flex-grow: 1;
-    flex-shrink: 5;
+    flex-basis: 325px;
     min-height: 100vh;
     height: 100%;
     background-color: #FFF;
-    padding: 80px;
+    padding-top: 80px;
     border-right: solid 1.5px #dedbd5;
 }
 .container{
     min-height: 100vh;
-    flex-basis: 700px;
+    flex-basis: 550px;
     background-color: #fff3e0;
 }
 .r-content{
     position: sticky;
     top: 0;
-    flex-basis: 500px;
+    flex-basis: 325px;
     min-height: 100vh;
     height: 100%;
-    padding: 10px;
+    padding: 30px;
     background-color: #FFF;
     border-left: solid 1.5px #dedbd5;
 }
 .r-wrap{
-    
+    width: 320px;
 }
 /* ナビゲーション */
 .h-wrap{
@@ -47,11 +48,11 @@ header h1 img{
     margin: 40px 0;
 }
 .h-wrap nav ul li:not(.mp-a){
-    font-size: 2.0rem;
+    font-size: 1.8rem;
     font-weight: bold;
 }
 .u-icon{
-    width: 85px;
+    width: 50px;
     border-radius: 50%;
     border: 2px solid #ececec;
 }
@@ -76,7 +77,7 @@ nav a:hover{
 .accordion-open {
     display: block;
     cursor: pointer;
-    font-size: 2.0rem;
+    font-size: 1.8rem;
     font-weight: bold;
     transition: color 0.5s;
 }
@@ -110,10 +111,10 @@ nav a:hover{
 }
 /* レコメンド */
 .r_item-wrap{
-    width: 450px;
+    width: 325px;
     background-color: #ffffff;
     margin: 2px;
-    padding: 30px;
+    padding: 10px;
 }
 .r_item-wrap p{
     font-size: 1.5rem;
@@ -161,7 +162,7 @@ nav a:hover{
     font-weight: bold;
 }
 .r_item-wrap .i-fotter{
-    width: 400px;
+    width: 320px;
     display: flex;
     align-items: center;
     justify-content: space-between;
