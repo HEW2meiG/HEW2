@@ -4,22 +4,18 @@
 {% endblock %}
 {% block content %}
 <h1>出品完了</h1>
-{{ item.sell_title }}
-{{ item.key1 }}
-{{ item.key2 }}
-{{ item.key3 }}
-{{ item.sell_comment }}
-{{ item.price.data }}<p>円</p>
-<img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-{{ item.genre.name }}
-{{ item.item_state.name }}
-{{ item.postage.name }}
-{{ item.send_way.name }}
-{{ item.consignor }}
-{{ item.schedule.name }}
-{{ item.remarks }}
-<p>出品が完了しました。</p>
-<a href="{{url_for('sell.sell')}}">続けて出品する</a>
-<a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">出品した本をみる</a>
-<a href="{{url_for('route.home')}}">ホームへ戻る</a>
+<p class="mg-tb-10">出品が完了しました。</p>
+
+<div class="mg-tb-4 pd-t-5">
+    <button class="kosho-button2-300" onclick="location.href='{{url_for('sell.sell')}}'">続けて出品する</button>
+</div>
+
+<div class="mg-tb-4">
+    <button class="kosho-button-300" onclick="location.href='{{url_for('item.itemdata', item_id=item.Sell_id)}}'">出品した本をみる</button>
+</div>
+
+<div class="mg-tb-3">
+    <a href="{{url_for('route.home')}}" class="back-home">ホームへ戻る</a>
+</div>
+
 {% endblock %}
