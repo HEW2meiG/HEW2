@@ -69,7 +69,6 @@ def recommend():
     recommends = getRecommendations(prefs,current_user.User_id,on_display)
     # ユーザーレコメンド
     u_recommends = topMatches(prefs,current_user.User_id, followed)
-    print(u_recommends)
     r_item_list = []
     if recommends is not None:
         for recommend in recommends:

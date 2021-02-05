@@ -1,6 +1,6 @@
 /* 出品投稿css */
 .item-wrap{
-    width: 700px;
+    width: 550px;
     background-color: #ffffff;
     margin: 2px;
     padding: 30px;
@@ -51,7 +51,7 @@
     font-weight: bold;
 }
 .i-fotter{
-    width: 600px;
+    width: 500px;
     display: flex;
     align-items: center;
     justify-content: space-between;

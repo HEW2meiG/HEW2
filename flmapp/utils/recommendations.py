@@ -60,6 +60,10 @@ def topMatches(prefs,person,followed,similarity=sim_pearson):
     # 高スコアがリストの最初に来るように並び替える
     scores.sort()
     scores.reverse()
+    print("*"*100)
+    print("ユーザーレコメンド")
+    print(scores)
+    print("*"*100)
     u_recommend_id = np.array(scores)
     if len(u_recommend_id)>0:
         return u_recommend_id[0:3, 1]
@@ -96,6 +100,10 @@ def getRecommendations(prefs,person,on_display,similarity=sim_pearson):
         # ソート済みのリストを返す
         rankings.sort()
         rankings.reverse()
+        print("*"*100)
+        print("アイテムレコメンド")
+        print(rankings)
+        print("*"*100)
         recommend_id = np.array(rankings)
         if len(recommend_id)>0:
             return recommend_id[0:3, 1]
