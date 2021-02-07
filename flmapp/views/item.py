@@ -54,12 +54,13 @@ def itemdata(item_id):
     liked = Likes.liked_exists(item_id)
     if liked:
         liked_list.append(item_id)
-    # 閲覧履歴登録処理
-    browsinghistory = BrowsingHistory(
-        Sell_id = item_id,
-        User_id = current_user.User_id
-    )
-    with db.session.begin(subtransactions=True):
-        BrowsingHistory.create_new_browsinghistory(browsinghistory)
-    db.session.commit()
+    if current_user.is_authenticated:
+        # 閲覧履歴登録処理
+        browsinghistory = BrowsingHistory(
+            Sell_id = item_id,
+            User_id = current_user.User_id
+        )
+        with db.session.begin(subtransactions=True):
+            BrowsingHistory.create_new_browsinghistory(browsinghistory)
+        db.session.commit()
     return render_template('item/itemdata.html', item=item, form=form, liked_list=liked_list, buy_user=buy_user)
