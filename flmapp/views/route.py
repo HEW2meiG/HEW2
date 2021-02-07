@@ -7,7 +7,6 @@ from flask_login import (
 )
 from flmapp import db
 
-import random # レコメンド
 from flmapp.utils.recommendations import (
     getRecommendations, topMatches
 )# レコメンド

@@ -109,3 +109,31 @@ def getRecommendations(prefs,person,on_display,similarity=sim_pearson):
             return recommend_id[0:3, 1]
         else:
             return None
+
+
+# アソシエーション・ルール・マイニング
+from pymining import itemmining, assocrules
+
+def associationRules(transactions,userid):
+    relim_input = itemmining.get_relim_input(transactions)
+    item_sets = itemmining.relim(relim_input, min_support=2)
+    rules = assocrules.mine_assoc_rules(item_sets, min_support=2, min_confidence=0.5)
+
+    recom_user = {}
+    for rule_user in rules:
+        if userid in rule_user[0]:
+            # 支持度
+            support = rule_user[2]/len(transactions)
+            # リフト値 1より大きい場合は、Aが発生するとBが発生しやすくなると解釈できる
+            lift = (rule_user[3]/support,)
+            rule_user += lift
+            recom_user[rule_user[1]] = rule_user[4]
+    recom_user_sorted = sorted(recom_user.items(), key=lambda x:x[1], reverse=True)
+    print("*"*100)
+    print("ユーザーレコメンド")
+    print(recom_user_sorted)
+    print("*"*100)
+    rcom_userid_list = set()
+    for rcom_userid in recom_user_sorted:
+        rcom_userid_list = rcom_userid_list.union(rcom_userid[0])
+    return list(rcom_userid_list)

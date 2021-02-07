@@ -7,6 +7,9 @@ from flask_login import (
 )
 from flmapp import db
 
+from flmapp.utils.recommendations import(
+    associationRules
+)
 from flmapp.models.user import (
     User
 )
@@ -40,6 +43,28 @@ def followers_count_processor():
     return dict(followers_count=followers_count)
 
 
+def u_recommend(userid):
+    """アソシエーション・ルール・マイニングによるレコメンド"""
+    # データ整形
+    transactions = []
+    users = User.query.all()
+    for user in users:
+        u_id = user.User_id
+        follow_id = UserConnect.select_follows_user_id_by_user_id(u_id)
+        follow_id = sum(follow_id, ())
+        transactions.append(follow_id)
+    print(transactions)
+    u_recommends = associationRules(transactions,userid)
+    r_user_list = []
+    if u_recommends:
+        for u_recommend in u_recommends:
+            u_recommend_id = int(u_recommend)
+            r_user_list.append(User.select_user_by_id(u_recommend_id))
+    elif not u_recommends:
+        r_user_list = []
+    return r_user_list
+
+
 @bp.route('/userdata/<string:user_code>', methods=['GET', 'POST'])
 def userdata(user_code):
     user = User.select_user_by_user_code(user_code)
@@ -51,6 +76,8 @@ def userdata(user_code):
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
     # ユーザーが出品した商品
     items = Sell.select_sell_by_user_id(user.User_id)
+    # レコメンドリスト
+    r_user_list = u_recommend(user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -60,7 +87,7 @@ def userdata(user_code):
     return render_template(
         'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list, post_c=len(items)
+        items=items, liked_list=liked_list, post_c=len(items), r_user_list=r_user_list
     )
 
 @bp.route('/userdata/<string:user_code>/likes', methods=['GET', 'POST'])

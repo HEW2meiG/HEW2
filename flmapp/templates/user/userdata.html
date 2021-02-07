@@ -178,3 +178,17 @@
     });
 </script>
 {% endblock %}
+{% block content2 %}
+{% if not r_user_list %}
+    <p>あなたのおすすめのユーザーを探します</p>
+{% else %}
+    <h2>この人をフォローしたユーザーはこの人もフォローしています</h2>
+    {% for user in r_user_list %}
+        <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
+            <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+            <p class="u-name">{{ user.username }}</p>
+            <p class="u-code">{{ user.user_code }}</p>
+        </a>
+    {% endfor %}
+{% endif %}
+{% endblock %}
