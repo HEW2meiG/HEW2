@@ -219,7 +219,7 @@ class BrowsingHistory(db.Model):
             )
         ).distinct(sell.Sell_id).with_entities(
             sell
-        ).order_by(desc(cls.create_at)).limit(3).all()
+        ).order_by(desc(sell.create_at)).limit(3).all()
 
 
     @classmethod
