@@ -11,7 +11,11 @@
 <h2>検索</h2>
 <form method="POST" action="{{url_for('search.search')}}">
     {{ form.csrf_token }}
-    {{ render_field(form.search, value=search_word) }}
+    {% if items %}
+        {{ render_field(form.search, value=search_word) }}
+    {% else %}
+    {{ render_field(form.search) }}
+    {% endif %}
     {{ form.submit() }}
 </form>
 <div class="row">
