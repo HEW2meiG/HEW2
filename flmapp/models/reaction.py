@@ -178,7 +178,7 @@ class UserConnect(db.Model):
             )
         ).with_entities(
             sell
-        ).order_by(desc(cls.create_at)).all()
+        ).order_by(desc(sell.create_at)).all()
 
 
 class BrowsingHistory(db.Model):
