@@ -47,6 +47,8 @@ def u_recommend(userid):
     """アソシエーション・ルール・マイニングによるレコメンド"""
     # データ整形
     transactions = []
+    followed = UserConnect.select_follows_user_id_by_user_id(current_user.User_id)
+    followed = sum(followed, ())
     users = User.query.all()
     for user in users:
         u_id = user.User_id
@@ -54,7 +56,7 @@ def u_recommend(userid):
         follow_id = sum(follow_id, ())
         transactions.append(follow_id)
     print(transactions)
-    u_recommends = associationRules(transactions,userid)
+    u_recommends = associationRules(transactions,userid,followed)
     r_user_list = []
     if u_recommends:
         for u_recommend in u_recommends:
@@ -101,6 +103,8 @@ def userdata_likes(user_code):
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
     # ユーザーが出品した商品
     sell_items = Sell.select_sell_by_user_id(user.User_id)
+    # レコメンドリスト
+    r_user_list = u_recommend(user.User_id)
     # ユーザーがいいねした商品
     items = Likes.likes_join_sell(Sell, user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
@@ -112,5 +116,5 @@ def userdata_likes(user_code):
     return render_template(
         'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list, post_c=len(sell_items)
+        items=items, liked_list=liked_list, post_c=len(sell_items), r_user_list=r_user_list
     )
