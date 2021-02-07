@@ -1,12 +1,15 @@
 from flmapp import db
 from sqlalchemy import func, CheckConstraint
 from sqlalchemy.orm import aliased
-from sqlalchemy import and_, or_, desc
+from sqlalchemy import and_, or_, desc, func
 
 from datetime import datetime, timedelta
 
 from flask_login import (
     current_user
+)
+from flmapp.models.reaction import (
+    Likes
 )
 
 from enum import Enum
@@ -130,8 +133,41 @@ class Sell(db.Model):
             cls.key2.like(f'%{word}%'),
             cls.key3.like(f'%{word}%'),
             cls.sell_comment.like(f'%{word}%'),
-            ),).all()
+            )).all()
  
+    @classmethod
+    def search_by_sort(cls, word, sort):
+        """出品情報の並び替え検索"""
+        if sort == '価格の安い順':
+            items =cls.query.filter(or_(
+                cls.key1.like(f'%{word}%'),
+                cls.key2.like(f'%{word}%'),
+                cls.key3.like(f'%{word}%'),
+                cls.sell_comment.like(f'%{word}%'),
+                )).order_by(Sell.price).all()
+        elif sort == '価格の高い順':
+            items =cls.query.filter(or_(
+                cls.key1.like(f'%{word}%'),
+                cls.key2.like(f'%{word}%'),
+                cls.key3.like(f'%{word}%'),
+                cls.sell_comment.like(f'%{word}%'),
+                )).order_by(desc(Sell.price)).all()
+        elif sort == '出品の新しい順':
+            items =cls.query.filter(or_(
+                cls.key1.like(f'%{word}%'),
+                cls.key2.like(f'%{word}%'),
+                cls.key3.like(f'%{word}%'),
+                cls.sell_comment.like(f'%{word}%'),
+                )).order_by(desc(Sell.create_at)).all()
+        elif sort == 'いいね！の多い順':
+            items =Sell.query.join(Likes).filter(or_(
+                Sell.key1.like(f'%{word}%'),
+                Sell.key2.like(f'%{word}%'),
+                Sell.key3.like(f'%{word}%'),
+                Sell.sell_comment.like(f'%{word}%'),
+                )).group_by(Likes.Sell_id).order_by(func.count(Likes.Sell_id)).all()
+        return items
+
     @classmethod
     def select_sales(cls, User_id):
         """売り上げ金を合計して返す"""

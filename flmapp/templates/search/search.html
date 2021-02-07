@@ -11,29 +11,8 @@
 <h2>検索</h2>
 <form method="POST" action="{{url_for('search.search')}}">
     {{ form.csrf_token }}
-    {{ render_field(form.search) }}
+    {{ render_field(form.search, value=search_word) }}
     {{ form.submit() }}
-</form>
-{% if items %}
-<form method="POST" action="{{url_for('search.narrow_down_search')}}">
-{% else %}
-<form method="POST" action="{{url_for('search.search')}}">
-{% endif %}
-    <h2>並び替え</h2>
-    {{ render_field(ndform.sort) }}
-    <h2>絞り込み</h2>
-    <h3>ジャンル</h3>
-    {{ render_field(ndform.genre) }}
-    <h3>価格</h3>
-    {{ render_field(ndform.value_min, placeholder="￥Min") }}～{{ render_field(ndform.value_max, placeholder="￥Max") }}
-    <h3>商品の状態</h3>
-    {{ render_field(ndform.state) }}
-    <h3>配送料の負担</h3>
-    {{ render_field(ndform.postage) }}
-    <h3>販売状況</h3>
-    {{ render_field(ndform.sellstate) }}
-    {{ ndform.submit() }}
-    {{ ndform.clean() }}
 </form>
 <div class="row">
     <div class="col-lg-8 offset-lg-4">
@@ -43,7 +22,6 @@
     </div>
 </div>
 {% if items %}
-
 <table>
     {% for item in items %}
     <tr>
@@ -118,4 +96,29 @@
     // ここまで いいね処理
 </script>
 {% endif %}
+{% endblock %}
+{% block content2 %}
+{% if items %}
+    <form method="POST" action="{{url_for('search.narrow_down_search')}}">
+{% else %}
+    <form method="POST" action="{{url_for('search.search')}}">
+{% endif %}
+        {{ form.csrf_token }}
+        {{ ndform.search_word(value=search_word) }}
+        <h2>並び替え</h2>
+        {{ render_field(ndform.sort) }}
+        <h2>絞り込み</h2>
+        <h3>ジャンル</h3>
+        {{ render_field(ndform.genre) }}
+        <h3>価格</h3>
+        {{ render_field(ndform.value_min, value=300) }}円～{{ render_field(ndform.value_max, value=99999) }}円
+        <h3>商品の状態</h3>
+        {{ render_field(ndform.state ) }}
+        <h3>配送料の負担</h3>
+        {{ render_field(ndform.postage) }}
+        <h3>販売状況</h3>
+        {{ render_field(ndform.sellstate) }}
+        {{ ndform.submit() }}
+        {{ ndform.clean() }}
+    </form>
 {% endblock %}
