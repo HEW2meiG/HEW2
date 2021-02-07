@@ -208,18 +208,23 @@ class BrowsingHistory(db.Model):
         が一致したSellレコードを新着順に3件取り出す
         """
         sell = aliased(Sell)
-        return cls.query.filter(
-            cls.User_id == User_id
-        ).outerjoin(
-            sell,
+        b_history_q = cls.query.filter(cls.User_id == User_id).outerjoin(
+                        sell,
+                        and_(
+                            sell.Sell_id == cls.Sell_id,
+                            sell.User_id != User_id,
+                            sell.sell_flg == True, 
+                            sell.is_active == True
+                        )
+                    ).with_entities(cls.Sell_id, cls.BrowsingHistory_id).subquery()
+
+        return cls.query.outerjoin(
+            b_history_q,
             and_(
-                sell.User_id != User_id,
-                sell.sell_flg == True, 
-                sell.is_active == True
+                cls.BrowsingHistory_id == b_history_q.c.BrowsingHistory_id,
+                cls.Sell_id == b_history_q.c.Sell_id
             )
-        ).distinct(sell.Sell_id).with_entities(
-            sell
-        ).order_by(desc(sell.create_at)).limit(3).all()
+        ).group_by(cls.Sell_id).order_by(desc(cls.create_at)).limit(3).all()
 
 
     @classmethod
