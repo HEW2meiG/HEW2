@@ -3,41 +3,68 @@
 {% block title %}
 支払い方法選択画面 - {{ super() }}
 {% endblock %}
+{%block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buy/pay_way.css')}}">
+{% endblock%}
 {% block content %}
-{% for message in get_flashed_messages() %}
-    {{ message }}
+
+        {% for message in get_flashed_messages() %}
+        <p class="finish-msg">{{ message }}</p>
+
 {% endfor %}
-<h2>支払い方法選択</h2>
+<h1>支払い方法選択</h1>
 {{ form.csrf_token(form="choice") }}
+
 <table>
 {% for field in form.pay_way %}
     <tr>
         <td>{{ field(form="choice") }}</td>
-        <td>{{ field.label }}</td>
+        <td class="pd-r-2">{{ field.label }}</td>
+
         {% if field.data != 0 %}
             {% set credit = search_credit(field.data) %}
-            <td>{{ credit.credit_name }}</td>
-            <td>{{ credit.credit_num | credit_num_format }}</td>
-            <td>{{ credit.expire.strftime('%m/%y') }}</td>
+
+            <td class="pd-r-2">{{ credit.credit_name }}</td>
+            <td class="pd-r-2">{{ credit.credit_num | credit_num_format }}</td>
+            <td class="pd-r-2">{{ credit.expire.strftime('%m/%y') }}</td>
+
             <td>
                 <form method="POST" action="{{url_for('buy.pay_way_delete', item_id=item_id)}}">
                     {{ delete_form.csrf_token }}
                     {{ delete_form.Credit_id(value=credit.Credit_id) }}
-                    {{ delete_form.submit() }}
+                    <div>
+                        {{ delete_form.submit(id="delete") }}
+                    </div>
                 </form>
             </td>
         {% endif %}
     </tr>
 {% endfor %}
 </table>
+
 {% if credits|length < 5 %}
-    <a href="{{ url_for('buy.credit_register', item_id=item_id) }}">クレジットカードを追加</a>
+<div class="mg-tb-3">
+    <a href="{{ url_for('buy.credit_register', item_id=item_id) }}" class="creca">クレジットカードを追加</a>
+</div>
 {% else %}
     <P>クレジットカードは5件以上登録できません。</P>
 {% endif%}
+
+<div class="mg-tb-2">
 {{ form.is_default.label}}{{form.is_default(form="choice") }}
-{{ form.submit(form="choice") }}
+</div>
+
+<div class="mg-tb-2">
+    {{ form.submit(form="choice") }}
+</div>
+
 <!-- formは入れ子構造にできないため、form属性を使用 -->
+
 <form method="POST" id="choice"></form>
-<a href="{{url_for('buy.buy', item_id=item_id)}}">戻る</a>
+
+<div class="mg-tb-3">
+    <a href="{{url_for('buy.buy', item_id=item_id)}}" class="back">戻る</a>
+</div>
+
 {% endblock %}

@@ -8,29 +8,47 @@
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 {% endblock %}
 {% block content %}
-<h2>配送先住所編集</h2>
+<h1>配送先住所編集</h1>
 <div class="row">
     <div class="col-lg-8 offset-lg-4">
         {% for message in get_flashed_messages() %}
-            {{ message }}
+             <p class="finish-msg">{{ message }}</p>
         {% endfor %}
     </div>
     <form method="POST">
         {{ form.csrf_token }}
-        <h3>お名前(全角)</h3>
-        {{ render_field(form.last_name, value=shippingaddress.last_name) }}
-        {{ render_field(form.first_name, value=shippingaddress.first_name) }}
-        <h3>お名前カナ(全角)</h3>
-        {{ render_field(form.last_name_kana, value=shippingaddress.last_name_kana) }}
-        {{ render_field(form.first_name_kana, value=shippingaddress.first_name_kana) }}
-        <h3>住所登録</h3>
-        {{ render_field(form.zip01, value=shippingaddress.zip_code, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
-        {{ render_field(form.pref01, value=shippingaddress.prefecture) }}
-        {{ render_field(form.addr01, value=shippingaddress.address1) }}
-        {{ render_field(form.addr02, value=shippingaddress.address2) }}
-        {{ render_field(form.addr03, value=shippingaddress.address3) }}
-        {{ form.submit() }}
+        
+        <div class="kosho-form-300">
+
+            <div class="kosho-form-140 mg-tb-3">
+                <div class="mg-tb-1">
+                    {{ form.last_name.label }}<span class="req">必須</span><br>
+                </div>
+                    {{ form.last_name(value=shippingaddress.last_name) }}
+                    {{ form.first_name(value=shippingaddress.first_name) }}
+            </div>
+            <div class="kosho-form-140 mg-tb-3">
+                <div class="mg-tb-1">
+                    {{ form.last_name_kana.label }}<span class="req">必須</span><br>
+                </div>
+                    {{ form.last_name_kana(value=shippingaddress.last_name_kana) }}
+                    {{ form.first_name_kana(value=shippingaddress.first_name_kana) }}
+            </div>
+
+            {{ render_field(form.zip01, value=shippingaddress.zip_code, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
+            {{ render_field(form.pref01, value=shippingaddress.prefecture) }}
+            {{ render_field(form.addr01, value=shippingaddress.address1) }}
+            {{ render_field(form.addr02, value=shippingaddress.address2) }}
+            {{ render_field(form.addr03, value=shippingaddress.address3) }}
+        </div>
+
+        <div class="mg-tb-5">
+            {{ form.submit() }}
+        </div>
+
     </form>
 </div>
-<a href="{{url_for('buy.shippingaddress', item_id=item_id)}}">戻る</a>
+<div class="mg-tb-3">
+    <a href="{{url_for('buy.shippingaddress', item_id=item_id)}}" class="back">戻る</a>
+</div>
 {% endblock %}

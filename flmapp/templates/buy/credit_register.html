@@ -4,19 +4,42 @@
 クレジットカード登録画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>クレジットカード登録</h2>
+<h1>クレジットカード登録</h1>
 {% for message in get_flashed_messages() %}
-{{ message }}
+    <p class="finish-msg">{{ message }}</p>
 {% endfor %}
 <form method="POST">
     {{ form.csrf_token }}
-    {{ render_field(form.credit_name) }}
-    {{ render_field(form.credit_num) }}
-    {{ render_field(form.expiration_date01) }}
-    {{ render_field(form.expiration_date02) }}
-    {{ render_field(form.security_code) }}
-    {{ render_field(form.is_default) }}
-    {{ form.submit() }}
+
+    <div class="kosho-form-300">
+        {{ render_field(form.credit_name) }}
+
+        {{ render_field(form.credit_num) }}
+
+        <div class="kosho-form-70">
+            <div class="mg-tb-1">
+                {{ form.expiration_date01.label }}<span class="req">必須</span><br>
+            </div>
+            {{ form.expiration_date01 }}
+            {{ form.expiration_date02 }}
+        </div>
+
+        <div class="kosho-form-70 mg-tb-3">
+            <div class="mg-tb-1">
+                {{ form.security_code.label }}※カード背面4桁もしくは3桁の番号<span class="req">必須</span><br>
+            </div>
+            {{ form.security_code }}
+        </div>
+    </div>
+
+        {{ render_field(form.is_default) }}
+    <div class="mg-tb-5">
+        {{ form.submit() }}
+    </div>
 </form>
-<a href="{{url_for('buy.pay_way', item_id=item_id)}}">戻る</a>
+
+<div class="mg-tb-3">
+    <a href="{{url_for('buy.pay_way', item_id=item_id)}}" class="back">戻る</a>
+</div>
+
 {% endblock %} 

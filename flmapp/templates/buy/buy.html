@@ -3,11 +3,15 @@
 {% block title %}
 購入内容確認画面 - {{ super() }}
 {% endblock %}
+{%block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/auth/')}}">
+{% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
-    {{ message }}
+    <p class="finish-msg">{{ message }}</p>
 {% endfor %}
-<h2>購入内容の確認</h2>
+<h1>購入内容の確認</h1>
 <img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
 {{ item.user.username }}
 {{ item.key1 }}
@@ -69,7 +73,9 @@
         <p>配送先住所を追加してください。</p>
         <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">追加する</a>
     {% endif %}
-    {{ form.submit() }}
+    <div>
+        {{ form.submit() }}
+    </div>
 </form>
 <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">戻る</a>
 {% endblock %}

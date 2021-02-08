@@ -4,34 +4,53 @@
 配送先住所登録画面 - {{ super() }}
 {% endblock %}
 {% block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buy/shippingaddress_register.css')}}">
 <!-- 郵便番号から住所自動入力 -->
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
 {% endblock %}
 {% block content %}
-<h2>配送先住所登録</h2>
+<h1>配送先住所登録</h1>
 <div class="row">
     <div class="col-lg-8 offset-lg-4">
         {% for message in get_flashed_messages() %}
-        {{ message }}
+        <p class="finish-msg">{{ message }}</p>
         {% endfor %}
     </div>
     <form method="POST">
         {{ form.csrf_token }}
-        <h3>お名前(全角)</h3>
-        {{ render_field(form.last_name) }}
-        {{ render_field(form.first_name) }}
-        <h3>お名前カナ(全角)</h3>
-        {{ render_field(form.last_name_kana) }}
-        {{ render_field(form.first_name_kana) }}
-        <h3>住所登録</h3>
-        {{ render_field(form.zip01, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
-        {{ render_field(form.pref01) }}
-        {{ render_field(form.addr01) }}
-        {{ render_field(form.addr02) }}
-        {{ render_field(form.addr03) }}
-        {{ render_field(form.is_default) }}
+
+        <div class="kosho-form-300">
+
+            <div class="kosho-form-140 mg-tb-3">
+                <div class="mg-tb-1">
+                    {{ form.last_name.label }}<span class="req">必須</span><br>
+                </div>
+                {{ form.last_name }}
+                {{ form.first_name }}
+            </div>
+            <div class="kosho-form-140 mg-tb-3">
+                <div class="mg-tb-1">
+                    {{ form.last_name_kana.label }}<span class="req">必須</span><br>
+                </div>
+                {{ form.last_name_kana }}
+                {{ form.first_name_kana }}
+            </div>
+
+            {{ render_field(form.zip01, onKeyUp="AjaxZip3.zip2addr(this,'','pref01','addr01');") }}
+            {{ render_field(form.pref01) }}
+            {{ render_field(form.addr01) }}
+            {{ render_field(form.addr02) }}
+            {{ render_field(form.addr03) }}
+        </div>
+
+            {{ render_field(form.is_default) }}
+
         {{ form.submit() }}
+
     </form>
 </div>
-<a href="{{url_for('buy.shippingaddress', item_id=item_id)}}">戻る</a>
+<div class="mg-tb-3">
+    <a href="{{url_for('buy.shippingaddress', item_id=item_id)}}" class="back">戻る</a>
+</div>
 {% endblock %}
