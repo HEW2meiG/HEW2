@@ -43,10 +43,12 @@ def recommend():
     users = User.query.all()
     items = Sell.query.all()
     on_display = Sell.select_all_sell_by_deal_status(1)
+    sell = Sell.select_sell_id_by_user_id(current_user.User_id)
     followed = UserConnect.select_follows_user_id_by_user_id(current_user.User_id)
     # 一次元タプルに変換
     on_display = sum(on_display, ())
     followed = sum(followed, ())
+    sell = sum(sell, ())
     for user in users:
         userid = user.User_id
         prefs.setdefault(userid,{})
@@ -65,7 +67,7 @@ def recommend():
                     rating += 2
             prefs[userid][itemid] = rating
     # 商品レコメンド
-    recommends = getRecommendations(prefs,current_user.User_id,on_display)
+    recommends = getRecommendations(prefs,current_user.User_id,on_display,sell)
     # ユーザーレコメンド
     u_recommends = topMatches(prefs,current_user.User_id, followed)
     r_item_list = []

@@ -71,20 +71,21 @@ def topMatches(prefs,person,followed,similarity=sim_pearson):
         return None
 
 # person以外のユーザーの評点の重み付き平均を行い、pesonへの推薦を算出する
-def getRecommendations(prefs,person,on_display,similarity=sim_pearson):
+def getRecommendations(prefs,person,on_display,sell,similarity=sim_pearson):
     totals={}
     simSums={}
     for other in prefs:
         # 自分自身とは比較しない
-        if other==person: continue
+        if other==person:
+            continue
         sim=similarity(prefs,person,other)
 
         # 0以下のスコアは無視する
         if sim<=0: continue
 
         for item in prefs[other]:
-            # まだ見ていない商品の得点のみを算出
-            if item not in prefs[person] or prefs[person][item]==0:
+            # 評価が1か0かつ自分が出品した商品以外
+            if (item not in prefs[person] or prefs[person][item]==0 or prefs[person][item]==1) and item not in sell:
                 # 出品中の商品の特典のみを算出
                 if item in on_display:
                     # 類似度*スコア
@@ -117,7 +118,7 @@ from pymining import itemmining, assocrules
 def associationRules(transactions,userid,followed):
     relim_input = itemmining.get_relim_input(transactions)
     item_sets = itemmining.relim(relim_input, min_support=2)
-    rules = assocrules.mine_assoc_rules(item_sets, min_support=2, min_confidence=0.5)
+    rules = assocrules.mine_assoc_rules(item_sets, min_support=2, min_confidence=0.3)
 
     recom_user = {}
     for rule_user in rules:
