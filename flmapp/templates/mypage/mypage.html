@@ -181,7 +181,6 @@
 {% for item in b_items %}
 <article class="item-wrap">
     <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-        <!-- {{ item.deal_status.name }} -->
         <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
             <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
             <p class="u-name">{{ item.user.username }}</p>

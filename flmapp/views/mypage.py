@@ -131,6 +131,9 @@ def mypage_likes():
     items = Likes.likes_join_sell(Sell, current_user.User_id)
     # 最近見た本
     b_items = BrowsingHistory.b_history_join_sell(Sell,current_user.User_id)
+    b_item_list = []
+    for b_item in b_items:
+        b_item_list.append(Sell.select_sell_by_sell_id(b_item.Sell_id))
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -140,7 +143,7 @@ def mypage_likes():
     return render_template(
         'mypage/mypage.html', followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list, post_c=len(sell_items), b_items=b_items
+        items=items, liked_list=liked_list, post_c=len(sell_items), b_items=b_item_list
     )
 
 # プロフィール設定
