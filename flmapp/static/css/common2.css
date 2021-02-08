@@ -9,7 +9,7 @@
 header{
     position: sticky;
     top: 0;
-    flex-basis: 325px;
+    width: 325px;
     min-height: 100vh;
     height: 100%;
     background-color: #FFF;
@@ -18,16 +18,16 @@ header{
 }
 .container{
     min-height: 100vh;
-    flex-basis: 550px;
+    width: 550px;
     background-color: #fff3e0;
 }
 .r-content{
     position: sticky;
     top: 0;
-    flex-basis: 325px;
+    width: 325px;
     min-height: 100vh;
     height: 100%;
-    padding: 30px;
+    padding-left: 30px;
     background-color: #FFF;
     border-left: solid 1.5px #dedbd5;
 }
@@ -109,12 +109,27 @@ nav a:hover{
     font-size: 1.8rem;
     padding: 10px 0;
 }
-/* レコメンド */
+/* アイテムレコメンド */
+.reco_b_wrap{
+    margin-top: 30px;
+    background-color: #f6f9fa;
+    border-radius: 17px;
+    padding: 8px 0;
+}
+.r-h2{
+    text-align: center;
+    margin-top: 6px;
+    border-bottom: 1.5px solid #ccc;
+    padding-bottom: 10px;
+}
 .r_item-wrap{
-    width: 325px;
-    background-color: #ffffff;
-    margin: 2px;
-    padding: 10px;
+    width: 320px;
+    padding: 8px;
+    padding-left: 19px;
+    border-bottom: 1.5px solid #ccc;
+}
+.r_item-wrap:nth-of-type(3){
+    border-bottom: none;
 }
 .r_item-wrap p{
     font-size: 1.5rem;
@@ -124,8 +139,9 @@ nav a:hover{
     align-items: flex-start;
 }
 .r_item-wrap .u-box p{
-    margin-top: 11px;
+    margin-top: 3px;
     margin-left: 5px;
+    font-size: 1.3rem;
 }
 .r_item-wrap .u-name{
     font-weight: bold;
@@ -134,11 +150,11 @@ nav a:hover{
     color: #7b7b7b;
 }
 .r_item-wrap .u-box .u-icon{
-    width: 60px;
+    width: 45px;
 }
 .r_item-wrap .i-content-area{
     margin-top: -23px;
-    margin-left: 70px;
+    margin-left: 53px;
 }
 .r_item-wrap .i-key{
     font-size: 1.5rem;
@@ -162,20 +178,67 @@ nav a:hover{
     font-weight: bold;
 }
 .r_item-wrap .i-fotter{
-    width: 320px;
+    width: 300px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 15px;
+    margin-top: 2px;
 }
 .r_item-wrap .like-wrap button i{
-    margin-left: 49px;;
+    margin-left: 28px;
 }
 .r_item-wrap .i-fotter p{
     color: #808080;
+    margin-right: 20px;
 }
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap');
 .r_item-wrap .k-s-box{
     display: flex;
     justify-content: space-between;
+}
+/* ユーザーレコメンド */
+.reco_u_wrap{
+    margin-top: 10px;
+    background-color: #f6f9fa;
+    border-radius: 17px;
+    padding: 8px 0;
+}
+.reco_u_wrap .u-box{
+    padding: 8px;
+    justify-content: space-between;
+    align-items: center;
+}
+.u-u-wrap{
+    display: flex;
+}
+.u-nc .u-code{
+    margin-top: 0;
+}
+.u-nc .u-code{
+    margin-top: -6px;
+    margin-left: 8px;
+}
+.reco_u_wrap .follow-wrap button{
+    /* ボタン要素リセット */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+         appearance: none;
+    border-radius: 20px;
+    padding: 3px 15px;
+    font-weight: bold;
+    transition: 0.5s;
+    cursor: pointer;
+}
+.reco_u_wrap .follow-wrap button:hover{
+    opacity: 0.5;
+}
+.reco_u_wrap .unfollow-btn{
+    color: #797878;
+    background: #fff;
+    border: 2px solid #cecdcd;
+}
+.reco_u_wrap .follow-btn{
+    color: #ffffff;
+    background: #0f2396;
+    border: 2px solid #0f2396;
 }
