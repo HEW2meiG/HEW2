@@ -160,12 +160,19 @@ class Sell(db.Model):
                 cls.sell_comment.like(f'%{word}%'),
                 )).order_by(desc(Sell.create_at)).all()
         elif sort == 'いいね！の多い順':
-            items =Sell.query.join(Likes).filter(or_(
-                Sell.key1.like(f'%{word}%'),
-                Sell.key2.like(f'%{word}%'),
-                Sell.key3.like(f'%{word}%'),
-                Sell.sell_comment.like(f'%{word}%'),
-                )).group_by(Likes.Sell_id).order_by(func.count(Likes.Sell_id)).all()
+            likes = aliased(Likes)
+            likes_q = likes.query.group_by(likes.Sell_id).with_entities(likes.Sell_id, func.count(likes.Sell_id).label("likecnt")).subquery()
+            items = cls.query.filter(
+                or_(
+                        Sell.key1.like(f'%{word}%'),
+                        Sell.key2.like(f'%{word}%'),
+                        Sell.key3.like(f'%{word}%'),
+                        Sell.sell_comment.like(f'%{word}%')
+                )
+            ).outerjoin(
+                        likes_q,
+                        cls.Sell_id == likes_q.c.Sell_id
+            ).order_by(desc(likes_q.c.likecnt)).all()
         return items
 
     @classmethod

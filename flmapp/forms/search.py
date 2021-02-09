@@ -34,12 +34,12 @@ class NarrowDownSearchForm(FlaskForm):
         )
     value_min = IntegerField('', validators=[NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
     value_max = IntegerField('', validators=[NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
-    state = MultiCheckField('',choices=[('すべて','すべて'),('新品、未使用','新品、未使用'),('未使用に近い','未使用に近い'),\
-    ('目立った傷、汚れなし','目立った傷、汚れなし'),('やや傷や汚れあり','やや傷や汚れあり'),('傷や汚れあり','傷や汚れあり'),('全体的に状態が悪い','全体的に状態が悪い')]\
+    state = MultiCheckField('',choices=[('新品','新品'),('未使用に近い','未使用に近い'),\
+    ('目立った傷や汚れなし','目立った傷や汚れなし'),('やや傷や汚れあり','やや傷や汚れあり'),('傷や汚れあり','傷や汚れあり'),('全体的に状態が悪い','全体的に状態が悪い')]\
         )
-    postage = MultiCheckField('',choices=[('すべて','すべて'),('送料込み(出品者負担)','送料込み(出品者負担)'),('着払い(購入者負担)','着払い(購入者負担)')]\
+    postage = MultiCheckField('',choices=[('送料込み(出品者負担)','送料込み(出品者負担)'),('着払い(購入者負担)','着払い(購入者負担)')]\
         )
-    sellstate = MultiCheckField('',choices=[('すべて','すべて'),('販売中','販売中'),('売り切れ','売り切れ')]\
+    sellstate = MultiCheckField('',choices=[('販売中','販売中'),('売り切れ','売り切れ')]\
         )
     submit = SubmitField('絞り込んで検索')
     clean = SubmitField('クリア')

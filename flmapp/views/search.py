@@ -75,11 +75,8 @@ def narrow_down_search():
     state = None
     postage = None
     sellstate = None
-    print("ねこ")
     if request.method == 'POST' and ndform.validate():
-        print("こねこ")
         search_word = ndform.search_word.data
-        print(search_word)
         sort = ndform.sort.data
         if sort == '並び変え':
             items = Sell.search_by_word(search_word)
@@ -106,7 +103,7 @@ def narrow_down_search():
             items = nditems
             nditems = []
             # 商品の状態
-            if not states == [] and not states == ['すべて']:
+            if not states == []:
                 for item in items:
                     for state in states:
                         if item.item_state.name == state:
@@ -114,7 +111,7 @@ def narrow_down_search():
                 items = nditems
                 nditems = []
             # 配送料の負担
-            if not postages == [] and not postages == ['すべて']:
+            if not postages == []:
                 for item in items:
                     for postage in postages:
                         if item.postage.name == postage:
@@ -122,14 +119,14 @@ def narrow_down_search():
                 items = nditems
                 nditems = []
             # 販売状況
-            if not sellstates == [] and not sellstates == ['すべて']:
+            if not sellstates == []:
                 for item in items:
                     for sellstate in sellstates:
                         if sellstate == '販売中':
                             if item.deal_status.name == '出品中':
                                 nditems += [item]
                         elif sellstate == '売り切れ':
-                            if item.deal_status.name == '取引済み':
+                            if item.deal_status.name == '取引中' or item.deal_status.name == '取引済み':
                                 nditems += [item]
                 items = nditems
                 nditems = []
