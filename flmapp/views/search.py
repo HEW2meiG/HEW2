@@ -26,7 +26,7 @@ from flmapp.forms.search import (
    SearchForm, NarrowDownSearchForm
 )
 from flmapp.models.trade import (
-    Sell
+    Sell, Genre, Item_state, Postage, Send_way, Schedule, Deal_status
 )
 from flmapp.models.reaction import (
     Likes
@@ -53,17 +53,82 @@ def search():
     form = SearchForm(request.form)
     ndform = NarrowDownSearchForm(request.form)
     items = None
+    search_word = None
     if request.method == 'POST' and form.validate():
-        searchword = form.search.data
-        items = Sell.search_by_word(searchword)
-    return render_template('search/search.html', form=form, ndform=ndform, items=items)
+        search_word = form.search.data
+        items = Sell.search_by_word(search_word)
+    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word)
 
 # 絞り込み検索処理
-@bp.route('/search', methods=['GET', 'POST'])
-def narrow_down_search(word):
+@bp.route('/narrow_down_search', methods=['GET', 'POST'])
+def narrow_down_search():
     form = SearchForm(request.form)
     ndform = NarrowDownSearchForm(request.form)
     items = None
-    if request.method == 'POST' and form.validate():
-        items = None
-    return render_template('search/search.html', form=form, ndform=ndform, items=items)
+    nditems = []
+    search_word = None
+    search_query = ""
+    sort = None
+    genre = None
+    value_min = 0
+    value_max = 99999
+    state = None
+    postage = None
+    sellstate = None
+    if request.method == 'POST' and ndform.validate():
+        search_word = ndform.search_word.data
+        sort = ndform.sort.data
+        if sort == '並び変え':
+            items = Sell.search_by_word(search_word)
+        else:
+            items = Sell.search_by_sort(search_word, sort)
+        genre = ndform.genre.data
+        value_min = ndform.value_min.data
+        value_max = ndform.value_max.data
+        states = request.form.getlist('state')
+        postages = request.form.getlist('postage')
+        sellstates = request.form.getlist('sellstate')
+        if items:
+            # ジャンル
+            if not genre == 'ジャンルを選択する':
+                for item in items:
+                    if item.genre.name == genre:
+                        nditems += [item]
+                items = nditems
+                nditems = []
+            # 値段
+            for item in items:
+                if item.price >= value_min and item.price <= value_max:
+                    nditems += [item]
+            items = nditems
+            nditems = []
+            # 商品の状態
+            if not states == []:
+                for item in items:
+                    for state in states:
+                        if item.item_state.name == state:
+                            nditems += [item]
+                items = nditems
+                nditems = []
+            # 配送料の負担
+            if not postages == []:
+                for item in items:
+                    for postage in postages:
+                        if item.postage.name == postage:
+                            nditems += [item]
+                items = nditems
+                nditems = []
+            # 販売状況
+            if not sellstates == []:
+                for item in items:
+                    for sellstate in sellstates:
+                        if sellstate == '販売中':
+                            if item.deal_status.name == '出品中':
+                                nditems += [item]
+                        elif sellstate == '売り切れ':
+                            if item.deal_status.name == '取引中' or item.deal_status.name == '取引済み':
+                                nditems += [item]
+                items = nditems
+                nditems = []
+
+    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word)
