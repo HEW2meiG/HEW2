@@ -19,7 +19,6 @@ div.kosho-form-300 textarea:focus{
 }
 
 
-
 div.kosho-form-300 select{
     width: 300px;
     height: 30px;
@@ -39,7 +38,7 @@ div.kosho-form-200 input{
     border: none;
     border-radius: 10px;
 }
-div.kosho-form-140 input:focus{
+div.kosho-form-200 input:focus{
     outline: none;
 }
 
@@ -51,6 +50,29 @@ div.kosho-form-140 input{
     border-radius: 10px;
 }
 div.kosho-form-140 input:focus{
+    outline: none;
+}
+
+
+div.kosho-form-70 input{
+    width: 70px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-70 input:focus{
+    outline: none;
+}
+
+div.kosho-form-70 select{
+    width: 70px;
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 10px;
+}
+div.kosho-form-70 select:focus{
     outline: none;
 }
 
@@ -70,10 +92,8 @@ div.kosho-form-140 input:focus{
     height: 30px;
     padding: 0 10px;
     border: none;
-    border-radius: 10px;
-}
-.kosho-select-day{
     outline: none;
+    border-radius: 10px;
 }
 
 input, select, textarea{
@@ -91,6 +111,41 @@ input, select, textarea{
     outline: none;
 }
 
+#delete{
+    width: 50px;
+    height: 30px;
+    background-color: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: .2s;
+    outline: none;
+}
+#delete:hover{
+    background-color: #d9a077;
+    transition: .7s;
+}
+
+.edit {
+    width: 50px;
+    height: 30px;
+    background-color: #a73836;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: .2s;
+    outline: none;
+}
+.edit:hover{
+    background-color: #662222;
+    transition: .7s;
+}
+
+.edit a{
+    line-height: 30px;
+    color: white;
+    text-decoration: none;
+}
 
 a.back-home {
     text-decoration: none;
@@ -102,7 +157,19 @@ a.back-home:hover{
     color: #d9a077;
 }
 
+a.back {
+    text-decoration: none;
+    color: #8b4513;
+    font-weight: bold;
+}
+a.back:hover{
+    border-bottom: solid 1px #d9a077;
+    color: #d9a077;
+}
 
+.default-button input{
+    width: 50px;
+}
 
 
 /* 必須 */
@@ -114,6 +181,16 @@ a.back-home:hover{
     border-radius: 5px;
 }
 
+p.finish-msg{
+    width: 400px;
+    margin: 10px auto;
+    padding: 20px;
+    background-color: white;
+    color: #8b4513;
+    border: solid 3px #8b4513;
+    border-radius: 10px;
+
+}
 
 /* 古書邂逅ボタン */
 .kosho-button-300{
@@ -391,6 +468,22 @@ button:focus{
 }
 .pd-t-5{
     padding-top: 50px;
+}
+
+.pd-r-1{
+    padding-right: 10px;
+}
+.pd-r-2{
+    padding-right: 20px;
+}
+.pd-r-3{
+    padding-right: 30px;
+}
+.pd-r-4{
+    padding-right: 40px;
+}
+.pd-r-5{
+    padding-right: 50px;
 }
 
 .lh-1{

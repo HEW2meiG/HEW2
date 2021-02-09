@@ -1,0 +1,15 @@
+table{
+    margin: 50px auto;
+}
+
+a.creca {
+    text-decoration: none;
+    border-bottom: solid 1px #8b4513;
+    color: #8b4513;
+    font-weight: bold;
+}
+a.creca:hover{
+    border-bottom: solid 1px #d9a077;
+    color: #d9a077;
+}
+

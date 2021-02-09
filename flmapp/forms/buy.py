@@ -58,9 +58,9 @@ class ShippingAddressForm(FlaskForm):
 
 class ShippingAddressRegisterForm(FlaskForm):
     """配送先住所登録フォーム"""
-    last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
+    last_name = StringField('お名前（全角）',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
-    last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
+    last_name_kana = StringField('お名前カナ（全角）',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
     first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ"})
     zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456"})
     pref01 = SelectField('都道府県',choices=[('','未選択'),('北海道','北海道'),('青森県','青森県'),('岩手県','岩手県'),('宮城県','宮城県'),('秋田県','秋田県'),\
@@ -80,9 +80,9 @@ class ShippingAddressRegisterForm(FlaskForm):
 
 class ShippingAddressEditForm(FlaskForm):
     """配送先住所編集フォーム"""
-    last_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
+    last_name = StringField('お名前（全角）',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
     first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
-    last_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
+    last_name_kana = StringField('お名前カナ（全角）',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
     first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ"})
     zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456"})
     pref01 = SelectField('都道府県',choices=[('','未選択'),('北海道','北海道'),('青森県','青森県'),('岩手県','岩手県'),('宮城県','宮城県'),('秋田県','秋田県'),\
@@ -109,11 +109,11 @@ class CreditRegisterForm(FlaskForm):
     """クレジットカード情報登録ページフォーム"""
     credit_name = StringField('クレジットカード名義',validators=[DataRequired()])
     credit_num = IntegerField('クレジットカード番号 ',validators=[DataRequired()], render_kw={"placeholder":"半角数字のみ"})
-    expiration_date01 = SelectField('',choices=[(1,'01'),(2,'02'),(3,'03'),(4,'04'),(5,'05'),(6,'06'),(7,'07'),(8,'08'),(9,'09'),\
+    expiration_date01 = SelectField('有効期限',choices=[(1,'01'),(2,'02'),(3,'03'),(4,'04'),(5,'05'),(6,'06'),(7,'07'),(8,'08'),(9,'09'),\
         (10,'10'),(11,'11'),(12,'12')],validators=[DataRequired()],coerce=int)
     expiration_date02 = SelectField('',choices=[(2021,'21'),(2022,'22'),(2023,'23'),(2024,'24'),(2025,'25'),(2026,'26'),(2027,'27'),(2028,'28'),(2029,'29'),\
         (2030,'30'),(2031,'31')],validators=[DataRequired()],coerce=int)
-    security_code = IntegerField('セキュリティコード: ', validators=[DataRequired()], render_kw={"placeholder":"カード背面4桁もしくは3桁の番号"})
+    security_code = IntegerField('セキュリティコード ', validators=[DataRequired()])
     is_default = BooleanField('デフォルトの支払い方法に設定する', render_kw={'checked': True})
     submit = SubmitField('追加する')
 
