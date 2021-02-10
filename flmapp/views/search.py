@@ -47,26 +47,32 @@ def likes_count_processor():
         return len(all_likes)
     return dict(likes_count=likes_count)
 
-# キーワード検索処理
+# キーワード商品検索処理
 @bp.route('/search', methods=['GET', 'POST'])
 def search():
     form = SearchForm(request.form)
     ndform = NarrowDownSearchForm(request.form)
     items = None
     search_word = None
+    change_search = 'ITEM'
     if request.method == 'POST' and form.validate():
         search_word = form.search.data
-        items = Sell.search_by_word(search_word)
-    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word)
+        change_search = form.change_search.data
+        if change_search == 'ITEM':
+            items = Sell.item_search_by_word(search_word)
+        elif change_search == 'USER':
+            items = User.user_search_by_word(search_word)
+    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word, change_search=change_search)
 
-# 絞り込み検索処理
+# 絞り込み商品検索処理
 @bp.route('/narrow_down_search', methods=['GET', 'POST'])
 def narrow_down_search():
     form = SearchForm(request.form)
     ndform = NarrowDownSearchForm(request.form)
     items = None
-    nditems = []
     search_word = None
+    change_search = 'ITEM'
+    nditems = []
     search_query = ""
     sort = None
     genre = None
@@ -79,9 +85,9 @@ def narrow_down_search():
         search_word = ndform.search_word.data
         sort = ndform.sort.data
         if sort == '並び変え':
-            items = Sell.search_by_word(search_word)
+            items = Sell.item_search_by_word(search_word)
         else:
-            items = Sell.search_by_sort(search_word, sort)
+            items = Sell.user_search_by_word(search_word, sort)
         genre = ndform.genre.data
         value_min = ndform.value_min.data
         value_max = ndform.value_max.data
@@ -131,4 +137,4 @@ def narrow_down_search():
                 items = nditems
                 nditems = []
 
-    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word)
+    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word, change_search=change_search)

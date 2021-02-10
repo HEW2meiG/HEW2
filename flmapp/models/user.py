@@ -1,6 +1,7 @@
 from flmapp import db, login_manager
 from flask_bcrypt import generate_password_hash, check_password_hash
 from sqlalchemy import func, CheckConstraint
+from sqlalchemy import and_, or_
 from flask_login import UserMixin, current_user
 
 from datetime import datetime, timedelta
@@ -77,6 +78,14 @@ class User(UserMixin, db.Model):
     def select_user_by_user_code(cls, user_code):
         """ユーザーコードによってユーザーを得る"""
         return cls.query.filter_by(user_code=user_code).first()
+
+    @classmethod
+    def user_search_by_word(cls, word):
+        """ユーザー情報の検索"""
+        return cls.query.filter(or_(
+            cls.username.like(f'%{word}%'),
+            cls.prof_comment.like(f'%{word}%')
+            )).all()
 
 
 class UserInfo(db.Model):

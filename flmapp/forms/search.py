@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import (
     StringField, FileField, SubmitField, SelectField,
-    SelectMultipleField, HiddenField, IntegerField
+    SelectMultipleField, HiddenField, IntegerField, RadioField
 )
 from wtforms.validators import DataRequired, NumberRange
 from wtforms import ValidationError
@@ -18,7 +18,8 @@ class MultiCheckField(SelectMultipleField):
 
 class SearchForm(FlaskForm):
     """商品検索フォーム"""
-    search = StringField('', validators=[DataRequired()])
+    search = StringField('')
+    change_search = RadioField('',choices=[('ITEM', 'ITEM'), ('USER', 'USER')],default='ITEM')
     submit = SubmitField('検索')
 
 
@@ -32,8 +33,8 @@ class NarrowDownSearchForm(FlaskForm):
     ('青春','青春'),('ミステリー','ミステリー'),('イヤミス','イヤミス'),('歴史','歴史'),\
     ('時代','時代'),('物語(短編)','物語(短編)'),('物語(中編)','物語(中編)'),('物語(長編)','物語(長編)')]\
         )
-    value_min = IntegerField('', validators=[NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
-    value_max = IntegerField('', validators=[NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
+    value_min = IntegerField('',validators=[NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
+    value_max = IntegerField('',validators=[NumberRange(300, 99999, '300円から99,999円までの値段を入力してください。')])
     state = MultiCheckField('',choices=[('新品','新品'),('未使用に近い','未使用に近い'),\
     ('目立った傷や汚れなし','目立った傷や汚れなし'),('やや傷や汚れあり','やや傷や汚れあり'),('傷や汚れあり','傷や汚れあり'),('全体的に状態が悪い','全体的に状態が悪い')]\
         )
