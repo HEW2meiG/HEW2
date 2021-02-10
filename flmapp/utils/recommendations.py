@@ -1,26 +1,20 @@
 from math import sqrt
 import numpy as np
+from functools import lru_cache
 
-# person1とperson2の距離を基にした類似性スコアを返す
-# ユークリッド距離によるスコア
-def sim_distance(prefs,person1,person2):
-    # 二人とも評価しているアイテムのリストを得る
-    si={}
-    for item in prefs[person1]:
-        if item in prefs[person2]:
-            si[item]=1
+from flmapp.models.user import (
+    User
+)
+from flmapp.models.reaction import (
+    Likes, UserConnect, BrowsingHistory
+)
+from flmapp.models.trade import (
+    Sell, Buy
+)
 
-    # 両者共に評価しているものが一つもなければ0を返す
-    if len(si)==0: return 0
 
-    # すべての差の平方を足し合わせる
-    sum_of_squares=sum([pow(prefs[person1][item]-prefs[person2][item],2)
-                        for item in prefs[person1] if item in prefs[person2]])
-    
-    return 1/(1+sum_of_squares)
-
-# ピアソン相関によるスコア
 def sim_pearson(prefs,p1,p2):
+    """ピアソン相関によるスコア"""
     # 両者が互いに評価しているアイテムのリストを取得
     si={}
     for item in prefs[p1]:
@@ -52,11 +46,18 @@ def sim_pearson(prefs,p1,p2):
 
     return r
 
-# ディクショナリprefsからpersonにもっともマッチするものたちを返す
-# 結果の数と類似性関数はオプションのパラメータ
-def topMatches(prefs,person,followed,similarity=sim_pearson):
-    scores=[(similarity(prefs,person,other),other)
-            for other in prefs if other!=person and other not in followed]
+@lru_cache()
+def topMatches(c_userid):
+    """
+    ディクショナリprefsからc_useridにもっともマッチするものたちを返す
+    """
+    prefs = loadData()
+    followed = UserConnect.select_follows_user_id_by_user_id(c_userid)
+    # 一次元タプルに変換
+    followed = sum(followed, ())
+
+    scores=[(sim_pearson(prefs,c_userid,other),other)
+            for other in prefs if other!=c_userid and other not in followed]
     # 高スコアがリストの最初に来るように並び替える
     scores.sort()
     scores.reverse()
@@ -70,22 +71,32 @@ def topMatches(prefs,person,followed,similarity=sim_pearson):
     else:
         return None
 
-# person以外のユーザーの評点の重み付き平均を行い、pesonへの推薦を算出する
-def getRecommendations(prefs,person,on_display,sell,similarity=sim_pearson):
+@lru_cache()
+def getRecommendations(c_userid):
+    """c_userid以外のユーザーの評点の重み付き平均を行い、c_useridへの推薦を算出する"""
+    prefs = loadData()
+    on_display = Sell.select_all_sell_by_deal_status(1)
+    sell = Sell.select_sell_id_by_user_id(c_userid)
+    followed = UserConnect.select_follows_user_id_by_user_id(c_userid)
+    # 一次元タプルに変換
+    on_display = sum(on_display, ())
+    followed = sum(followed, ())
+    sell = sum(sell, ())
+
     totals={}
     simSums={}
     for other in prefs:
         # 自分自身とは比較しない
-        if other==person:
+        if other==c_userid:
             continue
-        sim=similarity(prefs,person,other)
+        sim=sim_pearson(prefs,c_userid,other)
 
         # 0以下のスコアは無視する
         if sim<=0: continue
 
         for item in prefs[other]:
             # 評価が1か0かつ自分が出品した商品以外
-            if (item not in prefs[person] or prefs[person][item]==0 or prefs[person][item]==1) and item not in sell:
+            if (item not in prefs[c_userid] or prefs[c_userid][item]==0 or prefs[c_userid][item]==1) and item not in sell:
                 # 出品中の商品の特典のみを算出
                 if item in on_display:
                     # 類似度*スコア
@@ -138,3 +149,51 @@ def associationRules(transactions,userid,followed):
     for rcom_userid in recom_user_sorted:
         rcom_userid_list = rcom_userid_list.union(rcom_userid[0])
     return list(rcom_userid_list)
+
+
+def loadData():
+    """データ整形"""
+    prefs={}
+    users = User.query.all()
+    items = Sell.query.all()
+    for user in users:
+        userid = user.User_id
+        prefs.setdefault(userid,{})
+        for item in items:
+            itemid = item.Sell_id
+            rating = 0
+            bought = Buy.buy_exists_user_id(userid, itemid)
+            if bought:
+                rating += 3
+            else:
+                b_history = BrowsingHistory.b_history_exists(userid, itemid)
+                if b_history:
+                    rating += 1
+                liked = Likes.liked_exists_user_id(userid, itemid)
+                if liked:
+                    rating += 2
+            prefs[userid][itemid] = rating
+    return prefs
+
+
+def recommend(c_userid):
+    """協調フィルタリングユーザーベースレコメンド"""
+    # 商品レコメンド
+    recommends = getRecommendations(c_userid)
+    # ユーザーレコメンド
+    u_recommends = topMatches(c_userid)
+    r_item_list = []
+    if recommends is not None:
+        for recommend in recommends:
+            recommend_id = int(recommend)
+            r_item_list.append(Sell.select_sell_by_sell_id(recommend_id))
+    elif recommends is None:
+        r_item_list = []
+    r_user_list = []
+    if u_recommends is not None:
+        for u_recommend in u_recommends:
+            u_recommend_id = int(u_recommend)
+            r_user_list.append(User.select_user_by_id(u_recommend_id))
+    elif u_recommends is None:
+        r_user_list = []
+    return r_item_list,r_user_list
