@@ -9,7 +9,7 @@ from flmapp import db
 from functools import wraps # カスタムデコレーターに使用
 
 from flmapp.utils.recommendations import (
-    getRecommendations, topMatches, getRecoloadData, topMatchloadData
+    topMatches, getRecommendations
 )
 from flmapp.models.user import (
     User
@@ -45,7 +45,7 @@ def like_ajax():
     like = Likes.liked_exists(sell_id)
     # レコメンドキャッシュのクリア
     getRecommendations.cache_clear()
-    getRecoloadData.cache_clear()
+    topMatches.cache_clear()
     # すでにいいねしていたら
     if like:
         #いいねテーブルから削除する
@@ -77,7 +77,6 @@ def follow_ajax():
     follow = UserConnect.followed_exists(user_id)
     # レコメンドキャッシュのクリア
     topMatches.cache_clear()
-    topMatchloadData.cache_clear()
     # すでにフォローしていたら
     if follow:
         #フォローテーブルから削除する

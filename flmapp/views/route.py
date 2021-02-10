@@ -8,7 +8,7 @@ from flask_login import (
 from flmapp import db
 
 from flmapp.utils.recommendations import (
-    getRecommendations, topMatches
+    recommend
 )# レコメンド
 from flmapp.models.user import (
     User
@@ -36,29 +36,6 @@ def likes_count_processor():
     return dict(likes_count=likes_count)
 
 
-def recommend():
-    """協調フィルタリングユーザーベースレコメンド"""
-    # 商品レコメンド
-    recommends = getRecommendations(current_user.User_id)
-    # ユーザーレコメンド
-    u_recommends = topMatches(current_user.User_id)
-    r_item_list = []
-    if recommends is not None:
-        for recommend in recommends:
-            recommend_id = int(recommend)
-            r_item_list.append(Sell.select_sell_by_sell_id(recommend_id))
-    elif recommends is None:
-        r_item_list = []
-    r_user_list = []
-    if u_recommends is not None:
-        for u_recommend in u_recommends:
-            u_recommend_id = int(u_recommend)
-            r_user_list.append(User.select_user_by_id(u_recommend_id))
-    elif u_recommends is None:
-        r_user_list = []
-    return r_item_list,r_user_list
-
-
 @bp.route('/')
 def home():
     """ホーム(新着順)"""
@@ -72,7 +49,7 @@ def home():
     r_item_list = []
     r_user_list = []
     if current_user.is_authenticated:
-        r_item_list,r_user_list = recommend()
+        r_item_list,r_user_list = recommend(current_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -99,7 +76,7 @@ def timeline():
     # レコメンドリスト
     r_item_list = []
     r_user_list = []
-    r_item_list,r_user_list = recommend()
+    r_item_list,r_user_list = recommend(current_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     print(items)
@@ -128,7 +105,7 @@ def hit():
     r_item_list = []
     r_user_list = []
     if current_user.is_authenticated:
-        r_item_list,r_user_list = recommend()
+        r_item_list,r_user_list = recommend(current_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:

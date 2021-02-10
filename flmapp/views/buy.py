@@ -11,7 +11,7 @@ from flmapp import db
 from functools import wraps # カスタムデコレーターに使用
 
 from flmapp.utils.recommendations import (
-    getRecommendations, topMatches, getRecoloadData, topMatchloadData
+    getRecommendations, topMatches
 )
 from flmapp.models.user import (
     User, ShippingAddress, Credit
@@ -179,8 +179,6 @@ def buy_complete(item_id):
     # レコメンドキャッシュのクリア
     getRecommendations.cache_clear()
     topMatches.cache_clear()
-    getRecoloadData.cache_clear()
-    topMatchloadData.cache_clear()
     return render_template('buy/buy_complete.html', item=sell, buy=buy)
 
 
