@@ -19,8 +19,8 @@ class MultiCheckField(SelectMultipleField):
 class SearchForm(FlaskForm):
     """商品検索フォーム"""
     search = StringField('')
-    change_search = RadioField('',choices=[('ITEM', 'ITEM'), ('USER', 'USER')],default='ITEM')
     submit = SubmitField('検索')
+    change_search = HiddenField()
 
 
 class NarrowDownSearchForm(FlaskForm):
@@ -43,5 +43,3 @@ class NarrowDownSearchForm(FlaskForm):
     sellstate = MultiCheckField('',choices=[('販売中','販売中'),('売り切れ','売り切れ')]\
         )
     submit = SubmitField('絞り込んで検索')
-    clean = SubmitField('クリア')
-

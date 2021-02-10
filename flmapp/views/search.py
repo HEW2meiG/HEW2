@@ -47,7 +47,7 @@ def likes_count_processor():
         return len(all_likes)
     return dict(likes_count=likes_count)
 
-# キーワード商品検索処理
+# キーワード商品・ユーザー検索処理
 @bp.route('/search', methods=['GET', 'POST'])
 def search():
     form = SearchForm(request.form)
@@ -57,11 +57,25 @@ def search():
     change_search = 'ITEM'
     if request.method == 'POST' and form.validate():
         search_word = form.search.data
-        change_search = form.change_search.data
         if change_search == 'ITEM':
             items = Sell.item_search_by_word(search_word)
         elif change_search == 'USER':
             items = User.user_search_by_word(search_word)
+    return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word, change_search=change_search)
+
+# キーワード商品・ユーザー検索選択処理
+@bp.route('/change_search/<search_word>/<change_search>')
+def change_search(search_word, change_search):
+    form = SearchForm(request.form)
+    ndform = NarrowDownSearchForm(request.form)
+    items = None
+    if not search_word == '':
+        if change_search == 'ITEM':
+            items = Sell.item_search_by_word(search_word)
+        elif change_search == 'USER':
+            items = User.user_search_by_word(search_word)
+    else:
+        search_word = None
     return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word, change_search=change_search)
 
 # 絞り込み商品検索処理

@@ -9,12 +9,12 @@
 <h2>検索</h2>
 <form method="POST" action="{{url_for('search.search')}}">
     {{ form.csrf_token }}
-    {% if items %}
+    {% if search_word %}
         {{ render_field(form.search, value=search_word) }}
     {% else %}
     {{ render_field(form.search) }}
     {% endif %}
-    {{ render_field(form.change_search) }}
+    {{ form.change_search(value=change_search) }}
     {{ form.submit() }}
 </form>
 <div class="row">
@@ -23,6 +23,15 @@
         {{ message }}
         {% endfor %}
     </div>
+</div>
+<div>
+    {% if search_word %}
+        <a href="{{url_for('search.change_search', search_word=search_word, change_search='ITEM')}}">ITEM</a>
+        <a href="{{url_for('search.change_search', search_word=search_word, change_search='USER')}}">USER</a>
+    {% else %}
+        <a href="{{url_for('search.change_search', search_word='', change_search='ITEM')}}">ITEM</a>
+        <a href="{{url_for('search.change_search', search_word='', change_search='USER')}}">USER</a>
+    {% endif %}
 </div>
 {% if items %}
     {% if change_search=='ITEM' %}

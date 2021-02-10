@@ -84,7 +84,7 @@ class User(UserMixin, db.Model):
         """ユーザー情報の検索"""
         return cls.query.filter(or_(
             cls.username.like(f'%{word}%'),
-            cls.prof_comment.like(f'%{word}%')
+            cls.user_code.like(f'%{word}%')
             )).all()
 
 
