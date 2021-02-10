@@ -38,38 +38,10 @@ def likes_count_processor():
 
 def recommend():
     """協調フィルタリングユーザーベースレコメンド"""
-    # データ整形
-    prefs={}
-    users = User.query.all()
-    items = Sell.query.all()
-    on_display = Sell.select_all_sell_by_deal_status(1)
-    sell = Sell.select_sell_id_by_user_id(current_user.User_id)
-    followed = UserConnect.select_follows_user_id_by_user_id(current_user.User_id)
-    # 一次元タプルに変換
-    on_display = sum(on_display, ())
-    followed = sum(followed, ())
-    sell = sum(sell, ())
-    for user in users:
-        userid = user.User_id
-        prefs.setdefault(userid,{})
-        for item in items:
-            itemid = item.Sell_id
-            rating = 0
-            bought = Buy.buy_exists_user_id(userid, itemid)
-            if bought:
-                rating += 3
-            else:
-                b_history = BrowsingHistory.b_history_exists(userid, itemid)
-                if b_history:
-                    rating += 1
-                liked = Likes.liked_exists_user_id(userid, itemid)
-                if liked:
-                    rating += 2
-            prefs[userid][itemid] = rating
     # 商品レコメンド
-    recommends = getRecommendations(prefs,current_user.User_id,on_display,sell)
+    recommends = getRecommendations(current_user.User_id)
     # ユーザーレコメンド
-    u_recommends = topMatches(prefs,current_user.User_id, followed)
+    u_recommends = topMatches(current_user.User_id)
     r_item_list = []
     if recommends is not None:
         for recommend in recommends:
@@ -130,6 +102,7 @@ def timeline():
     r_item_list,r_user_list = recommend()
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
+    print(items)
     for item in items:
         liked = Likes.liked_exists(item.Sell_id)
         if liked:

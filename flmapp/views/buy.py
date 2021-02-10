@@ -10,6 +10,9 @@ from flask_login import (
 from flmapp import db
 from functools import wraps # カスタムデコレーターに使用
 
+from flmapp.utils.recommendations import (
+    getRecommendations, topMatches, getRecoloadData, topMatchloadData
+)
 from flmapp.models.user import (
     User, ShippingAddress, Credit
 )
@@ -173,6 +176,11 @@ def buy(item_id):
 def buy_complete(item_id):
     sell = Sell.select_sell_by_sell_id(item_id)
     buy = Buy.select_buy_by_sell_id(item_id)
+    # レコメンドキャッシュのクリア
+    getRecommendations.cache_clear()
+    topMatches.cache_clear()
+    getRecoloadData.cache_clear()
+    topMatchloadData.cache_clear()
     return render_template('buy/buy_complete.html', item=sell, buy=buy)
 
 
