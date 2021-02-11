@@ -1,0 +1,107 @@
+h1{
+    font-size: 1.5em;
+    text-align: center;
+    padding: 30px 0 15px 0;
+}
+h2{
+    font-size: 1.8rem;
+}
+.container{
+    text-align: left;
+}
+.item-wrap{
+    width: 550px;
+    margin: 10px auto;
+    border-radius: 10px;
+}
+.u-icon{
+    width: 50px;
+    border-radius: 50%;
+    border: 2px solid #ececec;
+}
+.i-fotter{
+    display: inline;
+    text-align: right;
+}
+.i-fotter p{
+    margin-right: 10px;
+}
+section{
+    width: 550px;
+    margin: 0 auto;
+    padding: 0px 60px;
+    padding-top: 40px;
+}
+.i-pri{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.i-pri p{
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+.postage{
+    font-size: 1.4rem;
+    font-weight: normal;
+    margin-left: 10px;
+}
+.payway-b{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.payway-b a{
+    color: #0095ee;
+    font-size: 1.4rem;
+}
+.payway-b a:hover{
+    color: #005485;
+}
+.bold-tit{
+    font-weight: bold;
+    margin-bottom: 13px;
+}
+.shadd-b{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.shadd-b a{
+    color: #0095ee;
+    font-size: 1.4rem;
+}
+.shadd-b a:hover{
+    color: #005485;
+}
+.sh-msg{
+    color: #e54747;
+    font-weight: bold;
+}
+.buy{
+    margin-top: 40px;
+    text-align: center;
+}
+.back-btn{
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 60px;
+}
+.back-btn a{
+    width: 300px;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-radius: 10px;
+    color: #ffffff;
+    font-weight: bold;
+    transition: .2s;
+    background-color: #888;
+    text-align: center;
+    font-size: 1.4rem;
+}
+.back-btn a:hover{
+    opacity: 0.7;
+}
