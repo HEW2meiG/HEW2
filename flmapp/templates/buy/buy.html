@@ -5,77 +5,104 @@
 {% endblock %}
 {%block head %}
 <!-- ↓読み込むcssファイルをここに記述してください。 -->
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/auth/')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/item.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buy/buy.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
     <p class="finish-msg">{{ message }}</p>
 {% endfor %}
 <h1>購入内容の確認</h1>
-<img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-{{ item.user.username }}
-{{ item.key1 }}
-{{ item.key2 }}
-{{ item.key3 }}
-{{ item.price }}
-{{ item.sell_comment }}
-{{ item.postage.name }}
-<p>支払い金額:<span>{{ item.price }}</span>円</p>
+<!-- ここから 購入商品 -->
+<article class="item-wrap">
+    <div class="u-box">
+        <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+        <p class="u-name">{{ item.user.username }}</p>
+        <p class="u-code">{{ item.user.user_code }}</p>
+    </div>
+    <div class="i-content-area">
+        <div class="k-s-box">
+            <div class="i-key">
+                <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
+                <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
+                <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+            </div>
+        </div>
+        <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
+    </div>
+</article>
+<!-- ここまで　購入商品 -->
+<section>
+    <div class="i-pri">
+        <h2>支払い金額</h2>
+        <p>&yen;{{ item.price }}<span class="postage">{{ item.postage.name }}</span></p>
+    </div>
+</section>
 <form method="POST">
     {{ form.csrf_token }}
-    <h3>支払い方法</h3>
-    <a href="{{url_for('buy.pay_way', item_id=item.Sell_id)}}">変更する</a>
-    {% if session['pay_way']==1 %}
-        {{ form.pay_way(value=1) }}
-        <p>代金引換</p>
-    {% elif session['pay_way']==2 %}
-        {{ form.pay_way(value=2) }}
-        {{ form.Credit_id(value=session['Credit_id']) }}
-        <p>クレジットカード</p>
-        {% set credit = search_credit(session['Credit_id']) %}
-        <p>{{ credit.credit_name }}</p>
-        <p>{{ credit.credit_num | credit_num_format }}</p>
-        <p>{{ credit.expire.strftime('%m/%y') }}</p>
-    {% elif current_user.default_pay_way==2 %}
-        {{ form.pay_way(value=2) }}
-        {{ form.Credit_id(value=current_user.default_Credit_id) }}
-        <p>クレジットカード</p>
-        {% set credit = search_credit(current_user.default_Credit_id) %}
-        <p>{{ credit.credit_name }}</p>
-        <p>{{ credit.credit_num | credit_num_format }}</p>
-        <p>{{ credit.expire.strftime('%m/%y') }}</p>
-    {% else %}
-        {{ form.pay_way(value=1) }}
-        <p>代金引換</p>
-    {% endif %}
-    <h3>配送先</h3>
-    {% if session['ShippingAddress_id'] %}
-        {% set shippingaddress = search_shippingaddress(session['ShippingAddress_id']) %}
-        <p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
-        <p>{{ shippingaddress.zip_code }}</p>
-        <p>{{ shippingaddress.prefecture }}</p>
-        <p>{{ shippingaddress.address1 }}</p>
-        <p>{{ shippingaddress.address2 }}</p>
-        <p>{{ shippingaddress.address3 }}</p>
-        {{ form.ShippingAddress_id(value=session['ShippingAddress_id']) }}
-        <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">変更する</a>
-    {% elif current_user.default_ShippingAddress_id %}
-        {% set shippingaddress = search_shippingaddress(current_user.default_ShippingAddress_id) %}
-        <p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
-        <p>{{ shippingaddress.zip_code }}</p>
-        <p>{{ shippingaddress.prefecture }}</p>
-        <p>{{ shippingaddress.address1 }}</p>
-        <p>{{ shippingaddress.address2 }}</p>
-        <p>{{ shippingaddress.address3 }}</p>
-        {{ form.ShippingAddress_id(value=current_user.default_ShippingAddress_id) }}
-        <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">変更する</a>
-    {% else %}
-        <p>配送先住所を追加してください。</p>
-        <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">追加する</a>
-    {% endif %}
-    <div>
+    <section>
+        <div class="payway-b">
+            <h2>支払い方法</h2>
+            <a href="{{url_for('buy.pay_way', item_id=item.Sell_id)}}">変更する</a>
+        </div>
+        {% if session['pay_way']==1 %}
+            {{ form.pay_way(value=1) }}
+            <p class="bold-tit">代金引換</p>
+        {% elif session['pay_way']==2 %}
+            {{ form.pay_way(value=2) }}
+            {{ form.Credit_id(value=session['Credit_id']) }}
+            <p class="bold-tit">クレジットカード</p>
+            {% set credit = search_credit(session['Credit_id']) %}
+            <p>{{ credit.credit_name }}</p>
+            <p>{{ credit.credit_num | credit_num_format }}</p>
+            <p>{{ credit.expire.strftime('%m/%y') }}</p>
+        {% elif current_user.default_pay_way==2 %}
+            {{ form.pay_way(value=2) }}
+            {{ form.Credit_id(value=current_user.default_Credit_id) }}
+            <p>クレジットカード</p>
+            {% set credit = search_credit(current_user.default_Credit_id) %}
+            <p>{{ credit.credit_name }}</p>
+            <p>{{ credit.credit_num | credit_num_format }}</p>
+            <p>{{ credit.expire.strftime('%m/%y') }}</p>
+        {% else %}
+            {{ form.pay_way(value=1) }}
+            <p class="bold-tit">代金引換</p>
+        {% endif %}
+    </section>
+    <section>
+        <div class="shadd-b">
+            <h2>配送先</h2>
+        {% if session['ShippingAddress_id'] %}
+            <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">変更する</a></div>
+            {% set shippingaddress = search_shippingaddress(session['ShippingAddress_id']) %}
+            <p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
+            <p>{{ shippingaddress.zip_code }}</p>
+            <p>{{ shippingaddress.prefecture }}</p>
+            <p>{{ shippingaddress.address1 }}</p>
+            <p>{{ shippingaddress.address2 }}</p>
+            <p>{{ shippingaddress.address3 }}</p>
+            {{ form.ShippingAddress_id(value=session['ShippingAddress_id']) }}
+        {% elif current_user.default_ShippingAddress_id %}
+            <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">変更する</a></div>
+            {% set shippingaddress = search_shippingaddress(current_user.default_ShippingAddress_id) %}
+            <p>{{ shippingaddress.last_name }}{{ shippingaddress.first_name }}</p>
+            <p>{{ shippingaddress.zip_code }}</p>
+            <p>{{ shippingaddress.prefecture }}</p>
+            <p>{{ shippingaddress.address1 }}</p>
+            <p>{{ shippingaddress.address2 }}</p>
+            <p>{{ shippingaddress.address3 }}</p>
+            {{ form.ShippingAddress_id(value=current_user.default_ShippingAddress_id) }}
+        {% else %}
+            <a href="{{url_for('buy.shippingaddress', item_id=item.Sell_id)}}">追加する</a></div>
+            <p class="sh-msg">※配送先住所を追加してください。</p>
+        {% endif %}
+    </section>
+    <div class="buy">
         {{ form.submit() }}
     </div>
 </form>
-<a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">戻る</a>
+<div class="back-btn">
+    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">戻る</a>
+</div>
 {% endblock %}
