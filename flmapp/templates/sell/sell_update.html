@@ -4,44 +4,75 @@
 出品情報編集画面 - {{ super() }}
 {% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sell/sell_complete.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sell/sell_update.css')}}">
 {% endblock %}
 {% block content %}
-<h1>出品情報編集</h1>
-{% for message in get_flashed_messages() %}
-    {{ message }}
-{% endfor %}
-<form method="POST" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    {{render_field(form.sell_title, value=sell.sell_title) }}
-    {{ form.item_picture_path.label }}<br>
-    <p>
-        商品の画像は購入者が受け取り確認時に公開されます。<br>
-        <span style="color: red;">*必ず出品する本をご自身で撮影した画像にしてください。</span>
-    </p>
-    {{ form.item_picture_path() }}
-    {% if form.item_picture_path.errors %}
-        <ul>
-            {% for error in form.item_picture_path.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <h4>この本を構成する3つのキーワード</h4>
-    {{ render_field(form.key1, value=sell.key1) }}
-    {{ render_field(form.key2, value=sell.key2) }}
-    {{ render_field(form.key3, value=sell.key3) }}
-    {{ render_field(form.sell_comment) }}
-    <h4>商品の詳細</h4>
-    {{ render_field(form.genre) }}
-    {{ render_field(form.item_state) }}
-    {{ render_field(form.postage) }}
-    {{ render_field(form.send_way) }}
-    {{ render_field(form.consignor) }}
-    {{ render_field(form.schedule) }}
-    {{ render_field(form.remarks, value=sell.remarks) }}
-    {{ render_field(form.price, value=sell.price) }}
-    {{ form.submit() }}
-</form>
-<a href="{{url_for('item.itemdata', item_id=sell.Sell_id)}}">戻る</a>
+<div class="sell-update">
+    <h1>出品情報編集</h1>
+    {% for message in get_flashed_messages() %}
+        {{ message }}
+    {% endfor %}
+    <form method="POST" enctype="multipart/form-data">
+        <div class="sell-update-form">
+            {{ form.csrf_token }}
+            {{render_field(form.sell_title, value=sell.sell_title) }}
+        </div>
+        <div id="iconbox">
+            {{ form.item_picture_path.label }}
+            <p>
+                商品の画像は購入者が受け取り確認時に公開されます。<br>
+                <span style="color: red;">*必ず出品する本をご自身で撮影した画像にしてください。<span></span>
+            </p>
+            {% if form.item_picture_path.errors %}
+                    <ul>
+                        {% for error in form.item_picture_path.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+            {{ form.item_picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
+            <p>
+                    <div class="trim">
+                        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height:200px;">
+                    </div>
+            </p>
+        </div>
+        <div class="sell-update-form pd-b-3">
+            <h4 class="mg-t-5">この本を構成する3つのキーワード</h4>
+            {{ render_field(form.key1, value=sell.key1) }}
+            {{ render_field(form.key2, value=sell.key2) }}
+            {{ render_field(form.key3, value=sell.key3) }}
+            {{ render_field(form.sell_comment) }}
+            <h4>商品の詳細</h4>
+            {{ render_field(form.genre) }}
+            {{ render_field(form.item_state) }}
+            {{ render_field(form.postage) }}
+            {{ render_field(form.send_way) }}
+            {{ render_field(form.consignor) }}
+            {{ render_field(form.schedule) }}
+            {{ render_field(form.remarks, value=sell.remarks) }}
+            {{ render_field(form.price, value=sell.price) }}
+        </div>
+</div>
+        <div class="mg-t-1 txt-center">
+            {{ form.submit() }}
+        </div>
+    </form>
+
+    <div class="mg-tb-2 txt-center">
+        <a href="{{url_for('route.home')}}" class="back-home">ホームへ戻る</a>
+    </div>
+
+<script>
+
+    function previewImage(obj)
+    {
+        var fileReader = new FileReader();
+        fileReader.onload = (function() {
+            document.getElementById('preview').src = fileReader.result;
+        });
+        fileReader.readAsDataURL(obj.files[0]);
+    }
+
+</script>
 {% endblock %}
