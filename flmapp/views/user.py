@@ -79,14 +79,14 @@ def userdata(user_code):
     # レコメンドリスト
     r_user_list = u_recommend(user.User_id)
     # ログイン中のユーザーがユーザーをフォローしているかの判定
-    users = []
-    users.append(user)
-    users.extend(r_user_list)
+    f_users = []
+    f_users.append(user)
+    f_users.extend(r_user_list)
     followed_list = []
-    for user in users:
-        followed = UserConnect.followed_exists(user.User_id)
+    for f_user in f_users:
+        followed = UserConnect.followed_exists(f_user.User_id)
         if followed:
-            followed_list.append(user.User_id)
+            followed_list.append(f_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
