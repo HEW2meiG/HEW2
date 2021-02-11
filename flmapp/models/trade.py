@@ -132,7 +132,7 @@ class Sell(db.Model):
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
     @classmethod
-    def search_by_word(cls, word):
+    def item_search_by_word(cls, word):
         """出品情報の検索"""
         return cls.query.filter(or_(
             cls.key1.like(f'%{word}%'),
@@ -142,7 +142,7 @@ class Sell(db.Model):
             )).all()
  
     @classmethod
-    def search_by_sort(cls, word, sort):
+    def item_search_by_sort(cls, word, sort):
         """出品情報の並び替え検索"""
         if sort == '価格の安い順':
             items =cls.query.filter(or_(
