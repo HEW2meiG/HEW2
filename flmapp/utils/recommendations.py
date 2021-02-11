@@ -181,7 +181,7 @@ def associationRules(transactions,userid,followed):
 
     recom_user = {}
     for rule_user in rules:
-        if userid in rule_user[0] and not any(map(rule_user[1].__contains__, followed)) and not userid in rule_user[1]:
+        if userid in rule_user[0] and not any(map(rule_user[1].__contains__, followed)):
             # 支持度
             support = rule_user[2]/len(transactions)
             # リフト値 1より大きい場合は、Aが発生するとBが発生しやすくなると解釈できる
