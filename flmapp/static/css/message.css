@@ -1,15 +1,18 @@
-.msger-wrap p{
-	font-weight: bold;
-}
-.msger-wrap .u-icon{
-	width: 50px;
-}
 .msg-content{
 	margin-bottom: 160px;
 }
 .msger-wrap{
+	width: 65px;
 	display: flex;
+    flex-direction: column;
 	align-items: center;
+}
+.msger-wrap .u-icon{
+	width: 50px;
+}
+.msger-wrap p{
+	font-weight: bold;
+	font-size: 1.2rem;
 }
 .speech-bubble-dest {
 	min-width: 200px;
@@ -18,6 +21,9 @@
 	border-radius: 20px;
 	padding: 10px;
 	margin-right: 10px;
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .speech-bubble-dest:after {
 	content: '';
@@ -40,6 +46,9 @@
 	border-radius: 20px;
 	padding: 10px;
 	margin-left: 10px;
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .speech-bubble-self::after{
 	content: '';
@@ -62,14 +71,8 @@
 .self-box{
 	justify-content: flex-end;
 }
-.self-box .u-icon{
-	margin-right: 10px;
-}
 .self-box .msger-wrap{
 	margin-left: 30px;
-}
-.dest-box .u-icon{
-	margin-left: 10px;
 }
 .dest-box .msger-wrap{
 	margin-right: 30px;

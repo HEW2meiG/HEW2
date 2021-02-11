@@ -1,5 +1,5 @@
 {% from "_formhelpers.html" import render_field %}
-{% extends "base03.html" %}
+{% extends "base02.html" %}
 {%block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/message.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/transaction/transaction.css')}}">
@@ -10,10 +10,8 @@
 {% endblock %}
 {% block content %}
 <div class="m-wrap">
-    <div class="t-wrap">
-        <div class="titile">
-            <h2>取引メッセージ</h2>
-        </div>
+    <div class="l-titile">
+        <h2>取引メッセージ</h2>
     </div>
     {% if messages | length >= 5 %}
         <div id="load_message_button" class="load-msg-a">
@@ -26,10 +24,10 @@
                 <!-- 自分側 -->
                 <div class="msg-box self-box">
                     <div id="self-message-tag-{{ message.DealMessage_id }}">
-                    {% if message.is_checked %}
-                        <p>既読</p>
-                    {% endif %}
                         <p>{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
+                        {% if message.is_checked %}
+                            <p>既読</p>
+                        {% endif %}
                     </div>
                     <div class="speech-bubble-self">
                         <!-- 改行部分を区切ってforループする -->
@@ -46,8 +44,8 @@
                 <!-- 相手側 -->
                 <div class="msg-box dest-box">
                     <div class="msger-wrap">
-                        <p>{{ dest_user.username }}</p>
                         <img class="u-icon" src="{{url_for('static', filename='user_image/' + dest_user.picture_path)}}">
+                        <p>{{ dest_user.username }}</p>
                     </div>
                     <div class="speech-bubble-dest">
                         <!-- 改行部分を区切ってforループする -->
@@ -128,8 +126,10 @@
             <td>
                 <a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
                     <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-                    <p class="u-name">{{ item.user.username }}</p>
-                    <p class="u-code">{{ item.user.user_code }}</p>
+                    <div class="u-nc">
+                        <p class="u-name">{{ item.user.username }}</p>
+                        <p class="u-code">{{ item.user.user_code }}</p>
+                    </div>
                 </a>
             </td>
         </tr>

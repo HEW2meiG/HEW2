@@ -1,5 +1,6 @@
 .t-wrap{
-    padding: 30px;
+    padding-top: 30px;
+    padding-bottom: 50px;
 }
 .titile{
     padding: 10px;
@@ -20,23 +21,44 @@
     border-bottom: solid 1px #eee;
 }
 .t-wrap table th{
-    width: 150px;
+    width: 70px;
 }
 .t-wrap .fa-key{
     color: #C8A063;
     margin-right: 5px;
 }
+.t-wrap .u-box{
+    align-items: center;
+}
+.t-wrap .u-name{
+    font-size: 1.2rem;
+    margin-top: 0;
+}
+.t-wrap .u-icon{
+    width: 43px;
+}
+.t-wrap .u-code{
+    font-size: 1.2rem;
+    margin-top: -5px;
+}
 /* チャット */
 .message-area{
     position: fixed;
     background-color: #ffffff;
-    width: 700px;
+    width: 550px;
     bottom: 0;
     padding: 30px 20px 60px;
 }
 .msg-wrap{
     display: flex;
     align-items: center;
+}
+.l-titile{
+    margin: 30px 30px;
+    padding: 10px;
+    background-color: #ceb591;
+    border-radius: 10px;
+    text-align: center;
 }
 .message-area textarea{
     display: inline-block;
@@ -86,4 +108,8 @@
     color: white;
     transition: .2s;
     background-color: #b9b9b9;
+    transition: .2s;
+}
+.load-msg-b:hover{
+    opacity: 0.5;
 }

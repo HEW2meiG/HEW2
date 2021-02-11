@@ -1,17 +1,24 @@
-{% extends "base02.html" %}
+{% extends "base01.html" %}
+{%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/transaction/transaction_error.css')}}">
+{% endblock%}
 {% block title %}
 取引エラー画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>この取引画面を閲覧することはできません。</h2>
-<P>以下の内容についてご確認ください。</P>
-<ul>
-    <li>取引がキャンセルされていないかをご確認ください。</li>
-    <li>ログイン中のアカウントをご確認ください。</li>
-</ul>
-<P>
-    ※取引画面は取引が行われているアカウントからの閲覧が可能です。<br>
-    ※取引中のアカウントから再度ログインをおこなってください。
-</P>
-<a href="{{url_for('mypage.mypagetop')}}">マイページへ戻る</a>
+<div class="t-error">
+    <h2>この取引画面を閲覧することはできません。</h2>
+    <P>以下の内容についてご確認ください。</P>
+    <div class="error-list">
+        <ul>
+            <li>取引がキャンセルされていないかをご確認ください。</li>
+            <li>ログイン中のアカウントをご確認ください。</li>
+        </ul>
+    </div>
+    <p><span class="keikoku">
+        ※取引画面は取引が行われているアカウントからの閲覧が可能です。<br>
+        ※取引中のアカウントから再度ログインをおこなってください。
+    </span></p>
+    <a href="{{url_for('mypage.mypagetop')}}">マイページへ戻る</a>
+</div>
 {% endblock %}
