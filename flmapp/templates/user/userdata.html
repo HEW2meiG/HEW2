@@ -89,6 +89,29 @@
     </article>
 {% endfor %}
 <!-- ここまで　出品投稿 -->
+{% endblock %}
+{% block content2 %}
+{% if not r_user_list %}
+    <p class="looling-f">あなたのおすすめのユーザーを探します</p>
+{% else %}
+    <div class="reco-u-wrap">
+        <div class="reco-tit">
+            <h2 class="r-h2">このユーザーをフォローしているユーザーはこのユーザーもフォローしています</h2>
+        </div>
+        {% for user in r_user_list %}
+            <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
+                <div class="u-u-wrap">
+                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+                    <div class="u-nc">
+                        <p class="u-name">{{ user.username }}</p>
+                        <p class="u-code">{{ user.user_code }}</p>
+                    </div>
+                </div>
+                {% include "follow.html" %}
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
 <script>
     // ここから ajaxでcsrf_tokenを使用するとき
     var csrf_token = "{{ csrf_token() }}";
@@ -177,18 +200,4 @@
         });
     });
 </script>
-{% endblock %}
-{% block content2 %}
-{% if not r_user_list %}
-    <p>あなたのおすすめのユーザーを探します</p>
-{% else %}
-    <h2>このユーザーをフォローしたユーザーはこのユーザーもフォローしています</h2>
-    {% for user in r_user_list %}
-        <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
-            <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
-            <p class="u-name">{{ user.username }}</p>
-            <p class="u-code">{{ user.user_code }}</p>
-        </a>
-    {% endfor %}
-{% endif %}
 {% endblock %}
