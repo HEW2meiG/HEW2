@@ -29,11 +29,12 @@
         <a href="{{url_for('search.change_search', search_word=search_word, change_search='ITEM')}}">ITEM</a>
         <a href="{{url_for('search.change_search', search_word=search_word, change_search='USER')}}">USER</a>
     {% else %}
-        <a href="{{url_for('search.change_search', search_word='', change_search='ITEM')}}">ITEM</a>
-        <a href="{{url_for('search.change_search', search_word='', change_search='USER')}}">USER</a>
+        <a href="{{url_for('search.change_search', search_word=' ', change_search='ITEM')}}">ITEM</a>
+        <a href="{{url_for('search.change_search', search_word=' ', change_search='USER')}}">USER</a>
     {% endif %}
 </div>
 {% if items %}
+    <!-- 商品検索結果 -->
     {% if change_search=='ITEM' %}
     <table>
         {% for item in items %}
@@ -108,6 +109,7 @@
         });
         // ここまで いいね処理
     </script>
+    <!-- ユーザー検索結果 -->
     {% elif change_search=='USER' %}
     <table>
         {% for user in items %}
@@ -117,7 +119,6 @@
             </a></td>
             <td><a href="{{url_for('user.userdata', user_code=user.user_code)}}">
                 {{ user.username }}
-                {{ user.prof_comment }}
             </a></td>
         </tr>
         {% endfor %}
@@ -126,29 +127,26 @@
 {% endif %}
 {% endblock %}
 {% block content2 %}
+<!-- 絞り込みフォーム -->
 {% if change_search=='ITEM' %}
-    {% if items %}
-        <form method="POST" action="{{url_for('search.narrow_down_search')}}">
-    {% else %}
-        <form method="POST" action="{{url_for('search.search')}}">
-    {% endif %}
-            {{ form.csrf_token }}
-            {{ ndform.search_word(value=search_word) }}
-            <h2>並び替え</h2>
-            {{ render_field(ndform.sort) }}
-            <h2>絞り込み</h2>
-            <h3>ジャンル</h3>
-            {{ render_field(ndform.genre) }}
-            <h3>価格</h3>
-            {{ render_field(ndform.value_min, value=300) }}円～{{ render_field(ndform.value_max, value=99999) }}円
-            <h3>商品の状態</h3>
-            {{ render_field(ndform.state ) }}
-            <h3>配送料の負担</h3>
-            {{ render_field(ndform.postage) }}
-            <h3>販売状況</h3>
-            {{ render_field(ndform.sellstate) }}
-            {{ ndform.submit() }}
-            <input type="reset" value="クリア">
-        </form>
+    <form method="POST" action="{{url_for('search.narrow_down_search')}}">
+        {{ form.csrf_token }}
+        {{ ndform.search_word(value=search_word) }}
+        <h2>並び替え</h2>
+        {{ render_field(ndform.sort) }}
+        <h2>絞り込み</h2>
+        <h3>ジャンル</h3>
+        {{ render_field(ndform.genre) }}
+        <h3>価格</h3>
+        {{ render_field(ndform.value_min, value=300) }}円～{{ render_field(ndform.value_max, value=99999) }}円
+        <h3>商品の状態</h3>
+        {{ render_field(ndform.state ) }}
+        <h3>配送料の負担</h3>
+        {{ render_field(ndform.postage) }}
+        <h3>販売状況</h3>
+        {{ render_field(ndform.sellstate) }}
+        {{ ndform.submit() }}
+        <input type="reset" value="クリア">
+    </form>
 {% endif %}
 {% endblock %}

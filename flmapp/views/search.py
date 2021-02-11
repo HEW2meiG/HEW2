@@ -69,13 +69,17 @@ def change_search(search_word, change_search):
     form = SearchForm(request.form)
     ndform = NarrowDownSearchForm(request.form)
     items = None
-    if not search_word == '':
+    if not search_word == ' ':
         if change_search == 'ITEM':
             items = Sell.item_search_by_word(search_word)
         elif change_search == 'USER':
             items = User.user_search_by_word(search_word)
     else:
-        search_word = None
+        search_word = ''
+        if change_search == 'ITEM':
+            items = Sell.item_search_by_word(search_word)
+        elif change_search == 'USER':
+            items = User.user_search_by_word(search_word)
     return render_template('search/search.html', form=form, ndform=ndform, items=items, search_word=search_word, change_search=change_search)
 
 # 絞り込み商品検索処理
@@ -84,7 +88,7 @@ def narrow_down_search():
     form = SearchForm(request.form)
     ndform = NarrowDownSearchForm(request.form)
     items = None
-    search_word = None
+    search_word = ''
     change_search = 'ITEM'
     nditems = []
     search_query = ""
@@ -98,6 +102,8 @@ def narrow_down_search():
     if request.method == 'POST' and ndform.validate():
         search_word = ndform.search_word.data
         sort = ndform.sort.data
+        if search_word:
+            search_word = ''
         if sort == '並び変え':
             items = Sell.item_search_by_word(search_word)
         else:
