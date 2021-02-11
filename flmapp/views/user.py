@@ -72,14 +72,21 @@ def userdata(user_code):
     user = User.select_user_by_user_code(user_code)
     if user is None:
         return redirect(url_for('route.home'))
-    # ログイン中のユーザーがユーザーページのユーザーをフォローしているかの判定
-    followed = UserConnect.followed_exists(user.User_id)
     follows = UserConnect.select_follows_by_user_id(user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
     # ユーザーが出品した商品
     items = Sell.select_sell_by_user_id(user.User_id)
     # レコメンドリスト
     r_user_list = u_recommend(user.User_id)
+    # ログイン中のユーザーがユーザーをフォローしているかの判定
+    users = []
+    users.append(user)
+    users.extend(r_user_list)
+    followed_list = []
+    for user in users:
+        followed = UserConnect.followed_exists(user.User_id)
+        if followed:
+            followed_list.append(user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
     for item in items:
@@ -87,7 +94,7 @@ def userdata(user_code):
         if liked:
             liked_list.append(item.Sell_id)
     return render_template(
-        'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
+        'user/userdata.html', user=user, followed_list=followed_list, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
         items=items, liked_list=liked_list, post_c=len(items), r_user_list=r_user_list
     )
