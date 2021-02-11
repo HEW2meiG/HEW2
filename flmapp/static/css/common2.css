@@ -1,6 +1,6 @@
 /* base02 */
 .wrap{
-    width: 1200px;
+    width: 1300px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -9,12 +9,16 @@
 header{
     position: sticky;
     top: 0;
-    width: 325px;
-    min-height: 100vh;
-    height: 100%;
+    width: 375px;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    height: 100vh;
     background-color: #FFF;
     padding-top: 80px;
     border-right: solid 1.5px #dedbd5;
+}
+header::-webkit-scrollbar {
+    display:none;
 }
 .container{
     min-height: 100vh;
@@ -24,15 +28,20 @@ header{
 .r-content{
     position: sticky;
     top: 0;
-    width: 325px;
-    min-height: 100vh;
-    height: 100%;
+    width: 375px;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    height: 100vh;
     padding-left: 30px;
+    padding-bottom: 30px;
     background-color: #FFF;
     border-left: solid 1.5px #dedbd5;
 }
+.r-content::-webkit-scrollbar {
+    display:none;
+}
 .r-wrap{
-    width: 320px;
+    
 }
 /* ナビゲーション */
 .h-wrap{
@@ -98,8 +107,8 @@ nav a:hover{
     font-weight: 700;
 }
 .accordion-close a{
-    margin: 5px 0;
-    font-size: 0.6rem;
+    margin: 10px 0;
+    font-size: 1.4rem;
     font-weight: bold;
 }
 /* フラッシュメッセージ */
@@ -197,16 +206,20 @@ nav a:hover{
     justify-content: space-between;
 }
 /* ユーザーレコメンド */
-.reco_u_wrap{
-    margin-top: 10px;
+.reco-u-wrap{
+    margin-top: 25px;
     background-color: #f6f9fa;
     border-radius: 17px;
     padding: 8px 0;
 }
-.reco_u_wrap .u-box{
+.reco-u-wrap .u-box{
     padding: 8px;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1.5px solid #ccc;
+}
+.reco-u-wrap .u-box:nth-of-type(3){
+    border-bottom: none;
 }
 .u-u-wrap{
     display: flex;
@@ -218,7 +231,7 @@ nav a:hover{
     margin-top: -6px;
     margin-left: 8px;
 }
-.reco_u_wrap .follow-wrap button{
+.reco-u-wrap .follow-wrap button{
     /* ボタン要素リセット */
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -229,15 +242,15 @@ nav a:hover{
     transition: 0.5s;
     cursor: pointer;
 }
-.reco_u_wrap .follow-wrap button:hover{
+.reco-u-wrap .follow-wrap button:hover{
     opacity: 0.5;
 }
-.reco_u_wrap .unfollow-btn{
+.reco-u-wrap .unfollow-btn{
     color: #797878;
     background: #fff;
     border: 2px solid #cecdcd;
 }
-.reco_u_wrap .follow-btn{
+.reco-u-wrap .follow-btn{
     color: #ffffff;
     background: #0f2396;
     border: 2px solid #0f2396;

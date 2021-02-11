@@ -31,10 +31,10 @@ class NoticeRatingForm(FlaskForm):
             return False
         if self.notice_condition.data == 'has_sent':
             if self.notice_flg.data == False:
-                flash('発送通知にチェックしてください。')
+                flash('※発送通知にチェックしてください。')
                 return False
         if self.notice_condition.data == 'has_got':
             if self.notice_flg.data == False:
-                flash('受け取り確認にチェックしてください。')
+                flash('※受け取り確認にチェックしてください。')
                 return False
         return True

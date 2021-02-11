@@ -39,7 +39,7 @@
 }
 .ra-sbm{
     width: 100%;
-    margin-top: 15px;
+    margin-top: 25px;
     text-align: center;
 }
 .kotira{
@@ -48,7 +48,6 @@
 }
 /* アコーディオン */
 .click-box{
-    width: 350px;
     padding: 10px;
     background-color: #b5b5b5;
     margin: 20px auto;
@@ -86,7 +85,6 @@
 /*クリックで中身表示*/
 .cssacc:checked + label + .accshow{
     text-align: center;
-    width: 350px;
     margin: 20px auto;
     height: auto;
     padding: 20px;
