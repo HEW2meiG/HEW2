@@ -4,32 +4,15 @@
 購入完了画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>購入が完了しました</h2>
-<img src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
-{{ item.user.username }}
-{{ item.key1 }}
-{{ item.key2 }}
-{{ item.key3 }}
-{{ item.price }}
-{{ item.sell_comment }}
-{{ item.postage.name }}
-<p>支払い金額:<span>{{ item.price }}</span>円</p>
-<h3>支払い方法</h3>
-{% if buy.pay_way==1 %}
-    <p>代金引換</p>
-{% elif buy.pay_way==2 %}
-    <p>クレジットカード</p>
-    <p>{{ buy.credit.credit_name }}</p>
-    <p>{{ buy.credit.credit_num | credit_num_format }}</p>
-    <p>{{ buy.credit.expire.strftime('%m/%y') }}</p>
-{% endif %}
-<h3>配送先</h3>
-<p>{{ buy.s_address.last_name }}{{ buy.s_address.first_name }}</p>
-<p>{{ buy.s_address.zip_code }}</p>
-<p>{{ buy.s_address.prefecture }}</p>
-<p>{{ buy.s_address.address1 }}</p>
-<p>{{ buy.s_address.address2 }}</p>
-<p>{{ buy.s_address.address3 }}</p>
-<a href="{{url_for('transaction.transaction', item_id=item.Sell_id)}}">取引画面をみる</a>
-<a href="{{url_for('route.home')}}">ホームへ戻る</a>
+<h1>購入完了</h1>
+<p class="mg-tb-10">出品が完了しました。</p>
+
+<div class="mg-tb-4 pd-t-5">
+    <button class="kosho-button2-300" onclick="location.href='{{url_for('transaction.transaction', item_id=item.Sell_id)}}'">取引画面を見る</button>
+</div>
+
+<div class="mg-tb-3">
+    <a href="{{url_for('route.home')}}" class="back-home">ホームへ戻る</a>
+</div>
+
 {% endblock %}

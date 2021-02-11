@@ -1,0 +1,71 @@
+.sell-update{
+    width: 100%;
+    text-align: center;
+    background-color: white;
+}
+
+h1{
+    font-size: 22px;
+    margin: 0;
+    padding: 50px 0;
+    color: #C8A063;
+}
+
+div.sell-update-form input{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+div.sell-update-form input:focus{
+    outline: none;
+}
+
+div.sell-update-form textarea{
+    width: 300px;
+    height: 200px;
+    padding: 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+div.sell-update-form textarea:focus{
+    outline: none;
+}
+
+div.sell-update-form select{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+
+#iconbox{
+    width: 300px;
+    margin: 50px auto;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: tan;
+    padding-bottom: 20px;
+    
+}
+
+.trim {
+    width: 200px;
+    height: 200px;
+    margin: 20px auto 0 auto;
+    border: 1px solid black;
+    overflow: hidden;
+    position: relative;
+    background-color: white;
+  }
+  .trim img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+
