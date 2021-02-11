@@ -181,6 +181,16 @@ a.back:hover{
     border-radius: 5px;
 }
 
+p.error-msg{
+    width: 400px;
+    margin: 10px auto;
+    padding: 20px;
+    background-color: white;
+    color: red;
+    border: solid 3px red;
+    border-radius: 10px;
+}
+
 p.finish-msg{
     width: 400px;
     margin: 10px auto;
