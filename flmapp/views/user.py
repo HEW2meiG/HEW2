@@ -43,7 +43,7 @@ def followers_count_processor():
     return dict(followers_count=followers_count)
 
 
-def u_recommend(userid):
+def u_recommend(userid,c_userid):
     """アソシエーション・ルール・マイニングによるレコメンド"""
     # データ整形
     transactions = []
@@ -56,7 +56,7 @@ def u_recommend(userid):
         follow_id = sum(follow_id, ())
         transactions.append(follow_id)
     print(transactions)
-    u_recommends = associationRules(transactions,userid,followed)
+    u_recommends = associationRules(transactions,userid,followed,c_userid)
     r_user_list = []
     if u_recommends:
         for u_recommend in u_recommends:
@@ -77,7 +77,7 @@ def userdata(user_code):
     # ユーザーが出品した商品
     items = Sell.select_sell_by_user_id(user.User_id)
     # レコメンドリスト
-    r_user_list = u_recommend(user.User_id)
+    r_user_list = u_recommend(user.User_id,current_user.User_id)
     # ログイン中のユーザーがユーザーをフォローしているかの判定
     f_users = []
     f_users.append(user)
