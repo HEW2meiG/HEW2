@@ -107,7 +107,7 @@ def narrow_down_search():
         if sort == '並び変え':
             items = Sell.item_search_by_word(search_word)
         else:
-            items = Sell.user_search_by_word(search_word, sort)
+            items = Sell.item_search_by_sort(search_word, sort)
         genre = ndform.genre.data
         value_min = ndform.value_min.data
         value_max = ndform.value_max.data
