@@ -43,12 +43,13 @@ def followers_count_processor():
     return dict(followers_count=followers_count)
 
 
-def u_recommend(userid,c_userid):
+def u_recommend(userid,c_userid=None):
     """アソシエーション・ルール・マイニングによるレコメンド"""
     # データ整形
     transactions = []
-    followed = UserConnect.select_follows_user_id_by_user_id(current_user.User_id)
-    followed = sum(followed, ())
+    if c_userid is not None:
+        followed = UserConnect.select_follows_user_id_by_user_id(c_userid)
+        followed = sum(followed, ())
     users = User.query.all()
     for user in users:
         u_id = user.User_id
@@ -56,7 +57,10 @@ def u_recommend(userid,c_userid):
         follow_id = sum(follow_id, ())
         transactions.append(follow_id)
     print(transactions)
-    u_recommends = associationRules(transactions,userid,followed,c_userid)
+    if c_userid is not None:
+        u_recommends = associationRules(transactions,userid,followed,c_userid)
+    else:
+        u_recommends = associationRules(transactions,userid)
     r_user_list = []
     if u_recommends:
         for u_recommend in u_recommends:
@@ -77,7 +81,10 @@ def userdata(user_code):
     # ユーザーが出品した商品
     items = Sell.select_sell_by_user_id(user.User_id)
     # レコメンドリスト
-    r_user_list = u_recommend(user.User_id,current_user.User_id)
+    if current_user.is_authenticated:
+        r_user_list = u_recommend(user.User_id,current_user.User_id)
+    else:
+        r_user_list = u_recommend(user.User_id)
     # ログイン中のユーザーがユーザーをフォローしているかの判定
     f_users = []
     f_users.append(user)
@@ -111,7 +118,10 @@ def userdata_likes(user_code):
     # ユーザーが出品した商品
     sell_items = Sell.select_sell_by_user_id(user.User_id)
     # レコメンドリスト
-    r_user_list = u_recommend(user.User_id)
+    if current_user.is_authenticated:
+        r_user_list = u_recommend(user.User_id,current_user.User_id)
+    else:
+        r_user_list = u_recommend(user.User_id)
     # ユーザーがいいねした商品
     items = Likes.likes_join_sell(Sell, user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく

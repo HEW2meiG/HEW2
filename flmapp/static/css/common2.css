@@ -118,6 +118,16 @@ nav a:hover{
     font-size: 1.8rem;
     padding: 10px 0;
 }
+.flash-2{
+    width: 520px;
+    margin: 5px auto;
+    padding: 20px;
+    background-color: white;
+    color: #8b4513;
+    border: solid 3px #8b4513;
+    border-radius: 10px;
+    text-align: center;
+}
 /* アイテムレコメンド */
 .reco_b_wrap{
     margin-top: 30px;
@@ -267,5 +277,5 @@ nav a:hover{
 .looling-f{
     margin-top: 80px;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
 }
