@@ -137,7 +137,7 @@ nav a:hover{
     padding-left: 19px;
     border-bottom: 1.5px solid #ccc;
 }
-.r_item-wrap:nth-of-type(3){
+.r_item-wrap:last-of-type{
     border-bottom: none;
 }
 .r_item-wrap p{
@@ -218,7 +218,16 @@ nav a:hover{
     align-items: center;
     border-bottom: 1.5px solid #ccc;
 }
-.reco-u-wrap .u-box:nth-of-type(3){
+.reco-tit{
+    border-bottom: 1.5px solid #ccc;
+}
+.reco-tit h2{
+    text-align: left;
+    border-bottom: none;
+    padding: 15px;
+    padding-top: 10px;
+}
+.reco-u-wrap .u-box:last-of-type{
     border-bottom: none;
 }
 .u-u-wrap{
@@ -254,4 +263,9 @@ nav a:hover{
     color: #ffffff;
     background: #0f2396;
     border: 2px solid #0f2396;
+}
+.looling-f{
+    margin-top: 80px;
+    font-weight: bold;
+    text-align: center;
 }
