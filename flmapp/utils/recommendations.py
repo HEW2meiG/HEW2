@@ -174,14 +174,14 @@ def recommend(c_userid):
 # アソシエーション・ルール・マイニング
 from pymining import itemmining, assocrules
 
-def associationRules(transactions,userid,followed):
+def associationRules(transactions,userid,followed,c_userid):
     relim_input = itemmining.get_relim_input(transactions)
     item_sets = itemmining.relim(relim_input, min_support=2)
     rules = assocrules.mine_assoc_rules(item_sets, min_support=2, min_confidence=0.3)
 
     recom_user = {}
     for rule_user in rules:
-        if userid in rule_user[0] and not any(map(rule_user[1].__contains__, followed)):
+        if userid in rule_user[0] and not any(map(rule_user[1].__contains__, followed)) and not c_userid in rule_user[1]:
             # 支持度
             support = rule_user[2]/len(transactions)
             # リフト値 1より大きい場合は、Aが発生するとBが発生しやすくなると解釈できる
