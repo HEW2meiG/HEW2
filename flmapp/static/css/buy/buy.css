@@ -105,3 +105,13 @@ section{
 .back-btn a:hover{
     opacity: 0.7;
 }
+
+a#back {
+    text-decoration: none;
+    color: #8b4513;
+    font-weight: bold;
+}
+a#back:hover{
+    border-bottom: solid 1px #d9a077;
+    color: #d9a077;
+}
