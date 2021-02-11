@@ -52,10 +52,11 @@ def home():
         r_item_list,r_user_list = recommend(current_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
-    for item in items:
-        liked = Likes.liked_exists(item.Sell_id)
-        if liked:
-            liked_list.append(item.Sell_id)
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
     return render_template(
         'home.html',
         items=items,
@@ -79,7 +80,6 @@ def timeline():
     r_item_list,r_user_list = recommend(current_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
-    print(items)
     for item in items:
         liked = Likes.liked_exists(item.Sell_id)
         if liked:
@@ -108,10 +108,11 @@ def hit():
         r_item_list,r_user_list = recommend(current_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
-    for item in items:
-        liked = Likes.liked_exists(item.Sell_id)
-        if liked:
-            liked_list.append(item.Sell_id)
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
     return render_template(
         'home.html',
         items=items,
