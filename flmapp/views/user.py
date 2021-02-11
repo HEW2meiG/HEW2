@@ -90,16 +90,18 @@ def userdata(user_code):
     f_users.append(user)
     f_users.extend(r_user_list)
     followed_list = []
-    for f_user in f_users:
-        followed = UserConnect.followed_exists(f_user.User_id)
-        if followed:
-            followed_list.append(f_user.User_id)
+    if current_user.is_authenticated:
+        for f_user in f_users:
+            followed = UserConnect.followed_exists(f_user.User_id)
+            if followed:
+                followed_list.append(f_user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
-    for item in items:
-        liked = Likes.liked_exists(item.Sell_id)
-        if liked:
-            liked_list.append(item.Sell_id)
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
     return render_template(
         'user/userdata.html', user=user, followed_list=followed_list, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
@@ -126,10 +128,11 @@ def userdata_likes(user_code):
     items = Likes.likes_join_sell(Sell, user.User_id)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
-    for item in items:
-        liked = Likes.liked_exists(item.Sell_id)
-        if liked:
-            liked_list.append(item.Sell_id)
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
     return render_template(
         'user/userdata.html', user=user, followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,

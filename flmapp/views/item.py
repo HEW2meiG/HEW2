@@ -51,9 +51,10 @@ def itemdata(item_id):
     form = SellUpdateFlgAndDeleteForm(request.form)
     # ログイン中のユーザーが過去にどの商品をいいねしたかを格納しておく
     liked_list = []
-    liked = Likes.liked_exists(item_id)
-    if liked:
-        liked_list.append(item_id)
+    if current_user.is_authenticated:
+        liked = Likes.liked_exists(item_id)
+        if liked:
+            liked_list.append(item_id)
     if current_user.is_authenticated:
         # 閲覧履歴登録処理
         browsinghistory = BrowsingHistory(
