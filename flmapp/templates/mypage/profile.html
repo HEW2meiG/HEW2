@@ -3,37 +3,78 @@
 {% block title %}
 ユーザ情報編集画面 - {{ super() }}
 {% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/mypage/profile.css')}}">
+{% endblock %}
 {% block content %}
-
-<div class="row">
+<div class="base2-wrap">
+    <h1>プロフィール編集</h1>
     <div class="col-lg-8 offset-lg-4">
-    {% for message in get_flashed_messages() %}
-    {{ message }}
-    {% endfor %}
+        {% for message in get_flashed_messages() %}
+        <div class="pd-b-5">
+            <p class="finish-msg">{{ message }}</p>
+        </div>
+        {% endfor %}
+        <div class="pd-b-1">
+            {{ form.picture_path.label() }}
+        </div>
     </div>
-    <div class="col-lg-4 offset-lg-2">
-        {% if current_user.picture_path %}
-        <img src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
-        {% endif %}
-    </div>
-    <div class="col-lg-4 offset-lg-2">
-        <form method="POST" enctype="multipart/form-data">
-            {{form.csrf_token}}
-            {{render_field(form.username, value=current_user.username)}}
-            {{render_field(form.usercode, value=current_user.user_code)}}
-            {{render_field(form.picture_path)}}
-            {{render_field(form.prof_comment)}}
-            {{form.submit()}}
-        </form>
-    </div>
+    <div class="row  mg-t-200">
+        <div class="col-lg-4 offset-lg-2">
+            {% if current_user.picture_path %}
+            <div class="trim">
+                <img src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-4 offset-lg-2">
+                <form method="POST" enctype="multipart/form-data">
+                    {{form.csrf_token}}
+                        {% if form.picture_path.errors %}
+                                <ul>
+                                    {% for error in form.picture_path.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                        <p>
+                                <div class="trim">
+                                    <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height:200px;">
+                                </div>
+                        </p>
+                        <div class="pd-t-1">
+                            {{ form.picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
+                        </div>
+            <div class="base2-form  pd-b-3">
 
+                    {{render_field(form.username, value=current_user.username)}}
+                    {{render_field(form.usercode, value=current_user.user_code)}}
+                    {{render_field(form.prof_comment)}}
+
+            </div>
+        </div>
+    </div>
 </div>
+                <div class="mg-tb-1_5 txt-center">
+                    {{form.submit()}}
+                </div>
+            </form>
  <!-- textareaフィールドのvalue属性にあたる部分
  <textarea>プロフィールコメント</textarea> -->
 {% if current_user.prof_comment != None %}
     <script>
         var textarea = document.getElementById('prof_comment');
         textarea.innerHTML = "{{ current_user.prof_comment }}";
+
+        function previewImage(obj)
+        {
+            var fileReader = new FileReader();
+            fileReader.onload = (function() {
+                document.getElementById('preview').src = fileReader.result;
+            });
+            fileReader.readAsDataURL(obj.files[0]);
+        }
+    
     </script>
 {% endif %}
 {% endblock %}

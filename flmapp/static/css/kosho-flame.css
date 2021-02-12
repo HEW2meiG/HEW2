@@ -1,3 +1,7 @@
+label{
+    font-size: 1.5rem;
+}
+
 /* 古書邂逅フォーム */
 div.kosho-form-300 input{
     width: 300px;
@@ -101,21 +105,14 @@ input, select, textarea{
     font-family: 'Courier New', Courier, monospace;
 }
 
-#pref01-base1{
+#pref01{
     width: 100px;
     height: 30px;
     padding: 0 10px;
     border: none;
     border-radius: 10px;
 }
-#pref01-base2{
-    width: 100px;
-    height: 30px;
-    padding: 0 10px;
-    border: solid 1px #C8A063;
-    border-radius: 10px;
-}
-#pref01-base1, #pref01-base2{
+#pref01{
     outline: none;
 }
 
@@ -182,6 +179,7 @@ a.back:hover{
 
 /* 必須 */
 .req{
+    font-size: 1.2rem;
     background-color: red;
     color: white;
     margin: 10px;
