@@ -75,6 +75,11 @@ class Likes(db.Model):
                 cls.User_id == current_user.get_id()
             )
         ).delete()
+    
+    @classmethod
+    def delete_all_like(cls, Sell_id):
+        """商品を削除した時に一緒にする閲覧履歴の削除"""
+        cls.query.filter_by(Sell_id=Sell_id).delete()
 
     @classmethod
     def likes_join_sell(cls, Sell, User_id):
@@ -271,3 +276,8 @@ class BrowsingHistory(db.Model):
             return True
         else:
             return False
+
+    @classmethod
+    def delete_b_history(cls, Sell_id):
+        """商品を削除した時に一緒にする閲覧履歴の削除"""
+        cls.query.filter_by(Sell_id=Sell_id).delete()

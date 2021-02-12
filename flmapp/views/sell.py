@@ -23,6 +23,9 @@ from flmapp.models.user import (
 from flmapp.models.trade import (
     Sell, Genre, Item_state, Postage, Send_way, Schedule, Deal_status
 )
+from flmapp.models.reaction import (
+    Likes, BrowsingHistory
+)
 from flmapp.forms.sell import (
     SellForm, HiddenSellForm, SellUpdateForm, SellUpdateFlgAndDeleteForm
 )
@@ -248,8 +251,10 @@ def sell_delete():
     if request.method == 'POST':
         with db.session.begin(subtransactions=True):
             Sell.delete_sell(form.Sell_id.data)
+            BrowsingHistory.delete_b_history(form.Sell_id.data)
+            Likes.delete_all_like(form.Sell_id.data)
         db.session.commit()
         flash('削除しました')
-        return redirect(url_for('history.sell_history'))
+        return redirect(url_for('history.sell_on_display'))
     return redirect(url_for('route.home'))
     
