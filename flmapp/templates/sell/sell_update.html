@@ -13,7 +13,7 @@
         {{ message }}
     {% endfor %}
     <form method="POST" enctype="multipart/form-data">
-        <div class="sell-update-form">
+        <div class="base2-form">
             {{ form.csrf_token }}
             {{render_field(form.sell_title, value=sell.sell_title) }}
         </div>
@@ -37,7 +37,7 @@
                     </div>
             </p>
         </div>
-        <div class="sell-update-form pd-b-3">
+        <div class="base2-form pd-b-3">
             <h4 class="mg-t-5">この本を構成する3つのキーワード</h4>
             {{ render_field(form.key1, value=sell.key1) }}
             {{ render_field(form.key2, value=sell.key2) }}
@@ -54,7 +54,7 @@
             {{ render_field(form.price, value=sell.price) }}
         </div>
 </div>
-        <div class="mg-t-1 txt-center">
+        <div class="mg-t-1_5 txt-center">
             {{ form.submit() }}
         </div>
     </form>
