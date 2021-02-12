@@ -8,9 +8,13 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buy/shippingaddress_register.css')}}">
 <!-- 郵便番号から住所自動入力 -->
 <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/demo.js') }}"></script>
 {% endblock %}
 {% block content %}
 <h1>配送先住所登録</h1>
+<div id="demo">
+    <input type="button" id="demo_btn" value="デモ" onclick="addDemo()">
+</div>
 <div class="row">
     <div class="col-lg-8 offset-lg-4">
         {% for message in get_flashed_messages() %}
@@ -44,7 +48,7 @@
             {{ render_field(form.addr03) }}
         </div>
 
-            {{ render_field(form.is_default) }}
+        {{ render_field(form.is_default) }}
 
         {{ form.submit() }}
 
