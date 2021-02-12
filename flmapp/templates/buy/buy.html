@@ -102,7 +102,9 @@
         {{ form.submit() }}
     </div>
 </form>
-<div class="back-btn">
-    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">戻る</a>
+<div class="mg-tb-3 txt-center">
+    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}" id="back">戻る</a>
 </div>
+
+
 {% endblock %}
