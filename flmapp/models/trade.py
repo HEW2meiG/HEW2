@@ -111,7 +111,13 @@ class Sell(db.Model):
         return cls.query.filter(cls.User_id!=User_id, cls.deal_status==Deal_status(deal_status)).all()
 
     @classmethod
-    def select_sell_by_deal_status(cls, User_id, deal_status, page=1):
+    def select_sell_by_deal_status(cls, User_id, deal_status):
+        """User_idとdeal_statusによってSell(商品)レコードを得る"""
+        return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)
+            ).all()
+
+    @classmethod
+    def select_sell_by_deal_status_page(cls, User_id, deal_status, page=1):
         """User_idとdeal_statusによってSell(商品)レコードを得る"""
         return cls.query.filter(cls.User_id==User_id, cls.deal_status==Deal_status(deal_status)
             ).paginate(page, 2, False)
@@ -235,6 +241,20 @@ class Buy(db.Model):
             cls.User_id==User_id
         ).outerjoin(sell, sell.deal_status==Deal_status(deal_status)
         ).with_entities(sell).all()
+
+    @classmethod
+    def buy_join_sell_deal_status_page(cls, User_id, deal_status, page=1):
+        """
+        Buy(購入)とSell(商品)を結合し、
+        BuyのUser_idとSellのdeal_statusが引数と一致するものを
+        絞り込む
+        """
+        sell = aliased(Sell)
+        return cls.query.filter(
+            cls.User_id==User_id
+        ).outerjoin(sell, sell.deal_status==Deal_status(deal_status)
+        ).with_entities(sell).paginate(page, 1, False)
+        # paginate(表示するページ,1ページに表示する数,エラーを出力するかどうか)
 
     
     @classmethod

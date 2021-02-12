@@ -1,28 +1,52 @@
 {% extends "base02.html" %}
 {% block title %}
-    購入履歴画面 - {{ super() }}
+購入履歴画面 - {{ super() }}
 {% endblock %}
 {% block content %}
 {% for message in get_flashed_messages() %}
-    {{ message }}
+{{ message }}
 {% endfor %}
 <h2>購入した本</h2>
 <h3>
     <a class="mp-a" href="{{url_for('history.buy_in_progress')}}">取引中</a>
 </h3>
+{% for item in items %}
+{% if item.deal_status.value == 2 and item.sell_flg %}
+<a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+    <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
+    {{ item.key1 }}
+    {{ item.key2 }}
+    {{ item.key3 }}
+    {{ item.sell_comment }}
+    {{ item.price }}
+</a>
+{% endif %}
+{% endfor %}
+{% if prev_url_4 %}
+<a href="{{ prev_url_4 }}">前へ</a>
+{% endif %}
+{% if next_url_4 %}
+<a href="{{ next_url_4 }}">次へ</a>
+{% endif %}
 <h3>
     <a class="mp-a" href="{{url_for('history.buy_completed')}}">過去の取引</a>
 </h3>
 {% for item in items %}
-    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}"></a>
-        {% if item.deal_status.value == 3 %}
-            <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-        {% endif%}
-        {{ item.key1 }}
-        {{ item.key2 }}
-        {{ item.key3 }}
-        {{ item.sell_comment }}
-        {{ item.price }}
-    </a>
+{% if item.deal_status.value == 3 and item.sell_flg %}
+<a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+    <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
+    {{ item.key1 }}
+    {{ item.key2 }}
+    {{ item.key3 }}
+    {{ item.sell_comment }}
+    {{ item.price }}
+</a>
+{% endif %}
 {% endfor %}
+{% if prev_url_5 %}
+<a href="{{ prev_url_5 }}">前へ</a>
+{% endif %}
+{% if next_url_5 %}
+<a href="{{ next_url_5 }}">次へ</a>
+{% endif %}
 {% endblock %}
