@@ -76,6 +76,7 @@ div.kosho-form-70 select:focus{
     outline: none;
 }
 
+
 .kosho-select-year{
     width: 70px;
     height: 30px;
@@ -100,14 +101,21 @@ input, select, textarea{
     font-family: 'Courier New', Courier, monospace;
 }
 
-#pref01{
+#pref01-base1{
     width: 100px;
     height: 30px;
     padding: 0 10px;
     border: none;
     border-radius: 10px;
 }
-#pref01{
+#pref01-base2{
+    width: 100px;
+    height: 30px;
+    padding: 0 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+#pref01-base1, #pref01-base2{
     outline: none;
 }
 
@@ -386,6 +394,9 @@ button:focus{
 
 .mg-tb-1{
     margin: 10px 0px;
+}
+.mg-tb-1_5{
+    margin: 15px 0px;
 }
 .mg-tb-2{
     margin: 20px 0px;

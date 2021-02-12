@@ -279,3 +279,47 @@ nav a:hover{
     font-weight: bold;
     text-align: left;
 }
+
+.base2-wrap{
+        width: 100%;
+        text-align: center;
+        background-color: white;
+}
+
+h1{
+    font-size: 22px;
+    margin: 0;
+    padding: 50px 0;
+    color: #C8A063;
+}
+
+
+div.base2-form input{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+div.base2-form input:focus{
+    outline: none;
+}
+
+div.base2-form textarea{
+    width: 300px;
+    height: 200px;
+    padding: 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+div.base2-form textarea:focus{
+    outline: none;
+}
+
+div.base2-form select{
+    width: 300px;
+    height: 30px;
+    padding: 0 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
