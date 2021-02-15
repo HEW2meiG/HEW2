@@ -4,18 +4,36 @@
 クレジットカード登録画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>クレジットカード登録</h2>
-{% for message in get_flashed_messages() %}
-{{ message }}
-{% endfor %}
-<form method="POST">
-    {{ form.csrf_token }}
-    {{ render_field(form.credit_name) }}
-    {{ render_field(form.credit_num) }}
-    {{ render_field(form.expiration_date01) }}
-    {{ render_field(form.expiration_date02) }}
-    {{ render_field(form.security_code) }}
-    {{ render_field(form.is_default) }}
-    {{ form.submit() }}
+<div class="base2-wrap">
+    <h1>クレジットカード登録</h1>
+    {% for message in get_flashed_messages() %}
+    {{ message }}
+    {% endfor %}
+    <div class="base2-form">
+    <form method="POST">
+        {{ form.csrf_token }}
+        {{ render_field(form.credit_name) }}
+        {{ render_field(form.credit_num) }}
+        <div class="mg-tb-3">
+            <div class="mg-tb-1">
+                {{ form.expiration_date01.label }}<span class="req">必須</span><br>
+            </div>
+            {{ form.expiration_date01 }} <span class="exp-date"> / </span> {{ form.expiration_date02 }}
+        </div>
+        <div class="mg-tb-3">
+            <div class="mg-tb-1">
+                {{ form.security_code.label }}※カード背面4桁もしくは3桁の番号<span class="req">必須</span><br>
+            </div>
+            {{ form.security_code }}
+        </div>
+    </div>
+    <div class="pd-b-3">
+        {{ render_field(form.is_default) }}
+    </div>
+</div>
+
+    <div class="mg-tb-1_5 txt-center">
+        {{ form.submit() }}
+    </div>
 </form>
 {% endblock %} 

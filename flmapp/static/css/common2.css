@@ -286,6 +286,10 @@ nav a:hover{
         background-color: white;
 }
 
+label{
+    font-size: 1.5rem;
+}
+
 h1{
     font-size: 22px;
     margin: 0;
@@ -347,4 +351,16 @@ div.base2-form select{
 
 #month, #date{
     width: 70px;
+}
+
+#expiration_date01, #expiration_date02{
+    width: 70px;
+}
+
+.exp-date{
+    font-size: 1.5rem;
+}
+
+#security_code{
+    width: 100px;
 }

@@ -8,7 +8,7 @@
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
-    {{ message }}
+    <p class="finish-msg">{{ message }}</p>
 {% endfor %}
 <div class="u-header">
     <div>

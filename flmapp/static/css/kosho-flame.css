@@ -1,7 +1,3 @@
-label{
-    font-size: 1.5rem;
-}
-
 /* 古書邂逅フォーム */
 div.kosho-form-300 input{
     width: 300px;
@@ -156,6 +152,7 @@ a.back-home {
     text-decoration: none;
     color: #8b4513;
     font-weight: bold;
+    font-size: 1.5rem;
 }
 a.back-home:hover{
     border-bottom: solid 1px #d9a077;
@@ -201,6 +198,7 @@ p.finish-msg{
     width: 400px;
     margin: 10px auto;
     padding: 20px;
+    font-size: 1.35rem;
     background-color: white;
     color: #8b4513;
     border: solid 3px #8b4513;

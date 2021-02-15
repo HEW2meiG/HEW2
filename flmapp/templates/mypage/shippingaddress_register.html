@@ -16,7 +16,7 @@
             <p class="finish-msg">{{ message }}</p>
             {% endfor %}
         </div>
-        <div class="base2-form pd-b-3">
+        <div class="base2-form">
         <form method="POST">
             {{ form.csrf_token }}
             <div class="mg-tb-3">
@@ -41,8 +41,11 @@
             {{ render_field(form.addr01) }}
             {{ render_field(form.addr02) }}
             {{ render_field(form.addr03) }}
+        </div>
+        <div class="pd-b-3">
             {{ render_field(form.is_default) }}
         </div>
+
     </div>
 </div>
             <div class="mg-tb-1_5 txt-center">
