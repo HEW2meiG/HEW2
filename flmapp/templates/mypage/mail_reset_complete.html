@@ -3,8 +3,15 @@
 メールアドレス更新完了画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h2>メールアドレスを更新しました</h2>
-<p>古書邂逅をご利用いただきありがとうございます。</p>
-<p>{{ current_user.email }}の確認が完了しました。</p>
-<p>引き続き古書邂逅をお楽しみください。</p>
+<div class="base2-wrap">
+<h1>メールアドレスを更新しました</h1>
+<p class="lh-5">
+    古書邂逅をご利用いただきありがとうございます。<br>
+    {{ current_user.email }}の確認が完了しました。<br>
+    引き続き古書邂逅をお楽しみください。
+</p>
+<div class="pd-tb-3">
+    <a href="{{url_for('route.home')}}" class="back-home">ホームへ戻る</a>
+</div>
+</div>
 {% endblock %}

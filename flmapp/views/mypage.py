@@ -236,7 +236,7 @@ def mail_password():
                         {email}<br>\
                         【こちらをクリックして登録を完了させてください。】<br>\
                         {url}'.format(email=email,url=url_for('mypage.mail_reset_complete', token=token, _external=True))
-            mail.send(msg)
+            # mail.send(msg)
             # メール送信処理ここまで----------------------------------------------------------
             # デバッグ用---------------------------------------------------------------
             print('*'*120)
