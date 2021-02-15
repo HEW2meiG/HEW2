@@ -1,0 +1,78 @@
+.search-container{
+    margin: 0 auto;
+    margin-top: 10px;
+    position: relative;
+    box-sizing: border-box;
+    border: 2px solid #0f2396;
+    padding: 15px 10px;
+    border-radius: 3px;
+    height: 2.3em;
+    width: 530px;
+    overflow: hidden;
+}
+.search-container input[type="text"]{
+    border: none;
+    width: 480px;
+    height: 2.3em;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.search-container input[type="text"]:focus {
+    outline: 0;
+}
+.search-container input[type="submit"]{
+    cursor: pointer;
+    border: none;
+    background: #0f2396;
+    color: #fff;
+    position: absolute;
+    width: 3.5em;
+    height: 3.0em;
+    right:0px;
+    top: -5px;
+    outline : none;
+}
+.search-container #submit{
+    margin: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 2.3em;
+    line-height: 0;
+    border-radius: 0;
+    color: white;
+    transition: .2s;
+    background-color: #0f2396;
+}
+/* タブ */
+.home-tab{
+    text-align: center;
+    margin: 10px;
+    border-radius: 7px;
+    border: solid 2px  #0f2396;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+}
+.home-tab a{
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.6rem;
+    flex-grow: 1;
+    padding: 8px;
+}
+.home-tab a{
+    transition: 0.5s;
+}
+.home-tab a:hover{
+    background-color: #0f239670;
+}
+.current{
+    color: #ffffff;
+    background-color: #0f2396;
+    border-radius: 5px;
+}
+.current:visited{
+    color: #ffffff;
+}
