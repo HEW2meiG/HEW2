@@ -132,53 +132,65 @@ class Sell(db.Model):
         cls.query.filter_by(Sell_id=Sell_id).delete()
 
     @classmethod
-    def item_search_by_word(cls, word):
-        """出品情報の検索"""
-        return cls.query.filter(or_(
-            cls.key1.like(f'%{word}%'),
-            cls.key2.like(f'%{word}%'),
-            cls.key3.like(f'%{word}%'),
-            cls.sell_comment.like(f'%{word}%'),
-            )).all()
- 
-    @classmethod
-    def item_search_by_sort(cls, word, sort):
-        """出品情報の並び替え検索"""
+    def item_search(cls, word, sort, genre, value_min, value_max, status, postages, deal_statuses):
+        """商品検索"""
+        filter_q = cls.query.filter(
+                        or_(
+                            cls.key1.like(f'%{word}%'),
+                            cls.key2.like(f'%{word}%'),
+                            cls.key3.like(f'%{word}%'),
+                            cls.sell_comment.like(f'%{word}%'),
+                        )
+                    )
+        if genre is None or genre == "all":
+            all_genre = list(Genre)
+            filter_q = filter_q.filter(cls.genre.in_(all_genre))
+        else:
+            genre = Genre[genre]
+            filter_q = filter_q.filter(cls.genre == genre)
+        if value_min is not None:
+            filter_q = filter_q.filter(cls.price >= value_min)
+        if value_max is not None:
+            filter_q = filter_q.filter(cls.price <= value_max)
+        if status != [] and len(status) != 6:
+            item_state_filters = []
+            for state in status:
+                item_state = Item_state[state]
+                item_state_filters.append(cls.item_state == item_state)
+            filter_q = filter_q.filter(or_(*item_state_filters))
+        if postages != [] and len(postages) != 2:
+            for postage in postages:
+                postage = Postage[postage]
+                filter_q = filter_q.filter(cls.postage == postage)
+        if deal_statuses != [] and len(deal_statuses) != 2:
+            for deal_status in deal_statuses:
+                if deal_status == "販売中":
+                    deal_status = Deal_status(1)
+                    filter_q = filter_q.filter(cls.deal_status == deal_status)
+                if deal_status == "売り切れ":
+                    deal_status_2 = Deal_status(2)
+                    deal_status_3 = Deal_status(3)
+                    filter_q = filter_q.filter(
+                        or_(
+                            cls.deal_status == deal_status_2,
+                            cls.deal_status == deal_status_3
+                        )
+                    )
         if sort == '価格の安い順':
-            items =cls.query.filter(or_(
-                cls.key1.like(f'%{word}%'),
-                cls.key2.like(f'%{word}%'),
-                cls.key3.like(f'%{word}%'),
-                cls.sell_comment.like(f'%{word}%'),
-                )).order_by(Sell.price).all()
+            items = filter_q.order_by(cls.price).all()
         elif sort == '価格の高い順':
-            items =cls.query.filter(or_(
-                cls.key1.like(f'%{word}%'),
-                cls.key2.like(f'%{word}%'),
-                cls.key3.like(f'%{word}%'),
-                cls.sell_comment.like(f'%{word}%'),
-                )).order_by(desc(Sell.price)).all()
+            items = filter_q.order_by(desc(Sell.price)).all()
         elif sort == '出品の新しい順':
-            items =cls.query.filter(or_(
-                cls.key1.like(f'%{word}%'),
-                cls.key2.like(f'%{word}%'),
-                cls.key3.like(f'%{word}%'),
-                cls.sell_comment.like(f'%{word}%'),
-                )).order_by(desc(Sell.create_at)).all()
+            items = filter_q.order_by(desc(Sell.create_at)).all()
         elif sort == 'いいね！の多い順':
             likes = aliased(Likes)
             likes_q = likes.query.group_by(likes.Sell_id).with_entities(likes.Sell_id, func.count(likes.Sell_id).label("likecnt")).subquery()
-            items = cls.query.filter(
-                or_(
-                        Sell.key1.like(f'%{word}%'),
-                        Sell.key2.like(f'%{word}%'),
-                        Sell.key3.like(f'%{word}%'),
-                        Sell.sell_comment.like(f'%{word}%')
-                )
-            ).outerjoin(
+            items = filter_q.outerjoin(
                         likes_q,
                         cls.Sell_id == likes_q.c.Sell_id
             ).order_by(desc(likes_q.c.likecnt)).all()
+        else:
+            items = filter_q.all()
         return items
 
     @classmethod
