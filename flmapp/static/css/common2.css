@@ -286,6 +286,10 @@ nav a:hover{
         background-color: white;
 }
 
+label{
+    font-size: 1.5rem;
+}
+
 h1{
     font-size: 22px;
     margin: 0;
