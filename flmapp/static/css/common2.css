@@ -323,3 +323,28 @@ div.base2-form select{
     border: solid 1px #C8A063;
     border-radius: 10px;
 }
+
+
+#pref01{
+    width: 100px;
+    height: 30px;
+    padding: 0 10px;
+    border: solid 1px #C8A063;
+    border-radius: 10px;
+}
+#pref01{
+    outline: none;
+}
+
+#last_name, #first_name, #last_name_kana, #first_name_kana{
+    width: 150px;
+}
+
+
+#year{
+    width: 100px;
+}
+
+#month, #date{
+    width: 70px;
+}
