@@ -352,3 +352,15 @@ div.base2-form select{
 #month, #date{
     width: 70px;
 }
+
+#expiration_date01, #expiration_date02{
+    width: 70px;
+}
+
+.exp-date{
+    font-size: 1.5rem;
+}
+
+#security_code{
+    width: 100px;
+}

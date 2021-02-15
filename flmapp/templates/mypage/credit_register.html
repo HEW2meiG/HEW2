@@ -14,9 +14,18 @@
         {{ form.csrf_token }}
         {{ render_field(form.credit_name) }}
         {{ render_field(form.credit_num) }}
-        {{ render_field(form.expiration_date01) }}
-        {{ render_field(form.expiration_date02) }}
-        {{ render_field(form.security_code) }}
+        <div class="mg-tb-3">
+            <div class="mg-tb-1">
+                {{ form.expiration_date01.label }}<span class="req">必須</span><br>
+            </div>
+            {{ form.expiration_date01 }} <span class="exp-date"> / </span> {{ form.expiration_date02 }}
+        </div>
+        <div class="mg-tb-3">
+            <div class="mg-tb-1">
+                {{ form.security_code.label }}※カード背面4桁もしくは3桁の番号<span class="req">必須</span><br>
+            </div>
+            {{ form.security_code }}
+        </div>
     </div>
     <div class="pd-b-3">
         {{ render_field(form.is_default) }}
