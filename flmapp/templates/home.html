@@ -50,60 +50,12 @@
 {% endfor %}
 <!-- ここまで　出品投稿 -->
 <script>
-    // ここから ajaxでcsrf_tokenを使用するとき
-    var csrf_token = "{{ csrf_token() }}";
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            }
-        }
-    });
-    // ここまで ajaxでcsrf_tokenを使用するとき
-    // ここから いいね処理
+    // カレントページ取得
     $(document).ready(function(event){
         if(location.pathname != "/") {
             $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('current');
         } else $('.home-tab a:eq(0)').addClass('current');
-        // ここまで カレントページ取得
-        var winScrollTop;
-        $(document).on('click', '#like', function(event){
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: "{{ url_for('ajax.like_ajax') }}",
-                data: {'sell_id': $(this).attr('name')},
-                dataType: 'json',
-                success: function(data){
-                    if(data['not_authenticated']){
-                        //スクロール位置を取得
-                        winScrollTop = $(window).scrollTop();
-                        login_required_modal_open();
-                    }else{
-                        selector = document.getElementsByName(data['item_id']);
-                        if(data['liked']){
-                            $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
-                        }
-                        else {
-                            $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
-                        }
-                        selector2 = document.getElementsByName(data['item_id'] + "-count");
-                        $(selector2).text(data['count']);
-                    }
-                }
-            });
-        });
-        function login_required_modal_open(){
-            $('#login-required-modal').fadeIn();
-            return false;
-        }
-        $('.js-modal-close').on('click',function(){
-            $('#login-required-modal').fadeOut();
-            $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
-            return false;
-        });
     });
-    // ここまで いいね処理
 </script>
 {% endblock %}
 {% block content2 %}
@@ -153,58 +105,4 @@
         {% endfor %}
     </div>
 {% endif %}
-<script>
-    // ここから ajaxでcsrf_tokenを使用するとき
-    var csrf_token = "{{ csrf_token() }}";
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            }
-        }
-    });
-    // ここまで ajaxでcsrf_tokenを使用するとき
-    $(document).ready(function(event){
-        // ここから フォロー処理
-        var winScrollTop;
-        $(document).on('click', '#follow', function(event){
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: "{{ url_for('ajax.follow_ajax') }}",
-                data: {'user_id': $(this).attr('name')},
-                dataType: 'json',
-                success: function(data){
-                    if(data['not_authenticated']){
-                        //スクロール位置を取得
-                        winScrollTop = $(window).scrollTop();
-                        login_required_modal_open();
-                    }else{
-                        selector = document.getElementsByName(data['user_id']);
-                        if(data['followed']){
-                            $(selector).attr('class', 'follow-btn');
-                            $(selector).text('フォロー中');
-                        }
-                        else {
-                            $(selector).attr('class', 'unfollow-btn');
-                            $(selector).text('フォロー');
-                        }
-                        selector2 = document.getElementById(data['user_id'] + "-count");
-                        $(selector2).text(data['count']);
-                    }
-                }
-            });
-        });
-        // ここまで フォロー処理
-        function login_required_modal_open(){
-            $('#login-required-modal').fadeIn();
-            return false;
-        }
-        $('.js-modal-close').on('click',function(){
-            $('#login-required-modal').fadeOut();
-            $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
-            return false;
-        });
-    });
-</script>
 {% endblock %}

@@ -100,7 +100,7 @@ def mypagetop():
     follows = UserConnect.select_follows_by_user_id(current_user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(current_user.User_id)
     # ユーザーが出品した商品
-    items = Sell.select_sell_by_user_id(current_user.User_id)
+    items = Sell.select_sell_by_user_id_sort(current_user.User_id)
     # 最近見た本
     b_items = BrowsingHistory.b_history_join_sell(Sell,current_user.User_id)
     b_item_list = []

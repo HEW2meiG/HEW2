@@ -49,8 +49,8 @@ def item():
         status = form.state.data
         postages = form.postage.data
         deal_statuses = form.sellstate.data
-        if form.n_d_submit(value='絞り込んで検索') or form.submit.data(value='検索'):
-            items = Sell.item_search(search_word, sort, genre, value_min, value_max, status, postages, deal_statuses)    
+        if form.n_d_submit.data or form.submit.data:
+            items = Sell.item_search(search_word, sort, genre, value_min, value_max, status, postages, deal_statuses)
     return render_template('search/search.html', form=form, items=items, users=users, change_search=change_search)
 
 # ユーザー検索処理
@@ -58,6 +58,9 @@ def item():
 def user():
     form = SearchForm(request.args, meta={'csrf': False})
     items = None
+    users = None
     change_search = 'user'
-    users = User.user_search_by_word(form.search.data)
+    if request.method == 'GET':
+        if form.submit.data:
+            users = User.user_search_by_word(form.search.data)
     return render_template('search/search.html', form=form, items=items, users=users, change_search=change_search)
