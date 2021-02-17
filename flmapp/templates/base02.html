@@ -5,6 +5,10 @@
         <title>{% block title %}古書邂逅{% endblock %}</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+        <!-- ↓googleフォント -->
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+        <!-- ↑googleフォント -->
         <!-- ↓読み込むcssファイルをここに記述してください。 -->
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/sanitize.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css')}}">
@@ -12,6 +16,7 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common2.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/follow.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css')}}">
         {%block head %}{% endblock%}
     </head>
@@ -104,21 +109,22 @@
                 </div>
             </div>
         </div>
+        {% include "ajax.html" %}
+        <script>
+            // カレント表示
+            $(document).ready(function() {
+                if(location.pathname == "/timeline" || location.pathname == "/hit") {
+                    $('#home').addClass('active');
+                }else if(location.pathname != "/" && location.pathname.indexOf('/mypage/') == -1) {
+                    $('nav li a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
+                }else if(location.pathname == "/mypage/"){
+                    $('#mypage-top').addClass('active');
+                }else if(location.pathname.match("/mypage/history")) {
+                    $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '/' + location.pathname.split("/")[3] + '"]').addClass('active');
+                }else if(location.pathname.match("/mypage/")) {
+                    $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '"]').addClass('active');
+                }else{ $('#home').addClass('active');}
+            });
+        </script>
     </body>
 </html>
-<script>
-    // カレント表示
-    $(document).ready(function() {
-        if(location.pathname == "/timeline" || location.pathname == "/hit") {
-            $('#home').addClass('active');
-        }else if(location.pathname != "/" && location.pathname.indexOf('/mypage/') == -1) {
-            $('nav li a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('active');
-        }else if(location.pathname == "/mypage/"){
-            $('#mypage-top').addClass('active');
-        }else if(location.pathname.match("/mypage/history")) {
-            $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '/' + location.pathname.split("/")[3] + '"]').addClass('active');
-        }else if(location.pathname.match("/mypage/")) {
-            $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '"]').addClass('active');
-        }else{ $('#home').addClass('active');}
-    });
-</script>

@@ -4,12 +4,10 @@
 検索画面 - {{ super() }}
 {% endblock %}
 {% block head %}
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/search/search.css')}}">
 {% endblock %}
 {% block content %}
-<form method="GET" action="{{url_for('search.item')}}" id="search_form"></form>
+<form method="GET" id="search_form"></form>
 <div class="search-container">
     {{ form.search(value=form.search.data, form="search_form") }}
     {{ form.submit(form="search_form", value="検索") }}
@@ -55,52 +53,50 @@
     <!-- ここまで　出品投稿 -->
 <!-- ユーザー検索結果 -->
 {% elif change_search=='user' and users != None %}
-<table>
+    <div class="reco-u-wrap search">
     {% for user in users %}
-    <tr>
-        <td><a href="{{url_for('user.userdata', user_code=user.user_code)}}">
-            <img src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
-        </a></td>
-        <td><a href="{{url_for('user.userdata', user_code=user.user_code)}}">
-            {{ user.username }}
-        </a></td>
-    </tr>
+        <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
+            <div class="u-u-wrap">
+                <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+                <div class="u-nc">
+                    <p class="u-name">{{ user.username }}</p>
+                    <p class="u-code">{{ user.user_code }}</p>
+                </div>
+            </div>
+            {% include "follow.html" %}
+        </a>
     {% endfor %}
-</table>
+    </div>
 {% endif %}
-<!-- あああ -->
 {% endblock %}
 {% block content2 %}
 <!-- 絞り込みフォーム -->
 {% if change_search=='item' %}
-        <h2>並び替え</h2>
-        {{ form.sort(form="search_form") }}
-        <h2>絞り込み</h2>
-        <h3>ジャンル</h3>
-        {{ form.genre(form="search_form") }}
-        <h3>価格</h3>
-        {{ form.value_min(form="search_form") }}円～{{ form.value_max(form="search_form") }}円
-        <h3>商品の状態</h3>
-        {{ form.state() }}
-        <h3>配送料の負担</h3>
-        {{ form.postage() }}
-        <h3>販売状況</h3>
-        {{ form.sellstate() }}
-        {{ form.n_d_submit(form="search_form") }}
-        <input type="reset" value="クリア" form="search_form">
+    <div class="nd-wrap" id="nd-wrap">
+        <div class="nd-wrap-wrap">
+            <h2>並び替え</h2>
+            {{ form.sort(form="search_form") }}
+            <h2>絞り込み</h2>
+            <h3>ジャンル</h3>
+            {{ form.genre(form="search_form") }}
+            <h3>価格</h3>
+            <div class="value-wrap">
+                {{ form.value_min(form="search_form", class="value") }}
+                <span class="value-kara">～</span>
+                {{ form.value_max(form="search_form", class="value") }}
+            </div>
+            <h3>商品の状態</h3>
+            {{ form.state() }}
+            <h3>配送料の負担</h3>
+            {{ form.postage() }}
+            <h3>販売状況</h3>
+            {{ form.sellstate() }}
+            {{ form.n_d_submit(form="search_form", class="n-d-submit") }}
+            <input type="reset" value="クリア" form="search_form" class="n-d-submit n-d-reset">
+        </div>
+    </div>
 {% endif %}
 <script>
-    // ここから ajaxでcsrf_tokenを使用するとき
-    var csrf_token = "{{ csrf_token() }}";
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", csrf_token);
-            }
-        }
-    });
-    // ここまで ajaxでcsrf_tokenを使用するとき
-    // ここから いいね処理
     $(document).ready(function(event){
         // ここから カレントページ取得
         if(location.pathname.match("/search/item/")){
@@ -121,43 +117,9 @@
         $('input[name="postage"]').attr('form', 'search_form');
         $('input[name="sellstate"]').attr('form', 'search_form');
         // ここまで チェックボックス form="search_form"追加
-        var winScrollTop;
-        $(document).on('click', '#like', function(event){
-            event.preventDefault();
-            $.ajax({
-                type: 'POST',
-                url: "{{ url_for('ajax.like_ajax') }}",
-                data: {'sell_id': $(this).attr('name')},
-                dataType: 'json',
-                success: function(data){
-                    if(data['not_authenticated']){
-                        //スクロール位置を取得
-                        winScrollTop = $(window).scrollTop();
-                        login_required_modal_open();
-                    }else{
-                        selector = document.getElementsByName(data['item_id']);
-                        if(data['liked']){
-                            $(selector).html("<i class='fas fa-lg fa-heart like-btn'></i>");
-                        }
-                        else {
-                            $(selector).html("<i class='far fa-lg fa-heart unlike-btn'></i>");
-                        }
-                        selector2 = document.getElementsByName(data['item_id'] + "-count");
-                        $(selector2).text(data['count']);
-                    }
-                }
-            });
-        });
-        function login_required_modal_open(){
-            $('#login-required-modal').fadeIn();
-            return false;
-        }
-        $('.js-modal-close').on('click',function(){
-            $('#login-required-modal').fadeOut();
-            $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
-            return false;
-        });
+        // ここから チェックボックス class追加
+        $('#nd-wrap label').addClass('checkbox');
+        // ここまで チェックボックス class追加   
     });
-    // ここまで いいね処理
 </script>
 {% endblock %}

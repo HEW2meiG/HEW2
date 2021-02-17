@@ -24,12 +24,12 @@ class SearchForm(FlaskForm):
     sort = SelectField('',choices=[('','並び変え'),('価格の安い順','価格の安い順'),('価格の高い順','価格の高い順'),\
     ('出品の新しい順','出品の新しい順'),('いいね！の多い順','いいね！の多い順')]\
         )
-    genre = SelectField('',choices=[('all','ジャンルを選択する'),('SF','SF'),('政治','政治'),('恋愛','恋愛'),\
+    genre = SelectField('',choices=[('all','すべて'),('SF','SF'),('政治','政治'),('恋愛','恋愛'),\
     ('青春','青春'),('ミステリー','ミステリー'),('イヤミス','イヤミス'),('歴史','歴史'),\
     ('時代','時代'),('物語(短編)','物語(短編)'),('物語(中編)','物語(中編)'),('物語(長編)','物語(長編)')]\
         )
-    value_min = IntegerField('')
-    value_max = IntegerField('')
+    value_min = IntegerField('',render_kw={"placeholder":"¥Min"})
+    value_max = IntegerField('',render_kw={"placeholder":"¥Max"})
     state = MultiCheckField('',choices=[('新品','新品'),('未使用に近い','未使用に近い'),\
     ('目立った傷や汚れなし','目立った傷や汚れなし'),('やや傷や汚れあり','やや傷や汚れあり'),('傷や汚れあり','傷や汚れあり'),('全体的に状態が悪い','全体的に状態が悪い')]\
         )

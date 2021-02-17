@@ -177,8 +177,9 @@ def buy_complete(item_id):
     sell = Sell.select_sell_by_sell_id(item_id)
     buy = Buy.select_buy_by_sell_id(item_id)
     # レコメンドキャッシュのクリア
-    getRecommendations.cache_clear()
-    topMatches.cache_clear()
+    # 読み込み速度の問題によりデモではキャッシュクリアを行わない
+    # getRecommendations.cache_clear()
+    # topMatches.cache_clear()
     return render_template('buy/buy_complete.html', item=sell, buy=buy)
 
 

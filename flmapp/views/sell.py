@@ -60,9 +60,6 @@ def check_sell(func):
 @login_required # ログインしていないと表示できないようにする
 def sell():
     form = SellForm(request.form)
-    if request.method=='POST' and form.validate():
-        if form.submit(value='出品画面に戻る'):
-            return render_template('sell/sell.html', form=form)
     return render_template('sell/sell.html', form=form)
 
 @bp.route('/preview', methods=['GET', 'POST'])

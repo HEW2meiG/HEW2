@@ -79,7 +79,7 @@ def userdata(user_code):
     follows = UserConnect.select_follows_by_user_id(user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(user.User_id)
     # ユーザーが出品した商品
-    items = Sell.select_sell_by_user_id(user.User_id)
+    items = Sell.select_sell_by_user_id_sort(user.User_id)
     # レコメンドリスト
     if current_user.is_authenticated:
         r_user_list = u_recommend(user.User_id,current_user.User_id)
