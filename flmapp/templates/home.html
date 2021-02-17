@@ -54,7 +54,9 @@
     $(document).ready(function(event){
         if(location.pathname != "/") {
             $('.home-tab a[href^="/' + location.pathname.split("/")[1] + '"]').addClass('current');
-        } else $('.home-tab a:eq(0)').addClass('current');
+        } else {
+            $('.home-tab a:eq(0)').addClass('current');
+        }
     });
 </script>
 {% endblock %}
