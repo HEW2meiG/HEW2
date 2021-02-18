@@ -10,8 +10,8 @@ def make_deal_message_format(dest_user, messages):
         message_tag += f'''
             <div class="msg-box dest-box">
                     <div class="msger-wrap">
-                        <p>{ dest_user.username }</p>
                         <img class="u-icon" src={url_for("static", filename="user_image/" + dest_user.picture_path)}>
+                        <p>{ dest_user.username }</p>
                     </div>
                 <div class="speech-bubble-dest">
         '''
@@ -19,7 +19,7 @@ def make_deal_message_format(dest_user, messages):
             message_tag += f'<p>{ urlize(splitted_message) }</p>'
         message_tag += '''
                 </div>'''
-        message_tag += f'<p>{ message.create_at.strftime("%Y/%m/%d %H:%M") }</p>'
+        message_tag += f'<p class="time">{ message.create_at.strftime("%Y/%m/%d %H:%M") }</p>'
         message_tag += '''
             </div>
         '''
@@ -31,9 +31,9 @@ def make_old_deal_message_format(dest_user, messages):
     for message in messages[::-1]:
         if message.from_user_id == int(current_user.User_id):
             message_tag += f'''<div class="msg-box self-box"><div id="self-message-tag-{ message.DealMessage_id }">'''
+            message_tag += f'<p>{ message.create_at.strftime("%Y/%m/%d %H:%M") }</p>'
             if message.is_checked:
                 message_tag += '<p>既読<p>'
-            message_tag += f'<p>{ message.create_at.strftime("%Y/%m/%d %H:%M") }</p>'
             message_tag += '''</div><div class="speech-bubble-self">'''
             for splitted_message in replace_newline(message.message):
                 message_tag += f'<p>{ urlize(splitted_message) }</p>'
@@ -48,8 +48,8 @@ def make_old_deal_message_format(dest_user, messages):
             message_tag += f'''
                 <div class="msg-box dest-box">
                         <div class="msger-wrap">
-                            <p>{ dest_user.username }</p>
                             <img class="u-icon" src={url_for("static", filename="user_image/" + dest_user.picture_path)}>
+                            <p>{ dest_user.username }</p>
                         </div>
                     <div class="speech-bubble-dest">
             '''
@@ -57,7 +57,7 @@ def make_old_deal_message_format(dest_user, messages):
                 message_tag += f'<p>{ urlize(splitted_message) }</p>'
             message_tag += '''
                     </div>'''
-            message_tag += f'<p>{ message.create_at.strftime("%Y/%m/%d %H:%M") }</p>'
+            message_tag += f'<p class="time">{ message.create_at.strftime("%Y/%m/%d %H:%M") }</p>'
             message_tag += '''
                 </div>
             '''

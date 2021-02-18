@@ -36,6 +36,7 @@
 }
 .t-wrap .u-icon{
     width: 43px;
+    height: 43px;
 }
 .t-wrap .u-code{
     font-size: 1.2rem;
@@ -87,6 +88,7 @@
     color: #ffffff;
     line-height: 1em;
     transition: .3s;
+    margin-right: 0;
 }
 .message-area #submit:hover {
     color         : #000066;
