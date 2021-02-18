@@ -15,6 +15,7 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kosho-flame.css')}}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/common2.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/login_required_modal.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/logout_modal.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/like.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/follow.css')}}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/item.css')}}">
@@ -69,7 +70,7 @@
                                         <a class="mp-a" href="{{url_for('history.buy_in_progress')}}">
                                             購入履歴
                                         </a><br>
-                                        <a class="mp-a" href="{{url_for('mypage.logout')}}">
+                                        <a class="mp-a" id="logout">
                                             ログアウト
                                         </a>
                                     </label>
@@ -108,6 +109,14 @@
                     <a class="js-modal-close close" href="">閉じる</a>
                 </div>
             </div>
+            <div id="logout-modal" class="logout-modal">
+                <div class="modal-bg js-modal-close"></div>
+                <div class="modal-content">
+                    <h2>ログアウトしますか？</h2>
+                    <a class="navbar-brand b-btn" href="{{url_for('auth.logout')}}">ログアウト</a>
+                    <a class="js-modal-close close" href="">キャンセル</a>
+                </div>
+            </div>
         </div>
         {% include "ajax.html" %}
         <script>
@@ -125,6 +134,17 @@
                     $('nav li a[href^="/' + location.pathname.split("/")[1] + '/' + location.pathname.split("/")[2] + '"]').addClass('active');
                 }else{ $('#home').addClass('active');}
             });
+            // ログアウトモーダル
+            $('#logout').on('click', function(){
+                $('#logout-modal').fadeIn();
+                return false;
+            })
+            $('.js-modal-close').on('click',function(){
+                $('#logout-modal').fadeOut();
+                $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
+                return false;
+            });
+            // ログアウトモーダル
         </script>
     </body>
 </html>

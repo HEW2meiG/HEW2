@@ -1,0 +1,11 @@
+.logout-modal{
+    display: none;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100%;
+}
+.logout-modal .modal-content{
+    width: 40%;
+}
