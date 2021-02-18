@@ -24,7 +24,7 @@
                 <!-- 自分側 -->
                 <div class="msg-box self-box">
                     <div id="self-message-tag-{{ message.DealMessage_id }}">
-                        <p>{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
+                        <p class="time">{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
                         {% if message.is_checked %}
                             <p>既読</p>
                         {% endif %}
@@ -53,7 +53,7 @@
                             <p>{{ splitted_message|urlize }}</p>
                         {% endfor %}
                     </div>
-                    <p>{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
+                    <p class="time">{{ message.create_at.strftime("%Y/%m/%d %H:%M") }}</p>
                 </div>
             {% endif %}
         {% endfor %}
