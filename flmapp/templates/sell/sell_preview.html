@@ -3,116 +3,122 @@
 出品情報確認画面 - {{ super() }}
 {% endblock %}
 {% block head %}
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/global.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/item.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sell/sell_preview.css')}}">
 {% endblock %}
 {% block content %}
 <h1>出品情報確認</h1>
-<p>
-    <span class="sell-info">本のタイトル</span>:{{ form.sell_title.data }}
-</p>
+<!-- ここから 出品投稿 -->
+<article class="item-wrap">
+    <div class="u-box">
+        <img class="u-icon" src="{{url_for('static', filename='user_image/' + current_user.picture_path)}}">
+        <p class="u-name">{{ current_user.username }}</p>
+        <p class="u-code">{{ current_user.user_code }}</p>
+    </div>
+    <div class="i-content-area">
+        <div class="k-s-box">
+            <div class="i-key">
+                <p><i class="fas fa-key"></i>{{ form.key1.data }}</p>
+                <p><i class="fas fa-key"></i>{{ form.key2.data }}</p>
+                <p><i class="fas fa-key"></i>{{ form.key3.data }}</p>
+            </div>
+        </div>
+        <div class="i-comm"><p>{{ form.sell_comment.data }}</p></div>
+    </div>
+</article>
+<!-- ここまで　出品投稿 -->
 
-<div class="keyword-area">
-    <p class="mg-tb-1">
-        <span class="sell-info">本のキーワード1</span>:{{ form.key1.data }}
-    </p>
-
-    <p class="mg-tb-1">
-        <span class="sell-info">本のキーワード2</span>:{{ form.key2.data }}
-    </p>
-
-    <p class="mg-tb-1">
-        <span class="sell-info">本の本のキーワード3</span>:{{ form.key3.data }}
-    </p>
+<div class="t-wrap">
+    <table>
+        <tr><th colspan="2"><h2>詳細</h2></th></tr>
+        <tr>
+            <th>本のタイトル</th>
+            <td>
+                &yen;{{ form.sell_title.data }}
+            </td>
+        </tr>
+        <tr>
+            <th>本の画像</th>
+            <td>
+                <img src="{{url_for('static', filename='item_temp_image/' + imagename)}}" class="book-photo">
+            </td>
+        </tr>
+        <tr>
+            <th>販売価格</th>
+            <td>
+                &yen;{{ form.price.data }}
+            </td>
+        </tr>
+        <tr>
+            <th>配送料の負担</th>
+            <td>{{ form.postage.data }}</td>
+        </tr>
+        <tr>
+            <th>ジャンル</th>
+            <td>
+                {{ form.genre.name }}
+            </td>
+        </tr>
+        <tr>
+            <th>商品の状態</th>
+            <td>{{ form.item_state.data }}</td>
+        </tr>
+        <tr>
+            <th>配送の方法</th>
+            <td>{{ form.send_way.data }}</td>
+        </tr>
+        <tr>
+            <th>配送元地域</th>
+            <td>{{ form.consignor.data }}</td>
+        </tr>
+        <tr>
+            <th>発送日の目安</th>
+            <td>{{ form.schedule.data }}</td>
+        </tr>
+        <tr>
+            <th>備考</th>
+            <td>{{ form.remarks.data }}</td>
+        </tr>
+    </table>
 </div>
-
-<div class="comment-area">
-    <span class="sell-info">出品する本のコメント</span><br>
-    {{ form.sell_comment.data }}
+<div class="submit-wrap">
+    <form method="POST" action="{{url_for('sell.sell_register')}}">
+        {{ hiddenform.csrf_token }}
+        {{ hiddenform.sell_title(value=form.sell_title.data) }}
+        {{ hiddenform.key1(value=form.key1.data) }}
+        {{ hiddenform.key2(value=form.key2.data) }}
+        {{ hiddenform.key3(value=form.key3.data) }}
+        {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
+        {{ hiddenform.price(value=form.price.data) }}
+        {{ hiddenform.item_picture_path(value=imagename) }}
+        {{ hiddenform.genre(value=form.genre.data) }}
+        {{ hiddenform.item_state(value=form.item_state.data) }}
+        {{ hiddenform.postage(value=form.postage.data) }}
+        {{ hiddenform.send_way(value=form.send_way.data) }}
+        {{ hiddenform.consignor(value=form.consignor.data) }}
+        {{ hiddenform.schedule(value=form.schedule.data) }}
+        {{ hiddenform.remarks(value=form.remarks.data) }}
+        {{ hiddenform.submit(value='出品する') }}
+    </form>
+    <form method="POST" action="{{url_for('sell.sell')}}">
+        {{ hiddenform.csrf_token }}
+        {{ hiddenform.sell_title(value=form.sell_title.data) }}
+        {{ hiddenform.key1(value=form.key1.data) }}
+        {{ hiddenform.key2(value=form.key2.data) }}
+        {{ hiddenform.key3(value=form.key3.data) }}
+        {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
+        {{ hiddenform.price(value=form.price.data) }}
+        {{ hiddenform.item_picture_path(value=imagename) }}
+        {{ hiddenform.genre(value=form.genre.data) }}
+        {{ hiddenform.item_state(value=form.item_state.data) }}
+        {{ hiddenform.postage(value=form.postage.data) }}
+        {{ hiddenform.send_way(value=form.send_way.data) }}
+        {{ hiddenform.consignor(value=form.consignor.data) }}
+        {{ hiddenform.schedule(value=form.schedule.data) }}
+        {{ hiddenform.remarks(value=form.remarks.data) }}
+        {{ hiddenform.submit(id="sell-back",value='出品画面に戻る') }}
+    </form>
 </div>
-
-<div class="price-area">
-    <p class="mg-tb-1">
-        <span class="sell-info">販売価格</span>:&yen;{{ form.price.data }}
-    </p>
-</div>
-
-{% if imagename %}
-<div class="center-margin">
-    <img src="{{url_for('static', filename='item_temp_image/' + imagename)}}" class="book-photo">
-</div>
-{% endif %}
-
-<p class="mg-tb-1">
-    <span class="sell-info">ジャンル</span>:{{ form.genre.data }}
-</p>
-
-<p class="mg-tb-1">
-    <span class="sell-info">商品の状態</span>:{{ form.item_state.data }}
-</p>
-
-<p class="mg-tb-1">
-    <span class="sell-info">配送料の負担</span>:{{ form.postage.data }}
-</p>
-
-<p class="mg-tb-1">
-    <span class="sell-info">配送の方法</span>:{{ form.send_way.data }}
-</p>
-
-<p class="mg-tb-1">
-    <span class="sell-info">配送元地域</span>:{{ form.consignor.data }}
-</p>
-
-<p class="mg-tb-1">
-    <span class="sell-info">発送日の目安</span>:{{ form.schedule.data }}
-</p>
-
-<p class="mg-tb-1">
-    <span class="sell-info">備考</span>:{{ form.remarks.data }}
-</p>
-
-<form method="POST" action="{{url_for('sell.sell_register')}}">
-    {{ hiddenform.csrf_token }}
-    {{ hiddenform.sell_title(value=form.sell_title.data) }}
-    {{ hiddenform.key1(value=form.key1.data) }}
-    {{ hiddenform.key2(value=form.key2.data) }}
-    {{ hiddenform.key3(value=form.key3.data) }}
-    {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
-    {{ hiddenform.price(value=form.price.data) }}
-    {{ hiddenform.item_picture_path(value=imagename) }}
-    {{ hiddenform.genre(value=form.genre.data) }}
-    {{ hiddenform.item_state(value=form.item_state.data) }}
-    {{ hiddenform.postage(value=form.postage.data) }}
-    {{ hiddenform.send_way(value=form.send_way.data) }}
-    {{ hiddenform.consignor(value=form.consignor.data) }}
-    {{ hiddenform.schedule(value=form.schedule.data) }}
-    {{ hiddenform.remarks(value=form.remarks.data) }}
-
-
-    {{ hiddenform.submit(class="mg-tb-5",value='出品する') }}
-
-</form>
-
-<form method="POST" action="{{url_for('sell.sell')}}">
-    {{ hiddenform.csrf_token }}
-    {{ hiddenform.sell_title(value=form.sell_title.data) }}
-    {{ hiddenform.key1(value=form.key1.data) }}
-    {{ hiddenform.key2(value=form.key2.data) }}
-    {{ hiddenform.key3(value=form.key3.data) }}
-    {{ hiddenform.sell_comment(value=form.sell_comment.data) }}
-    {{ hiddenform.price(value=form.price.data) }}
-    {{ hiddenform.item_picture_path(value=imagename) }}
-    {{ hiddenform.genre(value=form.genre.data) }}
-    {{ hiddenform.item_state(value=form.item_state.data) }}
-    {{ hiddenform.postage(value=form.postage.data) }}
-    {{ hiddenform.send_way(value=form.send_way.data) }}
-    {{ hiddenform.consignor(value=form.consignor.data) }}
-    {{ hiddenform.schedule(value=form.schedule.data) }}
-    {{ hiddenform.remarks(value=form.remarks.data) }}
-
-
-    {{ hiddenform.submit(id="sell-back",class="mg-tb-5",value='出品画面に戻る') }}
-
-
-</form>
-
 {% endblock %}

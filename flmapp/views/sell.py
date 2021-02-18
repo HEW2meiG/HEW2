@@ -93,28 +93,6 @@ def sell_preview():
         return render_template('sell/sell_preview.html', form=form, hiddenform=hiddenform, imagename=imagename)
     return render_template('sell/sell.html', form=form)
 
-# デモ
-@bp.route('/demo_preview', methods=['GET', 'POST'])
-@login_required # ログインしていないと表示できないようにする
-def demo_preview():
-    form = SellForm()
-    hiddenform = HiddenSellForm()
-    form.sell_title.data='症例A'
-    form.key1.data='精神科医'
-    form.key2.data='カウンセリング'
-    form.key3.data='重い'
-    form.sell_comment.data='刺さった。現場にいないとかけない本だと思う。\
-                            事件を起こした子は何を考えているのかを解き明かしていくのが面白かった。\
-                            凄く重い話。'
-    form.genre.data='ミステリー'
-    form.item_state.data='やや傷や汚れあり'
-    form.postage.data='送料込み(出品者負担)'
-    form.send_way.data='クロネコヤマト'
-    form.consignor.data='愛知県'
-    form.schedule.data='2日から3日で発送'
-    form.remarks.data='折り目を付けたページがあり、跡が残っています。'
-    form.price.data=650
-    return render_template('sell/sell.html', form=form)
 
 @bp.route('/sell_register', methods=['GET', 'POST'])
 @login_required # ログインしていないと表示できないようにする
