@@ -10,11 +10,6 @@
     });
     // ここまで ajaxでcsrf_tokenを使用するとき
     $(document).ready(function(event){
-        // ここから カレントページ取得
-        if(location.pathname.split("/")[4] == "likes") {
-            $('#likes-tab').addClass('current');
-        } else $('#sell-tab').addClass('current');
-        // ここまで カレントページ取得
         // ここから フォロー処理
         var winScrollTop;
         $(document).on('click', '#follow', function(event){
@@ -77,6 +72,7 @@
             });
         });
         // ここまで いいね処理
+        // ログインモーダル
         function login_required_modal_open(){
             $('#login-required-modal').fadeIn();
             return false;
@@ -86,5 +82,6 @@
             $('body,html').stop().animate({scrollTop:winScrollTop}, 100);
             return false;
         });
+        // ログインモーダル
     });
 </script>

@@ -9,6 +9,9 @@ from flask_login import (
 )
 from flmapp import db # SQLAlchemy
 
+from flmapp.utils.recommendations import (
+    recommend
+)# レコメンド
 from flmapp.models.user import (
     User
 )
@@ -60,7 +63,12 @@ def user():
     items = None
     users = None
     change_search = 'user'
+    # レコメンドリスト
+    r_item_list = []
+    r_user_list = []
+    if current_user.is_authenticated:
+        r_item_list,r_user_list = recommend(current_user.User_id)
     if request.method == 'GET':
         if form.submit.data:
             users = User.user_search_by_word(form.search.data)
-    return render_template('search/search.html', form=form, items=items, users=users, change_search=change_search)
+    return render_template('search/search.html', form=form, items=items, users=users, change_search=change_search, r_user_list=r_user_list)

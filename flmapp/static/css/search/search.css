@@ -82,6 +82,9 @@
     border-radius: 2px;
     margin-top: 0;
 }
+.search-r-u{
+    margin-top: 50px;
+}
 /* 絞り込みエリア */
 .nd-wrap{
     margin-top: 50px;
@@ -97,7 +100,18 @@
     width: 300px;
 }
 .nd-wrap h2{
-    margin-bottom: 8px;
+    margin-bottom: 15px;
+    color: #a7885d;
+}
+.nd-wrap h2 i{
+    margin-right: 5px;
+}
+.nd-wrap h3{
+    margin-bottom: 5px;
+    font-size: 1.3rem;
+}
+.nd-wrap h3 i{
+    margin-right: 5px;
 }
 .nd-wrap select {
     width: 300px;

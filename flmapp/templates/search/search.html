@@ -74,27 +74,47 @@
 {% if change_search=='item' %}
     <div class="nd-wrap" id="nd-wrap">
         <div class="nd-wrap-wrap">
-            <h2>並び替え</h2>
+            <h2><i class="fas fa-list-ul"></i>並び替え</h2>
             {{ form.sort(form="search_form") }}
-            <h2>絞り込み</h2>
-            <h3>ジャンル</h3>
+            <h2><i class="fas fa-filter"></i>絞り込み</h2>
+            <h3><i class="fas fa-tags"></i>ジャンル</h3>
             {{ form.genre(form="search_form") }}
-            <h3>価格</h3>
+            <h3><i class="fas fa-coins"></i>価格</h3>
             <div class="value-wrap">
                 {{ form.value_min(form="search_form", class="value") }}
                 <span class="value-kara">～</span>
                 {{ form.value_max(form="search_form", class="value") }}
             </div>
-            <h3>商品の状態</h3>
+            <h3><i class="fas fa-book"></i>商品の状態</h3>
             {{ form.state() }}
-            <h3>配送料の負担</h3>
+            <h3><i class="fas fa-truck-moving"></i>配送料の負担</h3>
             {{ form.postage() }}
-            <h3>販売状況</h3>
+            <h3><i class="fas fa-shopping-cart"></i>販売状況</h3>
             {{ form.sellstate() }}
             {{ form.n_d_submit(form="search_form", class="n-d-submit") }}
             <input type="reset" value="クリア" form="search_form" class="n-d-submit n-d-reset">
         </div>
     </div>
+{% elif change_search=='user' and r_user_list %}
+    {% if r_user_list %}
+        <div class="reco-u-wrap search-r-u">
+            <h2 class="r-h2">おすすめのユーザー</h2>
+            {% for user in r_user_list %}
+                <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
+                    <div class="u-u-wrap">
+                        <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
+                        <div class="u-nc">
+                            <p class="u-name">{{ user.username }}</p>
+                            <p class="u-code">{{ user.user_code }}</p>
+                        </div>
+                    </div>
+                    {% include "follow.html" %}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="looling-f">購入履歴・閲覧履歴・いいねにより、<br>あなたのおすすめの本を探します</p>
+    {% endif %}
 {% endif %}
 <script>
     $(document).ready(function(event){
