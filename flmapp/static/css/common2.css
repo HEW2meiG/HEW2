@@ -62,6 +62,7 @@ header h1 img{
 }
 .u-icon{
     width: 50px;
+    height: 50px;
     border-radius: 50%;
     border: 2px solid #ececec;
 }
@@ -170,6 +171,7 @@ nav a:hover{
 }
 .r_item-wrap .u-box .u-icon{
     width: 45px;
+    height: 45px;
 }
 .r_item-wrap .i-content-area{
     margin-top: -23px;

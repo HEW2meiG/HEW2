@@ -1,12 +1,16 @@
-.sell-info{
-    font-weight: bold;
-}
-
 img.book-photo{
-    padding: 10px;
-    border: solid 3px #8b4513;
+    width: 200px;
+    text-align: center;
 }
-
+.submit-wrap{
+    text-align: center;
+}
+#submit{
+    margin: 20px;
+}
+#sell-back{
+    margin-bottom: 20px;
+}
 #sell-back{
     width: 300px;
     height: 40px;
@@ -15,9 +19,63 @@ img.book-photo{
     border: none;
     color: white;
     transition: .2s;
-    background-color: #a73836;
+    background-color: #888;
 }
 #sell-back:hover{
-    transition: .7s;
-    background-color: #662222;
+    opacity: 0.7;
+}
+h1{
+    text-align: center;
+}
+.container{
+    text-align: left;
+}
+.item-wrap{
+    width: 550px;
+    margin: 10px auto;
+    border-radius: 10px;
+}
+.u-icon{
+    width: 50px;
+    border-radius: 50%;
+    border: 2px solid #ececec;
+}
+.i-fotter{
+    display: inline;
+    text-align: right;
+}
+.i-fotter p{
+    margin-right: 10px;
+}
+/* 詳細テーブル */
+.t-wrap{
+    margin: 15px auto;
+    width: 610px;
+}
+.t-wrap h2{
+    text-align: center;
+    font-size: 1.4rem;
+}
+.t-wrap table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+.t-wrap table th, .t-wrap td{
+    padding: 15px 10px;
+}
+.t-wrap table tr{
+    border-bottom: solid 1px #eee;
+}
+.t-wrap table th{
+    width: 100px;
+    font-size: 1.3rem;
+}
+.t-wrap table td{
+    font-size: 1.3rem;
+}
+.inf-wrap{
+    text-align: center;
 }
