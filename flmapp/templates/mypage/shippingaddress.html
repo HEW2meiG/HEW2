@@ -19,9 +19,9 @@
     {% set shippingaddress = search_shippingaddress(field.data) %}
     <tr>
         <td class="pd-r-1">{{ field(form="choice") }}</td>
-        <td class="pd-r-2">{{ field.label }}</td>
+        <td class="pd-r-1">{{ field.label }}</td>
         <td>
-            <div class="pd-r-2">
+            <div class="pd-r-1">
                 <p>
                     {{ shippingaddress.last_name }}
                     {{ shippingaddress.first_name }}

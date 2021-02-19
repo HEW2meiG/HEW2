@@ -17,7 +17,7 @@
 {% for field in form.ShippingAddress_id %}
     {% set shippingaddress = search_shippingaddress(field.data) %}
     <tr>
-        <td>{{ field(form="choice") }}</td>
+        <td class="pd-r-1">{{ field(form="choice") }}</td>
         <td class="pd-r-2">{{ field.label }}</td>
         <td>
             <div class="pd-r-2">
