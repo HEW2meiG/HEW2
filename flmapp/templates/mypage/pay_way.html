@@ -3,39 +3,53 @@
 {% block title %}
 支払い方法選択画面 - {{ super() }}
 {% endblock %}
+{% block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mypage/pay_way.css')}}">
+{% endblock %}
 {% block content %}
+<div class="base2-wrap">
+<h1>支払い方法選択</h1>
 {% for message in get_flashed_messages() %}
-    {{ message }}
+        <p class="finish-msg">{{ message }}</p>
 {% endfor %}
-<h2>支払い方法選択</h2>
 {{ form.csrf_token(form="choice") }}
 <table>
 {% for field in form.pay_way %}
     <tr>
-        <td>{{ field(form="choice") }}</td>
-        <td>{{ field.label }}</td>
-        {% if field.data != 0 %}
-            {% set credit = search_credit(field.data) %}
-            <td>{{ credit.credit_name }}</td>
-            <td>{{ credit.credit_num | credit_num_format }}</td>
-            <td>{{ credit.expire.strftime('%m/%y') }}</td>
-            <td>
-                <form method="POST" action="{{url_for('mypage.pay_way_delete')}}">
-                    {{ delete_form.csrf_token }}
-                    {{ delete_form.Credit_id(value=credit.Credit_id) }}
-                    {{ delete_form.submit() }}
-                </form>
-            </td>
-        {% endif %}
+        <td class="pd-r-1">{{ field(form="choice") }}</td>
+        <td class="pd-r-1">{{ field.label }}</td>
+        <div class="pd-r-2">
+            {% if field.data != 0 %}
+                {% set credit = search_credit(field.data) %}
+                <td class="pd-r-1">{{ credit.credit_name }}</td>
+                <td class="pd-r-1">{{ credit.credit_num | credit_num_format }}</td>
+                <td class="pd-r-2">{{ credit.expire.strftime('%m/%y') }}</td>
+                <td>
+                    <form method="POST" action="{{url_for('mypage.pay_way_delete')}}">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.Credit_id(value=credit.Credit_id) }}
+                        <div>
+                            {{ delete_form.submit(id="delete") }}
+                        </div>
+                    </form>
+                </td>
+            {% endif %}
+        </div>
     </tr>
 {% endfor %}
 </table>
+<div class="pd-tb-5">
 {% if credits|length < 5 %}
-    <a href="{{ url_for('mypage.credit_register') }}">クレジットカードを追加</a>
+    <a class="creca" href="{{ url_for('mypage.credit_register') }}">クレジットカードを追加</a>
 {% else %}
     <P>クレジットカードは5件以上登録できません。</P>
 {% endif%}
-{{ form.submit(form="choice") }}
+</div>
+</div>
+<div class="mg-tb-1_5 txt-center">
+    {{ form.submit() }}
+</div>
 <!-- formは入れ子構造にできないため、form属性を使用 -->
 <form method="POST" id="choice"></form>
 {% endblock %}

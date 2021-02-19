@@ -3,48 +3,62 @@
 {% block title %}
 配送先住所選択画面 - {{ super() }}
 {% endblock %}
+{% block head %}
+<!-- ↓読み込むcssファイルをここに記述してください。 -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/mypage/shippingaddress.css')}}">
+{% endblock %}
 {% block content %}
-{% for message in get_flashed_messages() %}
-    {{ message }}
+<div class="base2-wrap">
+<h1>配送先住所選択</h1>
+    {% for message in get_flashed_messages() %}
+    <p class="finish-msg">{{ message }}</p>
 {% endfor %}
-<h2>配送先住所選択</h2>
 {{ form.csrf_token(form="choice") }}
 <table>
 {% for field in form.ShippingAddress_id %}
     {% set shippingaddress = search_shippingaddress(field.data) %}
     <tr>
-        <td>{{ field(form="choice") }}</td>
-        <td>{{ field.label }}</td>
+        <td class="pd-r-1">{{ field(form="choice") }}</td>
+        <td class="pd-r-1">{{ field.label }}</td>
         <td>
-            <p>
-                {{ shippingaddress.last_name }}
-                {{ shippingaddress.first_name }}
-            </p>
-            <p>
-                {{ shippingaddress.zip_code }}
-                {{ shippingaddress.prefecture }}
-                {{ shippingaddress.address1 }}
-                {{ shippingaddress.address2 }}
-                {{ shippingaddress.address3 }}
-            </p>
+            <div class="pd-r-1">
+                <p>
+                    {{ shippingaddress.last_name }}
+                    {{ shippingaddress.first_name }}
+                </p>
+                <p>
+                    {{ shippingaddress.zip_code }}
+                    {{ shippingaddress.prefecture }}
+                    {{ shippingaddress.address1 }}
+                    {{ shippingaddress.address2 }}
+                    {{ shippingaddress.address3 }}
+                </p>
+            </div>
         </td>
+        <td><div class="edit mg-r-1"><a href="{{ url_for('mypage.shippingaddress_edit', shippingaddress_id=shippingaddress.ShippingAddress_id) }}">編集</a></div></td>
         <td>
             <form method="POST" action="{{url_for('mypage.shippingaddress_delete')}}">
                 {{ delete_form.csrf_token }}
                 {{ delete_form.ShippingAddress_id(value=shippingaddress.ShippingAddress_id) }}
-                {{ delete_form.submit() }}
+                <div>
+                    {{ delete_form.submit(id="delete") }}
+                </div>
             </form>
         </td>
-        <td><a href="{{ url_for('mypage.shippingaddress_edit', shippingaddress_id=shippingaddress.ShippingAddress_id) }}">編集</a></td>
     </tr>
 {% endfor %}
 </table>
-{% if shippingaddresses|length < 5 %}
-    <a href="{{ url_for('mypage.shippingaddress_register') }}">配送先住所を追加</a>
-{% else %}
-    <P>配送先住所は5件以上登録できません。</P>
-{% endif %}
-{{ form.submit(form="choice") }}
+<div class="pd-tb-5">
+    {% if shippingaddresses|length < 5 %}
+        <a class="address" href="{{ url_for('mypage.shippingaddress_register') }}">配送先住所を追加</a>
+    {% else %}
+        <P>※配送先住所は5件以上登録できません。</P>
+    {% endif %}
+</div>
+</div>
+<div class="mg-tb-1 txt-center">
+    {{ form.submit(form="choice") }}
+</div>
 <!-- formは入れ子構造にできないため、form属性を使用 -->
 <form method="POST" id="choice"></form>
 {% endblock %}
