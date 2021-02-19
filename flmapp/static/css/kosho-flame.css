@@ -148,6 +148,18 @@ input, select, textarea{
     text-decoration: none;
 }
 
+a.address {
+    text-decoration: none;
+    border-bottom: solid 1px #8b4513;
+    color: #8b4513;
+    font-weight: bold;
+}
+a.address:hover{
+    border-bottom: solid 1px #d9a077;
+    color: #d9a077;
+}
+
+
 a.back-home {
     text-decoration: none;
     color: #8b4513;
@@ -195,6 +207,7 @@ p.error-msg{
 }
 
 p.finish-msg{
+    text-align: center;
     width: 400px;
     margin: 10px auto;
     padding: 20px;
@@ -501,6 +514,22 @@ button:focus{
 }
 .pd-r-5{
     padding-right: 50px;
+}
+
+.pd-l-1{
+    padding-left: 10px;
+}
+.pd-l-2{
+    padding-left: 20px;
+}
+.pd-l-3{
+    padding-left: 30px;
+}
+.pd-l-4{
+    padding-left: 40px;
+}
+.pd-l-5{
+    padding-left: 50px;
 }
 
 .pd-b-1{

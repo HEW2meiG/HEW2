@@ -48,7 +48,7 @@
 {% endfor %}
 </table>
 {% if shippingaddresses|length < 5 %}
-    <a href="{{ url_for('buy.shippingaddress_register', item_id=item_id) }}">配送先住所を追加</a>
+    <a class="address" href="{{ url_for('buy.shippingaddress_register', item_id=item_id) }}">配送先住所を追加</a>
 {% else %}
     <P>※配送先住所は5件以上登録できません。</P>
 {% endif %}
