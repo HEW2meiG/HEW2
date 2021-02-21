@@ -268,8 +268,11 @@ class Buy(db.Model):
         """
         sell = aliased(Sell)
         return cls.query.filter(
-            cls.User_id==User_id
-        ).outerjoin(sell, sell.deal_status==Deal_status(deal_status)
+            cls.User_id==User_id,
+            sell.deal_status==Deal_status(deal_status)
+        ).outerjoin(
+            sell,
+            cls.Sell_id==sell.Sell_id
         ).with_entities(sell).paginate(page, 1, False)
         # paginate(表示するページ,1ページに表示する数,エラーを出力するかどうか)
 

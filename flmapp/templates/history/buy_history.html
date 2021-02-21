@@ -1,52 +1,134 @@
 {% extends "base02.html" %}
 {% block title %}
-購入履歴画面 - {{ super() }}
+出品履歴画面 - {{ super() }}
 {% endblock %}
+{%block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/history/history.css')}}">
+{% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
 {{ message }}
 {% endfor %}
-<h2>購入した本</h2>
-<h3>
-    <a class="mp-a" href="{{url_for('history.buy_in_progress')}}">取引中</a>
-</h3>
+<h2 class="mypage-tab-head">購入した本</h2>
+<div class="mypage-tabs">
+    <h3>
+        <a class="mp-a" href="{{url_for('history.buy_in_progress')}}">取引中</a>
+    </h3>
+    <h3>
+        <a class="mp-a" href="{{url_for('history.buy_completed')}}">過去の取引</a>
+    </h3>
+</div>
+
 {% for item in items %}
-{% if item.deal_status.value == 2 and item.sell_flg %}
-<a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+<!-- ここから　出品投稿 -->
+<article class="item-wrap h-item-wrap">
+    <a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
+        <object><a class="u-box" href="{{url_for('user.userdata', user_code=item.user.user_code)}}">
+            <img class="u-icon" src="{{url_for('static', filename='user_image/' + item.user.picture_path)}}">
+            <p class="u-name">{{ item.user.username }}</p>
+            <p class="u-code">{{ item.user.user_code }}</p>
+        </a></object>
+        <div class="i-content-area">
+            <div class="k-s-box">
+                <div class="i-key">
+                    <p><i class="fas fa-key"></i>{{ item.key1 }}</p>
+                    <p><i class="fas fa-key"></i>{{ item.key2 }}</p>
+                    <p><i class="fas fa-key"></i>{{ item.key3 }}</p>
+                </div>
+                {% if item.deal_status.value == 2 or item.deal_status.value == 3 %}
+                    <div class="sold">
+                        <p>SOLD OUT!</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="i-comm"><p>{{ item.sell_comment }}</p></div>
+        </div>
+        <p><span class="i-price">¥{{ item.price }}</span></p>
+        <div class="i-fotter">
+            {% include "like.html" %}
+            <p>{{ item.create_at.strftime('%Y/%m/%d %H:%M') }}</p>
+        </div>
+    </a>
+</article>
+{% if item.deal_status.value == 3 %}
+<div class="b-s-box">
+    <div class="b-ti-box">
+        <h3>本のタイトル</h3>
+        <p class="keikoku">※購入者のみ表示されています</p>
+    </div>
+    <p>{{ item.sell_title }}</p>
+    <div class="b-ti-box">
+        <h3>商品の画像</h3>
+        <p class="keikoku">※購入者のみ表示されています</p>
+    </div>
     <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-    {{ item.key1 }}
-    {{ item.key2 }}
-    {{ item.key3 }}
-    {{ item.sell_comment }}
-    {{ item.price }}
-</a>
+</div>
 {% endif %}
+<!-- ここまで　出品投稿 -->
 {% endfor %}
-{% if prev_url_4 %}
-<a href="{{ prev_url_4 }}">前へ</a>
-{% endif %}
-{% if next_url_4 %}
-<a href="{{ next_url_4 }}">次へ</a>
-{% endif %}
-<h3>
-    <a class="mp-a" href="{{url_for('history.buy_completed')}}">過去の取引</a>
-</h3>
+<div class="np-wrap">
+    {% if prev_url %}
+    <a class="np-b" href="{{ prev_url }}"><i class="fas fa-chevron-left"></i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="np-b" href="{{ next_url }}"><i class="fas fa-chevron-right"></i></a>
+    {% endif %}
+</div>
+<script>
+    $(document).ready(function(event){
+        // ここから カレントページ取得
+        $('.mypage-tabs h3 a').each(function(){
+            var target = $(this).attr('href');
+            if(location.href.match(target)) {
+            $(this).parent().addClass('current');
+            } else {
+            $(this).parent().removeClass('current');
+            }
+        });
+        // ここまで カレントページ取得
+    });
+</script>
+{% endblock %}
+{% block content2 %}
 {% for item in items %}
-{% if item.deal_status.value == 3 and item.sell_flg %}
-<a href="{{url_for('item.itemdata', item_id=item.Sell_id)}}">
-    <img src="{{url_for('static', filename='item_image/' + item.item_picture_path)}}">
-    {{ item.key1 }}
-    {{ item.key2 }}
-    {{ item.key3 }}
-    {{ item.sell_comment }}
-    {{ item.price }}
-</a>
-{% endif %}
+<div class="t-wrap">
+    <table>
+        <tr><th colspan="2"><h3>詳細</h3></th></tr>
+        <tr>
+            <th>商品ID</th>
+            <td>{{ '%08d' % item.Sell_id }}</td>
+        </tr>
+        <tr>
+            <th>ジャンル</th>
+            <td>
+                {{ item.genre.name }}
+            </td>
+        </tr>
+        <tr>
+            <th>商品の状態</th>
+            <td>{{ item.item_state.name }}</td>
+        </tr>
+        <tr>
+            <th>配送料の負担</th>
+            <td>{{ item.postage.name }}</td>
+        </tr>
+        <tr>
+            <th>配送の方法</th>
+            <td>{{ item.send_way.name }}</td>
+        </tr>
+        <tr>
+            <th>配送元地域</th>
+            <td>{{ item.consignor }}</td>
+        </tr>
+        <tr>
+            <th>発送日の目安</th>
+            <td>{{ item.schedule.name }}</td>
+        </tr>
+        <tr>
+            <th>備考</th>
+            <td>{{ item.remarks }}</td>
+        </tr>
+    </table>
+</div>
 {% endfor %}
-{% if prev_url_5 %}
-<a href="{{ prev_url_5 }}">前へ</a>
-{% endif %}
-{% if next_url_5 %}
-<a href="{{ next_url_5 }}">次へ</a>
-{% endif %}
 {% endblock %}
