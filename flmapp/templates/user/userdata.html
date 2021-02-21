@@ -4,7 +4,6 @@
 {% endblock %}
 {%block head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/user/userdata.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/follow.css')}}">
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}

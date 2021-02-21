@@ -99,6 +99,9 @@ def mypagetop():
     followed = UserConnect.followed_exists(current_user.User_id)
     follows = UserConnect.select_follows_by_user_id(current_user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(current_user.User_id)
+    # 売上金
+    sales = Sell.select_sales(current_user.User_id)
+    sales = sales.sumprice
     # ユーザーが出品した商品
     items = Sell.select_sell_by_user_id_sort(current_user.User_id)
     # 最近見た本
@@ -115,7 +118,7 @@ def mypagetop():
     return render_template(
         'mypage/mypage.html', followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list, post_c=len(items), b_items=b_item_list
+        items=items, liked_list=liked_list, post_c=len(items), b_items=b_item_list, sales=sales
     )
 
 @bp.route('/likes')
@@ -125,6 +128,9 @@ def mypage_likes():
     followed = UserConnect.followed_exists(current_user.User_id)
     follows = UserConnect.select_follows_by_user_id(current_user.User_id)
     good_ratings_count,bad_ratings_count = Rating.select_rate_by_user_id(current_user.User_id)
+    # 売上金
+    sales = Sell.select_sales(current_user.User_id)
+    sales = sales.sumprice
     # ユーザーが出品した商品
     sell_items = Sell.select_sell_by_user_id(current_user.User_id)
     # ユーザーがいいねした商品
@@ -143,7 +149,7 @@ def mypage_likes():
     return render_template(
         'mypage/mypage.html', followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
-        items=items, liked_list=liked_list, post_c=len(sell_items), b_items=b_item_list
+        items=items, liked_list=liked_list, post_c=len(sell_items), b_items=b_item_list, sales=sales
     )
 
 # プロフィール設定

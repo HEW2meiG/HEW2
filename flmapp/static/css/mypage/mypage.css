@@ -1,0 +1,12 @@
+.sales-wrap{
+    margin-top: 30px;
+    background-color: #f6f9fa;
+    border-radius: 17px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.sales-wrap p{
+    font-weight: bold;
+}
