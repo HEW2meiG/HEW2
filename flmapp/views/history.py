@@ -23,6 +23,16 @@ from flmapp.models.message import(
 bp = Blueprint('history', __name__, url_prefix='/mypage/history')
 
 
+# コンテキストプロセッサ(template内で使用する関数)
+@bp.context_processor
+def likes_count_processor():
+    def likes_count(sell_id):
+        """いいねの数をカウントして返す"""
+        all_likes = Likes.select_likes_by_sell_id(sell_id)
+        return len(all_likes)
+    return dict(likes_count=likes_count)
+
+
 @bp.route('/sell_on_display', methods=['GET', 'POST'])
 @login_required
 def sell_on_display():
@@ -31,10 +41,16 @@ def sell_on_display():
     next_url_1 = prev_url_1 = items = None
     page = request.args.get('page', 1, type=int)
     posts = Sell.select_sell_by_deal_status_page(user_id, 1, page)
-    next_url_1 = url_for('history.sell_on_display', page=posts.next_num) if posts.has_next else None
-    prev_url_1 = url_for('history.sell_on_display', page=posts.prev_num) if posts.has_prev else None
+    next_url = url_for('history.sell_on_display', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('history.sell_on_display', page=posts.prev_num) if posts.has_prev else None
     items = posts.items
-    return render_template('history/sell_history.html', items=items, next_url_1=next_url_1, prev_url_1=prev_url_1)
+    liked_list = []
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
+    return render_template('history/sell_history.html', items=items, next_url=next_url, prev_url=prev_url, liked_list=liked_list)
 
 
 @bp.route('/sell_in_progress', methods=['GET', 'POST'])
@@ -45,10 +61,16 @@ def sell_in_progress():
     next_url_2 = prev_url_2 = items = None
     page = request.args.get('page', 1, type=int)
     posts = Sell.select_sell_by_deal_status_page(user_id, 2, page)
-    next_url_2 = url_for('history.sell_in_progress', page=posts.next_num) if posts.has_next else None
-    prev_url_2 = url_for('history.sell_in_progress', page=posts.prev_num) if posts.has_prev else None
+    next_url = url_for('history.sell_in_progress', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('history.sell_in_progress', page=posts.prev_num) if posts.has_prev else None
     items = posts.items
-    return render_template('history/sell_history.html', items=items, next_url_2=next_url_2, prev_url_2=prev_url_2)
+    liked_list = []
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
+    return render_template('history/sell_history.html', items=items, next_url=next_url, prev_url=prev_url, liked_list=liked_list)
 
 
 @bp.route('/sell_completed', methods=['GET', 'POST'])
@@ -59,10 +81,16 @@ def sell_completed():
     next_url_3 = prev_url_3 = items = None
     page = request.args.get('page', 1, type=int)
     posts = Sell.select_sell_by_deal_status_page(user_id, 3, page)
-    next_url_3 = url_for('history.sell_completed', page=posts.next_num) if posts.has_next else None
-    prev_url_3 = url_for('history.sell_completed', page=posts.prev_num) if posts.has_prev else None
+    next_url = url_for('history.sell_completed', page=posts.next_num) if posts.has_next else None
+    prev_url = url_for('history.sell_completed', page=posts.prev_num) if posts.has_prev else None
     items = posts.items
-    return render_template('history/sell_history.html', items=items, next_url_3=next_url_3, prev_url_3=prev_url_3)
+    liked_list = []
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
+    return render_template('history/sell_history.html', items=items, next_url=next_url, prev_url=prev_url, liked_list=liked_list)
 
 
 @bp.route('/buy_in_progress', methods=['GET', 'POST'])
@@ -76,7 +104,13 @@ def buy_in_progress():
     next_url_4 = url_for('history.buy_in_progress', page=posts.next_num) if posts.has_next else None
     prev_url_4 = url_for('history.buy_in_progress', page=posts.prev_num) if posts.has_prev else None
     items = posts.items
-    return render_template('history/buy_history.html', items=items, next_url_4=next_url_4, prev_url_4=prev_url_4)
+    liked_list = []
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
+    return render_template('history/buy_history.html', items=items, next_url_4=next_url_4, prev_url_4=prev_url_4, liked_list=liked_list)
 
 
 @bp.route('/buy_completed', methods=['GET', 'POST'])
@@ -90,4 +124,10 @@ def buy_completed():
     next_url_5 = url_for('history.buy_in_progress', page=posts.next_num) if posts.has_next else None
     prev_url_5 = url_for('history.buy_in_progress', page=posts.prev_num) if posts.has_prev else None
     items = posts.items
-    return render_template('history/buy_history.html', items=items, next_url_5=next_url_5, prev_url_5=prev_url_5)
+    liked_list = []
+    if current_user.is_authenticated:
+        for item in items:
+            liked = Likes.liked_exists(item.Sell_id)
+            if liked:
+                liked_list.append(item.Sell_id)
+    return render_template('history/buy_history.html', items=items, next_url_5=next_url_5, prev_url_5=prev_url_5, liked_list=liked_list)
