@@ -210,7 +210,7 @@ class Sell(db.Model):
         return cls.query.filter(
             cls.User_id==current_user.User_id,
             cls.deal_status==Deal_status(3)
-        ).with_entities(func.sum(Sell.price)).first()
+        ).with_entities(func.sum(Sell.price).label("sumprice")).first()
 
 
 class Buy(db.Model):
