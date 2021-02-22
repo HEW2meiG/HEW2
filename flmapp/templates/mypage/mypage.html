@@ -101,7 +101,7 @@
 {% block content2 %}
 <div class="sales-wrap">
     <h2>売上金</h2>
-    <p>&yen;{{ sales}}</p>
+    <p>&yen;{% if sales == None %}0{% else %}{{ sales }}{% endif %}</p>
 </div>
 {% if b_items %}
     <div class="reco_b_wrap">

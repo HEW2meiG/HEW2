@@ -7,7 +7,7 @@
 {% endblock%}
 {% block content %}
 {% for message in get_flashed_messages() %}
-{{ message }}
+    <p class="flash-2">{{ message }}</p>
 {% endfor %}
 <h2 class="mypage-tab-head">購入した本</h2>
 <div class="mypage-tabs">
