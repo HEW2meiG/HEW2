@@ -172,15 +172,15 @@ class UserConnect(db.Model):
         """
         sell = aliased(Sell)
         return cls.query.filter(
-            cls.from_user_id == current_user.User_id
-        ).outerjoin(
-            sell,
             and_(
-                sell.User_id == cls.to_user_id,
+                cls.from_user_id == current_user.User_id,
                 sell.sell_flg == True, 
                 sell.is_active == True,
                 sell.User_id != current_user.User_id
             )
+        ).outerjoin(
+            sell,
+            sell.User_id == cls.to_user_id
         ).with_entities(
             sell
         ).order_by(desc(sell.create_at)).all()
@@ -238,14 +238,15 @@ class BrowsingHistory(db.Model):
         sell = aliased(Sell)
         now = datetime.now()
         return cls.query.filter(
-            cls.create_at > now - timedelta(days=1)
-        ).outerjoin(
-            sell,
             and_(
+                cls.create_at > now - timedelta(days=1),
                 sell.Sell_id == cls.Sell_id,
                 sell.sell_flg == True, 
                 sell.is_active == True
             )
+        ).outerjoin(
+            sell,
+            sell.Sell_id == cls.Sell_id
         ).with_entities(
             sell
         ).order_by(

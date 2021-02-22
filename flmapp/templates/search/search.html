@@ -115,6 +115,10 @@
     {% else %}
         <p class="looling-f">購入履歴・閲覧履歴・いいねにより、<br>あなたのおすすめの本を探します</p>
     {% endif %}
+    <div class="mypage-right-pict-wrap">
+        <img src="{{url_for('static', filename='images/mypage-right-pict.png')}}" alt="読書のイラスト">
+        <p>Illustration by Icons 8 from <a href="https://icons8.com/">Icons8</a></p>
+    </div>
 {% endif %}
 <script>
     $(document).ready(function(event){

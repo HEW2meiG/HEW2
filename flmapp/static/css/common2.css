@@ -281,11 +281,23 @@ nav a:hover{
     font-weight: bold;
     text-align: left;
 }
+/* マイページ右コンテンツ画像 */
+.mypage-right-pict-wrap{
+    position: absolute;
+    bottom: 10px;
+}
+.mypage-right-pict-wrap img{
+    width: 100%;
+}
+.mypage-right-pict-wrap p{
+    font-size: 1.0rem;
+    text-align: center;
+}
 
 .base2-wrap{
-        width: 100%;
-        text-align: center;
-        background-color: white;
+    width: 100%;
+    text-align: center;
+    background-color: white;
 }
 
 label{
