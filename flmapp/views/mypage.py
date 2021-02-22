@@ -112,6 +112,10 @@ def mypagetop():
         liked = Likes.liked_exists(item.Sell_id)
         if liked:
             liked_list.append(item.Sell_id)
+    for item in b_items:
+        liked = Likes.liked_exists(item.Sell_id)
+        if liked:
+            liked_list.append(item.Sell_id)
     return render_template(
         'mypage/mypage.html', followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
@@ -140,6 +144,10 @@ def mypage_likes():
         liked = Likes.liked_exists(item.Sell_id)
         if liked:
             liked_list.append(item.Sell_id)
+    for item in b_items:
+        liked = Likes.liked_exists(item.Sell_id)
+        if liked:
+            liked_list.append(item.Sell_id)
     return render_template(
         'mypage/mypage.html', followed=followed, follows_count=len(follows),
         good_ratings_count=good_ratings_count, bad_ratings_count=bad_ratings_count,
@@ -155,7 +163,6 @@ def profile():
         # ログイン中のユーザーIDによってユーザーを取得
         user = User.select_user_by_id(current_user.get_id())
         #ユーザーコードの重複チェック--------------------------
-        
         # 画像アップロード処理 ここから--------------------------
         imagename = ''
         image = request.files[form.picture_path.name]

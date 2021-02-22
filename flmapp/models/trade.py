@@ -93,7 +93,13 @@ class Sell(db.Model):
     @classmethod
     def select_sell_by_user_id_sort(cls, User_id):
         """User_idによってSell(商品)レコードを得る(新着順)"""
-        return cls.query.filter(cls.User_id==User_id).order_by(desc(cls.create_at)).all()
+        return cls.query.filter(
+            and_(
+                cls.User_id==User_id,
+                cls.sell_flg == True, 
+                cls.is_active == True
+            )
+        ).order_by(desc(cls.create_at)).all()
 
     @classmethod
     def select_sell_id_by_user_id(cls, User_id):
