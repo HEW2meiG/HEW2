@@ -189,6 +189,23 @@ class Sell(db.Model):
             cls.deal_status==Deal_status(3)
         ).with_entities(func.sum(Sell.price)).first()
 
+    @classmethod
+    def select_sall_status(cls, User_id):
+        """取引中の出品状態"""
+        buy = aliased(Buy)
+        return cls.query.filter(
+                and_(
+                    Sell.deal_status == Deal_status['取引中'],
+                    or_(
+                        Sell.User_id == User_id,
+                        buy.User_id == User_id
+                    )
+                )
+        ).join(
+                    buy,
+                    cls.Sell_id == buy.Sell_id
+        ).order_by(desc(Sell.create_at)).all()
+
 
 class Buy(db.Model):
     """購入情報テーブル"""
@@ -300,6 +317,26 @@ class Rating(db.Model):
             )
                 ).all()
         return len(good_ratings),len(bad_ratings)
+
+    @classmethod
+    def select_sell_id_to_user_id(cls, Sell_id, User_id):
+        """Sell_id(item_id)とto_user_idによってRating(相互評価情報)レコードを返す"""
+        return cls.query.filter(
+            and_(
+                cls.Sell_id == Sell_id,
+                cls.to_user_id == User_id
+                )
+        ).all()
+
+    @classmethod
+    def select_count_sell_id_to_user_id(cls, Sell_id, User_id):
+        """Sell_id(item_id)とto_user_idによってRating(相互評価情報)レコードの有無を返す"""
+        return cls.query.filter(
+            and_(
+                cls.Sell_id == Sell_id,
+                cls.to_user_id == User_id
+                )
+        ).count()
 
 
 class BuyShippingAddress(db.Model):
