@@ -38,6 +38,9 @@
                             </a></li>
                             <!-- ログインしているとき -->
                             {% if current_user.is_authenticated %}
+                                <li><a href="{{url_for('todolist.todolist')}}">
+                                    やることリスト
+                                </a></li>
                                 <li>
                                     <input type="checkbox" id="check1" class="accordion-hidden">
                                     <label for="check1" class="accordion-open">

@@ -1,0 +1,55 @@
+{% from "_formhelpers.html" import render_field %}
+{% extends "base02.html" %}
+{% block title %}
+やることリスト - {{ super() }}
+{% endblock %}
+{% block head %}
+{% endblock %}
+{% block content %}
+<h2>やることリスト</h2>
+{% if todolists %}
+    <div>
+        {% for todolist in todolists %}
+            <a href="{{url_for('transaction.transaction', item_id=todolist['item'].Sell_id)}}"><div>
+                <!-- 誰との取引か（なくてもいいと思います） -->
+                {% if not todolist['status']==0 %}
+                    <p>{{ todolist['partner_username'] }}さんと取引ちゅです。</p>
+                {% endif %}
+                {% if todolist['status']==1 %}
+                <!-- 商品未発送 -->
+                <p>
+                    <!-- 文章は後でかえてください -->
+                    {{ todolist['partner_username'] }}さんが{{ todolist['item'].sell_title }}を購入をしました。
+                    商品を発送してください。
+                </p>
+                {% elif todolist['status']==2 %}
+                <!-- 受け取り済みで相手が相互評価して自分がしてない -->
+                <p>
+                    <!-- 文章は後でかえてください -->
+                    {{ todolist['partner_username'] }}さんが{{ todolist['item'].sell_title }}の評価をしました。
+                    相互評価してください。
+                </p>
+                {% elif todolist['status']==3 %}
+                <!-- 発送済みで商品を受取ってない -->
+                <p>
+                    <!-- 文章は後でかえてください -->
+                    {{ todolist['partner_username'] }}さんが商品を発送しました。
+                    受け取り確認。
+                </p>
+                {% elif todolist['status']==4 %}
+                <!-- 受け取り済みでが相互評価してない -->
+                <p>
+                    <!-- 文章は後でかえてください -->
+                    商品の受取を確認しました。
+                    相互評価してください。
+                </p>
+                {% endif %}
+                <!-- 経過時間 -->
+                {% if not todolist['status']==0 %}
+                    <p>{{ todolist['elapsed_time'] }}前</p>
+                {% endif %}
+            </div></a>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}
