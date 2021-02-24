@@ -4,10 +4,10 @@
 クレジットカード登録画面 - {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>クレジットカード登録</h1>
 {% for message in get_flashed_messages() %}
     <p class="finish-msg">{{ message }}</p>
 {% endfor %}
+<h1>クレジットカード登録</h1>
 <form method="POST">
     {{ form.csrf_token }}
 

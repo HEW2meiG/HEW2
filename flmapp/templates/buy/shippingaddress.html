@@ -11,7 +11,7 @@
 {% for message in get_flashed_messages() %}
     <p class="finish-msg">{{ message }}</p>
 {% endfor %}
-<h2>配送先住所選択</h2>
+<h1>配送先住所選択</h1>
 {{ form.csrf_token(form="choice") }}
 <table>
 {% for field in form.ShippingAddress_id %}
@@ -21,11 +21,11 @@
         <td class="pd-r-2">{{ field.label }}</td>
         <td>
             <div class="pd-r-2">
-                <p>
+                <p class="txt-al-lf">
                     {{ shippingaddress.last_name }}
                     {{ shippingaddress.first_name }}
                 </p>
-                <p>
+                <p class="txt-al-lf">
                     {{ shippingaddress.zip_code }}
                     {{ shippingaddress.prefecture }}
                     {{ shippingaddress.address1 }}
