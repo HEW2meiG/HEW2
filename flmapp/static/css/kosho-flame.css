@@ -176,7 +176,6 @@ a.back-home {
     text-decoration: none;
     color: #8b4513;
     font-weight: bold;
-    font-size: 1.5rem;
 }
 a.back-home:hover{
     border-bottom: solid 1px #d9a077;
@@ -200,7 +199,6 @@ a.back:hover{
 
 /* 必須 */
 .req{
-    font-size: 1.2rem;
     background-color: red;
     color: white;
     margin: 10px;
@@ -209,9 +207,11 @@ a.back:hover{
 }
 
 p.error-msg{
+    text-align: center;
     width: 400px;
     margin: 10px auto;
     padding: 20px;
+    font-size: 1.1rem;
     background-color: white;
     color: red;
     border: solid 3px red;
@@ -223,7 +223,7 @@ p.finish-msg{
     width: 400px;
     margin: 10px auto;
     padding: 20px;
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     background-color: white;
     color: #8b4513;
     border: solid 3px #8b4513;
@@ -300,6 +300,32 @@ button:focus{
     text-align: center;
 }
 
+/* fontの大きさ */
+
+.font-size-12{
+    font-size: 1.2rem;
+}
+
+.font-size-15{
+    font-size: 1.5rem;
+}
+
+.font-size-20{
+    font-size: 2.0rem;
+}
+
+.font-size-25{
+    font-size: 2.5rem;
+}
+
+.font-size-30{
+    font-size: 3.0rem;
+}
+
+/* 左揃え */
+.txt-al-lf{
+    text-align: left;
+}
 
 /* margin設定 */
 .kosho-pd{
@@ -336,6 +362,9 @@ button:focus{
 
 .mg-t-1{
     margin-top: 10px;
+}
+.mg-t-1_5{
+    margin-top: 15px;
 }
 .mg-t-2{
     margin-top: 20px;

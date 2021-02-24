@@ -38,12 +38,12 @@
             </p>
         </div>
         <div class="base2-form pd-b-3">
-            <h4 class="mg-t-5">この本を構成する3つのキーワード</h4>
+            <h4 class="mg-t-5 font-size-12">この本を構成する3つのキーワード</h4>
             {{ render_field(form.key1, value=sell.key1) }}
             {{ render_field(form.key2, value=sell.key2) }}
             {{ render_field(form.key3, value=sell.key3) }}
             {{ render_field(form.sell_comment) }}
-            <h4>商品の詳細</h4>
+            <h4 class="font-size-12">商品の詳細</h4>
             {{ render_field(form.genre) }}
             {{ render_field(form.item_state) }}
             {{ render_field(form.postage) }}
@@ -60,7 +60,7 @@
     </form>
 
     <div class="mg-tb-2 txt-center">
-        <a href="{{url_for('route.home')}}" class="back-home">ホームへ戻る</a>
+        <a href="{{url_for('route.home')}}" class="back-home font-size-12">ホームへ戻る</a>
     </div>
 
 <script>
