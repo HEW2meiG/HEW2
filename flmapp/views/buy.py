@@ -28,6 +28,8 @@ from flmapp.forms.buy import (
 
 bp = Blueprint('buy', __name__, url_prefix='/buy')
 
+now = datetime.datetime.now()
+
 def check_buy(func):
     """
         出品したユーザーとログイン中のユーザーが一致した場合,
@@ -161,6 +163,7 @@ def buy(item_id):
         with db.session.begin(subtransactions=True):
             buy.create_new_buy()
             item.deal_status = Deal_status['取引中']
+            item.update_at = now
         db.session.commit()
         # セッションの破棄
         session.pop('pay_way', None)

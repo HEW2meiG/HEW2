@@ -76,7 +76,7 @@ def todolist():
             elapsed_time = str(elapsed.seconds//60) + "分"
         else:
             elapsed_time = str(elapsed.seconds) + "秒"
-        print(elapsed.days/7)
+        print(elapsed.seconds//60)
         todolist_data["item"] = item
         todolist_data["elapsed_time"] = elapsed_time
         todolists.append(todolist_data)
