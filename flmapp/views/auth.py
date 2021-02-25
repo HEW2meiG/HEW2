@@ -89,7 +89,7 @@ def register():
                     {email}<br>\
                     【こちらから本登録を行ってください】<br>\
                     {url}'.format(email=email,url=url_for('auth.userregister', token=token, _external=True))
-        # mail.send(msg)
+        mail.send(msg)
         # メール送信処理ここまで----------------------------------------------------------
         # デバッグ用---------------------------------------------------------------
         print('*'*120)
