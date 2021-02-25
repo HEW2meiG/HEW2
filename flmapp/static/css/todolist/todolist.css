@@ -1,0 +1,21 @@
+.todo-head{
+    background: #fafafa;
+    padding: 20px;
+    border-bottom: solid 3px #0f2396;
+}
+.todo-box{
+    display: flex;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #fff;
+    border-bottom: solid 1.5px #dedbd5;
+}
+.todo-msg{
+    margin-left: 15px;
+}
+.todo-time{
+    color: #848484;
+}
+.time-icon{
+    margin-right: 5px;
+}

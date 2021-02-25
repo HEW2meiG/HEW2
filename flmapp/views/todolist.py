@@ -28,11 +28,13 @@ def todolist():
     todolists =[]
     for item in items:
         elapsed = now - item.update_at
-        todolist_data = {"item" : None, "status" : 0, "elapsed_time" : "", "partner_username" : ""}
+        todolist_data = {"item" : None, "status" : 0, "elapsed_time" : "", "partner_username" : "", "partner_user_code" : "", "partner_picture_path" : ""}
         # 出品者
         if item.User_id==user_id:
             buy_data = Buy.select_buy_by_sell_id(item.Sell_id)
             todolist_data["partner_username"] = User.select_user_by_id(buy_data.User_id).username
+            todolist_data["partner_user_code"] = User.select_user_by_id(buy_data.User_id).user_code
+            todolist_data["partner_picture_path"] = User.select_user_by_id(buy_data.User_id).picture_path
             rating = Rating.select_count_sell_id_to_user_id(item.Sell_id, user_id)
             # 未発送
             if item.has_sent == False:
@@ -50,6 +52,8 @@ def todolist():
         #購入者 
         else:
             todolist_data["partner_username"] = User.select_user_by_id(item.User_id).username
+            todolist_data["partner_user_code"] = User.select_user_by_id(item.User_id).user_code
+            todolist_data["partner_picture_path"] = User.select_user_by_id(item.User_id).picture_path
             rating = Rating.select_count_sell_id_to_user_id(item.Sell_id, item.User_id)
             # 発送済みで商品を受取ってない
             if item.has_sent == True and item.has_got == False:
