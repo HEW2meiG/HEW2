@@ -37,12 +37,13 @@ def todolist():
             todolist_data["partner_picture_path"] = User.select_user_by_id(buy_data.User_id).picture_path
             rating = Rating.select_count_sell_id_to_user_id(item.Sell_id, user_id)
             # 未発送
-            if item.has_sent == False:
-                print("未発送")
+            if item.has_sent == item.has_got == False:
                 todolist_data["status"] = 1
+            # 発送済みで受け取り・評価待ち
+            elif item.has_sent == True and item.has_got == False:
+                todolist_data["status"] = 4
             # 受け取り済みで相手が相互評価して自分がしてない
-            elif item.has_got == True and rating == 1:
-                print("受取済み")
+            elif item.has_sent == item.has_got == True and rating == 1:
                 todolist_data["status"] = 2
                 rating_datas=Rating.select_sell_id_to_user_id(item.Sell_id, user_id)
                 for rating_data in rating_datas:
@@ -57,13 +58,14 @@ def todolist():
             rating = Rating.select_count_sell_id_to_user_id(item.Sell_id, item.User_id)
             # 発送済みで商品を受取ってない
             if item.has_sent == True and item.has_got == False:
-                print("a")
                 todolist_data["status"] = 3
-            # 受け取り済みでが相互評価してない
-            elif item.has_got == True and rating == 0:
-                print("a")
+            # 発送待ち
+            elif item.has_sent == item.has_got == False:
                 todolist_data["status"] = 4
-
+            # 評価待ち
+            elif item.has_sent == item.has_got == True:
+                todolist_data["status"] = 4
+        print("*"*100)
         print(elapsed.days/7)
         # 経過時間
         if not elapsed.days//365 == 0:
@@ -81,6 +83,7 @@ def todolist():
         else:
             elapsed_time = str(elapsed.seconds) + "秒"
         print(elapsed.seconds//60)
+        print("*"*100)
         todolist_data["item"] = item
         todolist_data["elapsed_time"] = elapsed_time
         todolists.append(todolist_data)
