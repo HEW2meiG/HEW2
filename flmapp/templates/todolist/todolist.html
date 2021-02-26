@@ -11,46 +11,42 @@
 {% if todolists %}
     <div class="todo-wrap">
         {% for todolist in todolists %}
-            <a href="{{url_for('transaction.transaction', item_id=todolist['item'].Sell_id)}}"><div class="todo-box">
-                <object><a class="u-box" href="{{url_for('user.userdata', user_code=todolist['partner_user_code'])}}">
-                    <img class="u-icon" src="{{url_for('static', filename='user_image/' + todolist['partner_picture_path'])}}">
-                </a></object>
-                <div class="todo-msg">
-                    <!-- 誰との取引か -->
-                    {% if not todolist['status']==0 %}
-                        <p>{{ todolist['partner_username'] }}さんと取引中です。</p>
-                    {% endif %}
-                    {% if todolist['status']==1 %}
-                    <!-- 商品未発送 -->
-                    <p>
-                        {{ todolist['partner_username'] }}さんが「{{ todolist['item'].sell_title }}」を購入をしました。
-                        商品を発送してください。
-                    </p>
-                    {% elif todolist['status']==2 %}
-                    <!-- 受け取り済みで相手が相互評価して自分がしてない -->
-                    <p>
-                        {{ todolist['partner_username'] }}さんが{{ todolist['item'].sell_title }}を評価をしました。
-                        相互評価してください。
-                    </p>
-                    {% elif todolist['status']==3 %}
-                    <!-- 発送済みで商品を受取ってない -->
-                    <p>
-                        {{ todolist['partner_username'] }}さんが商品を発送しました。
-                        受け取り評価をしてください。
-                    </p>
-                    {% elif todolist['status']==4 %}
-                    <!-- 受け取り済みでが相互評価してない -->
-                    <p>
-                        商品の受取を確認しました。
-                        相互評価してください。
-                    </p>
-                    {% endif %}
-                    <!-- 経過時間 -->
-                    {% if not todolist['status']==0 %}
-                        <p class="todo-time"><i class="far fa-clock time-icon"></i>{{ todolist['elapsed_time'] }}前</p>
-                    {% endif %}
-                </div>
-            </div></a>
+            {% if not todolist['status']==4 %}
+                <a href="{{url_for('transaction.transaction', item_id=todolist['item'].Sell_id)}}"><div class="todo-box">
+                    <object><a class="u-box" href="{{url_for('user.userdata', user_code=todolist['partner_user_code'])}}">
+                        <img class="u-icon" src="{{url_for('static', filename='user_image/' + todolist['partner_picture_path'])}}">
+                    </a></object>
+                    <div class="todo-msg">
+                        <!-- 誰との取引か -->
+                        {% if not todolist['status']==0 %}
+                            <p>{{ todolist['partner_username'] }}さんと取引中です。</p>
+                        {% endif %}
+                        {% if todolist['status']==1 %}
+                        <!-- 出品者：商品未発送 -->
+                        <p>
+                            {{ todolist['partner_username'] }}さんが「{{ todolist['item'].sell_title }}」を購入をしました。
+                            商品を発送してください。
+                        </p>
+                        {% elif todolist['status']==2 %}
+                        <!-- 出品者：受け取り済みで相手が相互評価して自分がしてない -->
+                        <p>
+                            {{ todolist['partner_username'] }}さんに「{{ todolist['item'].sell_title }}」が到着し、
+                            評価がありました。購入者の評価を行って取引を完了してください。
+                        </p>
+                        {% elif todolist['status']==3 %}
+                        <!-- 購入者：発送済みで商品を受取ってない -->
+                        <p>
+                            {{ todolist['partner_username'] }}さんが商品を発送しました。
+                            商品が到着したら、内容を確認して、受け取り確認と、出品者の評価をしてください。
+                        </p>
+                        {% endif %}
+                        <!-- 経過時間 -->
+                        {% if not todolist['status']==0 %}
+                            <p class="todo-time"><i class="far fa-clock time-icon"></i>{{ todolist['elapsed_time'] }}前</p>
+                        {% endif %}
+                    </div>
+                </div></a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endif %}

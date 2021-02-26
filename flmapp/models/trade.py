@@ -233,7 +233,7 @@ class Sell(db.Model):
         ).join(
                     buy,
                     cls.Sell_id == buy.Sell_id
-        ).order_by(desc(Sell.create_at)).all()
+        ).order_by(desc(Sell.update_at)).all()
 
 
 class Buy(db.Model):
