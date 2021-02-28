@@ -67,14 +67,6 @@ def credit_processor():
         return credit
     return dict(search_credit=search_credit)
 
-# コンテキストプロセッサ(template内で使用する関数)
-@bp.context_processor
-def likes_count_processor():
-    def likes_count(sell_id):
-        """いいねの数をカウントして返す"""
-        all_likes = Likes.select_likes_by_sell_id(sell_id)
-        return len(all_likes)
-    return dict(likes_count=likes_count)
 
 # コンテキストプロセッサ(template内で使用する関数)
 @bp.context_processor

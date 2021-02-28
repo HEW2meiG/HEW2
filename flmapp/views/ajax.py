@@ -25,6 +25,15 @@ from flmapp.models.reaction import (
 bp = Blueprint('ajax', __name__, url_prefix='')
 
 
+@bp.app_context_processor
+def likes_count_processor():
+    def likes_count(sell_id):
+        """いいねの数をカウントして返す"""
+        all_likes = Likes.select_likes_by_sell_id(sell_id)
+        return len(all_likes)
+    return dict(likes_count=likes_count)
+
+
 def ajax_login_required(func):
     @wraps(func)
     def decorated_function(*args, **kwargs):
