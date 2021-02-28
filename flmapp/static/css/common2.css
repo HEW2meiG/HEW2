@@ -293,6 +293,31 @@ nav a:hover{
     font-size: 1.0rem;
     text-align: center;
 }
+/* 通知 */
+.totolist-a{
+    position: relative;
+}
+.tuuti{
+    top: -7px;
+    right: -17px;
+    position: absolute;
+    background-color: #efa04c;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+.tuuti-cnt{
+    position: absolute;
+    color: #fff;
+    font-size: 1.3rem;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    margin:0;
+    padding:0;
+}
 
 .base2-wrap{
     width: 100%;

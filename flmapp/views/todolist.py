@@ -18,6 +18,41 @@ from flmapp.models.trade import (
 bp = Blueprint('todolist', __name__, url_prefix='/todolist')
 
 
+@bp.app_context_processor
+def todolist_count():
+    """やることリストの数をカウントして返す"""
+    count = 0
+    user_id = current_user.get_id()
+    items = Sell.select_sall_status(user_id)
+    for item in items:
+        # 出品者
+        if item.User_id==user_id:
+            buy_data = Buy.select_buy_by_sell_id(item.Sell_id)
+            rating = Rating.select_count_sell_id_to_user_id(item.Sell_id, user_id)
+            # 未発送
+            if item.has_sent == item.has_got == False:
+                count += 1
+            # 発送済みで受け取り・評価待ち
+            elif item.has_sent == True and item.has_got == False:
+                count += 0
+            # 受け取り済みで相手が相互評価して自分がしてない
+            elif item.has_sent == item.has_got == True and rating == 1:
+                count += 1
+        #購入者 
+        else:
+            rating = Rating.select_count_sell_id_to_user_id(item.Sell_id, item.User_id)
+            # 発送済みで商品を受取ってない
+            if item.has_sent == True and item.has_got == False:
+                count += 1
+            # 発送待ち
+            elif item.has_sent == item.has_got == False:
+                count += 0
+            # 評価待ち
+            elif item.has_sent == item.has_got == True:
+                count += 0
+    return dict(todolist_count=count)
+
+
 @bp.route('/todolist', methods=['GET', 'POST'])
 @login_required
 def todolist():

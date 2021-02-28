@@ -38,7 +38,12 @@
                             </a></li>
                             <!-- ログインしているとき -->
                             {% if current_user.is_authenticated %}
-                                <li><a href="{{url_for('todolist.todolist')}}">
+                                <li><a href="{{url_for('todolist.todolist')}}" class="totolist-a">
+                                    {%if todolist_count ==0 %}
+                                    {% else %}
+                                        <div class="tuuti"><div class="tuuti-cnt">{{todolist_count}}</div></div>
+                                    {% endif%}
+                                    <i class="fas fa-check"></i>
                                     やることリスト
                                 </a></li>
                                 <li>

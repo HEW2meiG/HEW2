@@ -25,16 +25,6 @@ from flmapp.forms.sell import (
 bp = Blueprint('item', __name__, url_prefix='/item')
 
 
-# コンテキストプロセッサ(template内で使用する関数)
-@bp.context_processor
-def likes_count_processor():
-    def likes_count(sell_id):
-        """いいねの数をカウントして返す"""
-        all_likes = Likes.select_likes_by_sell_id(sell_id)
-        return len(all_likes)
-    return dict(likes_count=likes_count)
-
-
 @bp.route('/itemdata/<int:item_id>', methods=['GET', 'POST'])
 def itemdata(item_id):
     # セッションの破棄
