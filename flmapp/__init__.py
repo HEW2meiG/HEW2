@@ -16,8 +16,6 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.login_message = 'ログインしてください'
 
-basedir = os.path.abspath(os.path.dirname(__name__))
-
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
@@ -43,8 +41,9 @@ def create_app():
 
     # ここから /// データベースの設定
     # DBはSQLiteを使う
+    #! パスを変えてください
     app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+        'sqlite:///' + "/Users/shimomuramei/Desktop/set_prefs/data.sqlite"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = False
     # ここまで /// データベースの設定
