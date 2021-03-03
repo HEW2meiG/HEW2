@@ -245,8 +245,8 @@ nav a:hover{
 .u-u-wrap{
     display: flex;
 }
-.u-nc .u-code{
-    margin-top: 0;
+.u-nc .u-name{
+    width: 135px;
 }
 .u-nc .u-code{
     margin-top: -6px;

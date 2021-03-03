@@ -12,3 +12,4 @@ flask-session-captcha==1.2.0
 Flask-Sessionstore==0.4.5
 numpy==1.20.0
 pymining==0.2
+Flask-APScheduler==1.11.0

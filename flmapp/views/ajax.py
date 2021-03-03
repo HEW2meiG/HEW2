@@ -8,9 +8,6 @@ from flask_login import (
 from flmapp import db
 from functools import wraps # カスタムデコレーターに使用
 
-from flmapp.utils.recommendations import (
-    topMatches, getRecommendations
-)
 from flmapp.models.user import (
     User
 )
@@ -53,10 +50,6 @@ def like_ajax():
     if sell_id != -1:
         liked = False
         like = Likes.liked_exists(sell_id)
-        # レコメンドキャッシュのクリア
-        # 読み込み速度の問題によりデモではキャッシュクリアを行わない
-        # getRecommendations.cache_clear()
-        # topMatches.cache_clear()
         # すでにいいねしていたら
         if like:
             #いいねテーブルから削除する
@@ -87,8 +80,6 @@ def follow_ajax():
     if user_id != -1:
         followed = False
         follow = UserConnect.followed_exists(user_id)
-        # レコメンドキャッシュのクリア
-        topMatches.cache_clear()
         # すでにフォローしていたら
         if follow:
             #フォローテーブルから削除する
