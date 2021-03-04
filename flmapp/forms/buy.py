@@ -43,7 +43,7 @@ class PayWayForm(FlaskForm):
 class ShippingAddressForm(FlaskForm):
     """配送先住所選択フォーム"""
     ShippingAddress_id = RadioField('配送先住所', choices=[], coerce=int)
-    is_default = BooleanField('デフォルトの配送先に設定する')
+    is_default = BooleanField('デフォルトの支払い方法に設定する')
     submit = SubmitField('選択した住所に配送する')
     
     def validate(self):
