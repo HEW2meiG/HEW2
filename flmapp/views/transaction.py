@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+import datetime
 from flask import (
     Blueprint, abort, request, render_template,
     redirect, url_for, flash, jsonify
@@ -160,7 +160,7 @@ def notice_rating(item_id):
         if form.notice_condition.data == 'has_sent':
             with db.session.begin(subtransactions=True):
                 sell.has_sent = True
-                sell.update_at = datetime.now()
+                sell.update_at = datetime.datetime.now()
             db.session.commit()
             flash('発送通知を送信しました。')
             return redirect(url_for('transaction.transaction', item_id=item_id))
@@ -175,7 +175,7 @@ def notice_rating(item_id):
             with db.session.begin(subtransactions=True):
                 rating.create_new_rating()
                 sell.has_got = True
-                sell.update_at = datetime.now()
+                sell.update_at = datetime.datetime.now()
             db.session.commit()
             flash('受け取り確認と評価を送信しました')
             return redirect(url_for('transaction.transaction', item_id=item_id))
