@@ -26,8 +26,6 @@ from flmapp.utils.message_format import make_deal_message_format, make_old_deal_
 
 bp = Blueprint('transaction', __name__, url_prefix='/transaction')
 
-now = datetime.now()
-
 
 # カスタムテンプレートフィルター
 @bp.app_template_filter('credit_num_format')
@@ -162,7 +160,7 @@ def notice_rating(item_id):
         if form.notice_condition.data == 'has_sent':
             with db.session.begin(subtransactions=True):
                 sell.has_sent = True
-                sell.update_at = now
+                sell.update_at = datetime.now()
             db.session.commit()
             flash('発送通知を送信しました。')
             return redirect(url_for('transaction.transaction', item_id=item_id))
@@ -177,7 +175,7 @@ def notice_rating(item_id):
             with db.session.begin(subtransactions=True):
                 rating.create_new_rating()
                 sell.has_got = True
-                sell.update_at = now
+                sell.update_at = datetime.now()
             db.session.commit()
             flash('受け取り確認と評価を送信しました')
             return redirect(url_for('transaction.transaction', item_id=item_id))
@@ -192,7 +190,7 @@ def notice_rating(item_id):
             with db.session.begin(subtransactions=True):
                 rating.create_new_rating()
                 sell.deal_status = Deal_status['取引済み']
-                sell.update_at = now
+                sell.update_at = datetime.now()
             db.session.commit()
             flash('評価を送信しました。取引が完了しました。')
             return redirect(url_for('transaction.transaction', item_id=item_id))
