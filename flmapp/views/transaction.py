@@ -190,7 +190,7 @@ def notice_rating(item_id):
             with db.session.begin(subtransactions=True):
                 rating.create_new_rating()
                 sell.deal_status = Deal_status['取引済み']
-                sell.update_at = datetime.now()
+                sell.update_at = datetime.datetime.now()
             db.session.commit()
             flash('評価を送信しました。取引が完了しました。')
             return redirect(url_for('transaction.transaction', item_id=item_id))
