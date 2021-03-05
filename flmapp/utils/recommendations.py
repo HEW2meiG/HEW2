@@ -53,12 +53,21 @@ def topMatches(c_userid):
     ディクショナリprefsからc_useridにもっともマッチするものたちを返す
     """
     prefs = loadData()
+    prefs.setdefault(c_userid,{})
     followed = UserConnect.select_follows_user_id_by_user_id(c_userid)
     # 一次元タプルに変換
     followed = sum(followed, ())
 
-    scores=[(sim_pearson(prefs,c_userid,other),other)
-            for other in prefs if other!=c_userid and int(other) not in followed]
+    # scores=[(sim_pearson(prefs,c_userid,other),other)
+    #         for other in prefs if other!=c_userid and int(other) not in followed]
+
+    scores = []
+    for other in prefs:
+        if other!=c_userid and int(other) not in followed:
+            sim=sim_pearson(prefs,c_userid,other)
+            if sim>0:
+                scores.append([sim,other])
+
     # 高スコアがリストの最初に来るように並び替える
     scores.sort()
     scores.reverse()
@@ -82,6 +91,7 @@ def topMatches(c_userid):
 def getRecommendations(c_userid):
     """c_userid以外のユーザーの評点の重み付き平均を行い、c_useridへの推薦を算出する"""
     prefs = loadData()
+    prefs.setdefault(c_userid,{})
     on_display = Sell.select_all_sell_by_deal_status(1)
     sell = Sell.select_sell_id_by_user_id(c_userid)
     followed = UserConnect.select_follows_user_id_by_user_id(c_userid)
