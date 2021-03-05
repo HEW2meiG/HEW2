@@ -68,7 +68,13 @@ def topMatches(c_userid):
     print("*"*100)
     u_recommend_id = np.array(scores)
     if len(u_recommend_id)>0:
-        return u_recommend_id[0:3, 1]
+        if len(u_recommend_id) >= 3:
+            #! X[start:end]endは含まれない
+            return u_recommend_id[0:3, 1]
+        if len(u_recommend_id) == 2:
+            return u_recommend_id[0:2, 1]
+        if len(u_recommend_id) == 1:
+            return u_recommend_id[0:1, 1]
     else:
         return None
 
@@ -119,7 +125,13 @@ def getRecommendations(c_userid):
     print("*"*100)
     recommend_id = np.array(rankings)
     if len(recommend_id)>0:
-        return recommend_id[0:3, 1]
+        if len(recommend_id) >= 3:
+            #! X[start:end]endは含まれない
+            return recommend_id[0:3, 1]
+        if len(recommend_id) == 2:
+            return recommend_id[0:2, 1]
+        if len(recommend_id) == 1:
+            return recommend_id[0, 1]
     else:
         return None
 

@@ -100,6 +100,7 @@
         <div class="reco-u-wrap search-r-u">
             <h2 class="r-h2">おすすめのユーザー</h2>
             {% for user in r_user_list %}
+                {% if user != None %}
                 <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
                     <div class="u-u-wrap">
                         <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
@@ -110,15 +111,12 @@
                     </div>
                     {% include "follow.html" %}
                 </a>
+                {% endif %}
             {% endfor %}
         </div>
     {% else %}
         <p class="looling-f">購入履歴・閲覧履歴・いいねにより、<br>あなたのおすすめの本を探します</p>
     {% endif %}
-    <div class="mypage-right-pict-wrap">
-        <img src="{{url_for('static', filename='images/mypage-right-pict.png')}}" alt="読書のイラスト">
-        <p>Illustration by Icons 8 from <a href="https://icons8.com/">Icons8</a></p>
-    </div>
 {% endif %}
 <script>
     $(document).ready(function(event){

@@ -91,9 +91,14 @@
             </article>
         {% endfor %}
     </div>
+{% endif %}
+{% if not r_user_list %}
+    <p class="looling-f">あなたのおすすめのユーザーを探します</p>
+{% else %}
     <div class="reco-u-wrap">
         <h2 class="r-h2">おすすめのユーザー</h2>
         {% for user in r_user_list %}
+            {% if user != None %}
             <a class="u-box" href="{{url_for('user.userdata', user_code=user.user_code)}}">
                 <div class="u-u-wrap">
                     <img class="u-icon" src="{{url_for('static', filename='user_image/' + user.picture_path)}}">
@@ -104,6 +109,7 @@
                 </div>
                 {% include "follow.html" %}
             </a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endif %}
