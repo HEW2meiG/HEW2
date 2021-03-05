@@ -246,7 +246,7 @@ nav a:hover{
     display: flex;
 }
 .u-nc .u-name{
-    width: 135px;
+    width: 121px;
 }
 .u-nc .u-code{
     margin-top: -6px;
@@ -262,6 +262,7 @@ nav a:hover{
     font-weight: bold;
     transition: 0.5s;
     cursor: pointer;
+    margin: 0 10px;
 }
 .reco-u-wrap .follow-wrap button:hover{
     opacity: 0.5;
