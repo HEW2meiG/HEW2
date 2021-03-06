@@ -64,7 +64,9 @@
     </div>
 
 <script>
-
+    window.onload = function(){
+        document.getElementById('preview').src = "{{url_for('static', filename='item_image/' + sell.item_picture_path)}}";
+    }
     function previewImage(obj)
     {
         var fileReader = new FileReader();
