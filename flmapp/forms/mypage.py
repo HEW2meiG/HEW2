@@ -17,7 +17,7 @@ from flmapp.models.token import MailResetToken
 class ProfileForm(FlaskForm):
     """プロフィール設定ページフォーム"""
     username = StringField('名前')
-    usercode = StringField('ユーザーコード')
+    usercode = StringField('ユーザーコード', render_kw={"pattern":"^[0-9A-Za-z]+$"})
     picture_path = FileField('アイコン画像を変更')
     prof_comment = TextAreaField('自己紹介')
     submit = SubmitField('変更する')
@@ -60,14 +60,14 @@ class ChangePasswordForm(FlaskForm):
 
 class IdentificationForm(FlaskForm):
     """本人情報更新ページフォーム"""
-    last_name = StringField('お名前(全角)',validators=[DataRequired()],render_kw={"placeholder":"例)山田"})
-    first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子"})
-    last_name_kana = StringField('お名前カナ(全角)',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ"})
-    first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ"})
+    last_name = StringField('お名前(全角)',validators=[DataRequired()],render_kw={"placeholder":"例)山田", "pattern": "[^A-Za-z0-9０-９]+"})
+    first_name = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)花子", "pattern": "[^A-Za-z0-9０-９]+"})
+    last_name_kana = StringField('お名前カナ(全角)',validators=[DataRequired()],render_kw={"placeholder":"例)ヤマダ", "pattern":"(?=.*?[\u30A1-\u30FC])[\u30A1-\u30FC\s]*"})
+    first_name_kana = StringField('',validators=[DataRequired()],render_kw={"placeholder":"例)ハナコ", "pattern":"(?=.*?[\u30A1-\u30FC])[\u30A1-\u30FC\s]*"})
     b_year = SelectField('生年月日', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
     b_month = SelectField('', choices=[(0,'--')],validators=[DataRequired()], coerce=int)
     b_date = SelectField('', choices=[(0,'--')], validators=[DataRequired()], coerce=int)
-    zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456"})
+    zip01 = StringField('郵便番号(ハイフンなし)',validators=[DataRequired()],render_kw={"placeholder":"例)123456", "pattern":"\d{7}"})
     pref01 = SelectField('都道府県',choices=[('','未選択'),('北海道','北海道'),('青森県','青森県'),('岩手県','岩手県'),('宮城県','宮城県'),('秋田県','秋田県'),\
         ('山形県','山形県'),('福島県','福島県'),('茨城県','茨城県'),('栃木県','栃木県'),('群馬県','群馬県'),('埼玉県','埼玉県'),('千葉県','千葉県'),\
         ('東京都','東京都'),('神奈川県','神奈川県'),('新潟県','新潟県'),('富山県','富山県'),('石川県','石川県'),('福井県','福井県'),('山梨県','山梨県'),\
