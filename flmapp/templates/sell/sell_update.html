@@ -60,11 +60,13 @@
     </form>
 
     <div class="mg-tb-2 txt-center">
-        <a href="{{url_for('route.home')}}" class="back-home font-size-12">ホームへ戻る</a>
+        <a href="{{url_for('item.itemdata', item_id=sell.Sell_id)}}" class="back-home font-size-12">商品詳細画面へ</a>
     </div>
 
 <script>
-
+    window.onload = function(){
+        document.getElementById('preview').src = "{{url_for('static', filename='item_image/' + sell.item_picture_path)}}";
+    }
     function previewImage(obj)
     {
         var fileReader = new FileReader();
