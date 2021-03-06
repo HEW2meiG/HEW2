@@ -33,7 +33,7 @@
             {{ form.item_picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
             <p>
                     <div class="trim">
-                        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height:200px;">
+                        <img id="preview" src="{{url_for('static', filename='item_image/' + sell.item_picture_path)}}" style="max-height:200px;">
                     </div>
             </p>
         </div>
@@ -64,9 +64,6 @@
     </div>
 
 <script>
-    window.onload = function(){
-        document.getElementById('preview').src = "{{url_for('static', filename='item_image/' + sell.item_picture_path)}}";
-    }
     function previewImage(obj)
     {
         var fileReader = new FileReader();
@@ -75,6 +72,5 @@
         });
         fileReader.readAsDataURL(obj.files[0]);
     }
-
 </script>
 {% endblock %}
