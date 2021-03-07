@@ -212,7 +212,7 @@ from pymining import itemmining, assocrules
 def associationRules(transactions,userid,followed=(),c_userid=None):
     relim_input = itemmining.get_relim_input(transactions)
     item_sets = itemmining.relim(relim_input, min_support=2)
-    rules = assocrules.mine_assoc_rules(item_sets, min_support=2, min_confidence=0.3)
+    rules = assocrules.mine_assoc_rules(item_sets, min_support=2, min_confidence=0.5)
 
     recom_user = {}
     for rule_user in rules:
@@ -221,6 +221,8 @@ def associationRules(transactions,userid,followed=(),c_userid=None):
             support = rule_user[2]/len(transactions)
             # リフト値 1より大きい場合は、Aが発生するとBが発生しやすくなると解釈できる
             lift = (rule_user[3]/support,)
+            if lift[0] <= 1:
+                continue
             rule_user += lift
             recom_user[rule_user[1]] = rule_user[4]
     recom_user_sorted = sorted(recom_user.items(), key=lambda x:x[1], reverse=True)
