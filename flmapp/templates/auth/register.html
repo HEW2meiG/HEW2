@@ -29,7 +29,7 @@
             {{ form.picture_path(accept="image/*",onchange="previewImage(this)",multiple="")}}
             <p>
                     <div class="trim">
-                        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height:150px;">
+                        <img id="preview" src="{{url_for('static', filename='user_image/' + 'default.jpeg')}}" style="max-height:150px;">
                     </div>
             </p>
         </div>
