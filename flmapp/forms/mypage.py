@@ -31,8 +31,8 @@ class ChangePasswordForm(FlaskForm):
     """パスワード・メール変更ページフォーム"""
     now_password = PasswordField('現在のパスワード ')
     email = StringField('メール ', validators=[Email('メールアドレスが誤っています')])
-    password = PasswordField('パスワード', validators=[EqualTo('confirm_password', message='パスワードが一致しません')])
-    confirm_password = PasswordField('パスワード確認:')
+    password = PasswordField('新しいパスワード', validators=[EqualTo('confirm_password', message='パスワードが一致しません')])
+    confirm_password = PasswordField('新しいパスワード確認:')
     submit = SubmitField('更新する')
 
     def validate_email(self, field):
