@@ -52,21 +52,19 @@
         {{ render_field(form.schedule, value=form.schedule.data) }}
         {{ render_field(form.remarks, value=form.remarks.data) }}
         {% if form.price.data %}
-
-            <div class="mg-tb-1">
-                {{ form.price.label }}<span class="req">必須</span><br>
+            <div class="mg-tb-2 kosho-form-200">
+                <div class="mg-tb-1">
+                    {{ form.price.label }}<span class="req">必須</span><br>
+                </div>
+                &yen;{{ form.price(value=form.price.data) }}
             </div>
-            \{{ form.price(value=form.price.data) }}
-
         {% else %}
-
-        <div class="mg-tb-2 kosho-form-200">
-            <div class="mg-tb-1">
-                {{ form.price.label }}<span class="req">必須</span><br>
+            <div class="mg-tb-2 kosho-form-200">
+                <div class="mg-tb-1">
+                    {{ form.price.label }}<span class="req">必須</span><br>
+                </div>
+                &yen;{{ form.price() }}
             </div>
-            &yen;{{ form.price() }}
-        </div>
-
         {% endif %}
         <div class="mg-t-5">
           {{ form.submit() }}
