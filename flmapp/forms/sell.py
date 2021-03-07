@@ -55,6 +55,13 @@ class SellForm(FlaskForm):
     remarks = TextAreaField('備考')
     submit = SubmitField('出品確認画面へ')
 
+    def validate_sell_comment(self, field):
+        if len(field.data) > 200:
+            raise ValidationError('200文字以内で入力してください')
+    
+    def validate_remarks(self, field):
+        if len(field.data) > 200:
+            raise ValidationError('200文字以内で入力してください')
 
 class HiddenSellForm(FlaskForm):
     """出品情報Hiddenフォーム"""
