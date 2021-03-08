@@ -51,6 +51,7 @@ h1{
 .t-wrap{
     margin: 15px auto;
     width: 610px;
+    word-break: break-all;
 }
 .t-wrap h2{
     text-align: center;

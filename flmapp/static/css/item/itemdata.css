@@ -1,6 +1,7 @@
 /* 詳細テーブル */
 .t-wrap{
     margin: 15px 0;
+    word-break: break-all;
 }
 .t-wrap table{
     width: 100%;
