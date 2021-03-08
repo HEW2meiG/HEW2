@@ -13,6 +13,7 @@
     width: 100%;
     border-collapse: collapse;
     background-color: #ffffff;
+    word-break: break-all;
 }
 .t-wrap table th, .t-wrap td{
     padding: 15px 10px;

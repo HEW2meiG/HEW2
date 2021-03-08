@@ -4,6 +4,7 @@
     padding: 25px;
     margin: 2px;
     background-color: #ffffff;
+    word-break: break-all;
 }
 .u-header p:not(.u-code){
     font-weight: bold;
