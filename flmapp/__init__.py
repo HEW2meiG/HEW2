@@ -56,7 +56,7 @@ def create_app():
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_USERNAME'] = 'koshokaikou.official@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'tegjmwoizirebndj'
+    app.config['MAIL_PASSWORD'] = 'qhfumxmrlcfxhmsr'
     app.config['MAIL_DEFAULT_SENDER'] = 'koshokaikou.official@gmail.com'
     app.config['MAIL_MAX_EMAILS'] = 5 #送信するメールの最大数
     app.config['MAIL_SUPPRESS_SEND'] = False
