@@ -125,6 +125,14 @@ class SellUpdateForm(FlaskForm):
     )
     remarks = TextAreaField('備考')
     submit = SubmitField('更新する')
+
+    def validate_sell_comment(self, field):
+        if len(field.data) > 200:
+            raise ValidationError('200文字以内で入力してください')
+    
+    def validate_remarks(self, field):
+        if len(field.data) > 200:
+            raise ValidationError('200文字以内で入力してください')
     
 class SellUpdateFlgAndDeleteForm(FlaskForm):
     """出品フラグ更新・出品削除フォーム"""
