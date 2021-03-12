@@ -34,7 +34,7 @@ SNS機能で、本が好きな人のプラットフォームになってる、
 * ANACONDA
 
 ## :pencil2: 使用方法
-1.古書邂逅 協調フィルタリング高速化用API(https://github.com/HEW2meiG/set_prefs)をgit cloneしてください。
+1.古書邂逅 協調フィルタリング高速化用API(<https://github.com/HEW2meiG/set_prefs>)をgit cloneしてください。
 
 `git clone https://github.com/HEW2meiG/set_prefs.git`
 
